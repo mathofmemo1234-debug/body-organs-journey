@@ -1,9 +1,10 @@
-// Web Audio API Sound Engine (with 10-second immersive biological audio loops)
+// Web Audio & Real Medical Audio Sound Engine (10-second authentic recordings + fallback synthesizer)
 class SoundEngine {
   constructor() {
     this.ctx = null;
     this.enabled = true;
     this.currentOrgan = null;
+    this.currentAudio = null;
     this.timerId = null;
     this.intervalId = null;
     this.activeNodes = [];
@@ -29,6 +30,17 @@ class SoundEngine {
   stopOrganSound() {
     if (this.timerId) clearTimeout(this.timerId);
     if (this.intervalId) clearInterval(this.intervalId);
+    
+    // Stop authentic audio if playing
+    if (this.currentAudio) {
+      try {
+        this.currentAudio.pause();
+        this.currentAudio.currentTime = 0;
+      } catch (e) {}
+      this.currentAudio = null;
+    }
+
+    // Stop synthesized web audio nodes
     this.activeNodes.forEach(node => {
       try { node.stop(); } catch (e) {}
       try { node.disconnect(); } catch (e) {}
@@ -42,7 +54,6 @@ class SoundEngine {
   playOrgan10Seconds(organId) {
     if (!this.enabled) return;
     this.init();
-    if (!this.ctx) return;
 
     // Toggle off if already playing the same organ
     if (this.currentOrgan === organId) {
@@ -56,10 +67,7 @@ class SoundEngine {
     this.remainingSeconds = 10;
     updateSoundButtonUI(true, this.remainingSeconds);
 
-    const now = this.ctx.currentTime;
-    const duration = 10; // Exactly 10 seconds
-
-    // Countdown interval for button UI
+    // Countdown interval for button UI (10s -> 0s)
     this.intervalId = setInterval(() => {
       this.remainingSeconds--;
       if (this.remainingSeconds > 0) {
@@ -69,7 +77,39 @@ class SoundEngine {
       }
     }, 1000);
 
-    // Generate organ specific 10-second soundscape
+    // 1. First priority: Play authentic 10s audio recording from assets/audio/
+    let playedAudio = false;
+    try {
+      const audioPath = `assets/audio/${organId}.mp3`;
+      this.currentAudio = new Audio(audioPath);
+      this.currentAudio.currentTime = 0;
+      
+      const playPromise = this.currentAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          playedAudio = true;
+        }).catch(err => {
+          console.warn('Real audio playback error, falling back to Web Audio synthesis:', err);
+          this.fallbackSynthesis(organId);
+        });
+      } else {
+        playedAudio = true;
+      }
+    } catch (e) {
+      console.warn('Audio element error, falling back to Web Audio synthesis:', e);
+      this.fallbackSynthesis(organId);
+    }
+
+    // Safety timeout to ensure complete stop at exactly 10 seconds
+    this.timerId = setTimeout(() => {
+      this.stopOrganSound();
+    }, 10000);
+  }
+
+  fallbackSynthesis(organId) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const duration = 10;
     switch (organId) {
       case 'heart':
         this.synthesizeHeartbeat10s(now, duration);
@@ -92,11 +132,6 @@ class SoundEngine {
       default:
         this.synthesizeHeartbeat10s(now, duration);
     }
-
-    // Safety timeout to ensure stop at 10 seconds
-    this.timerId = setTimeout(() => {
-      this.stopOrganSound();
-    }, duration * 1000);
   }
 
   // 1. Heart: 10 seconds of realistic lub-dub pulses (~72 BPM)
