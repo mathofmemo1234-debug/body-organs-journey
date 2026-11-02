@@ -1494,3 +1494,307 @@ section.app-tab-content.active {
     page-break-inside: avoid;
   }
 }
+
+/* ===================================================
+   MOBILE & TABLET OPTIMIZATIONS (Smart Device Engine)
+   =================================================== */
+
+/* Desktop defaults */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 78px; /* Leave space for bottom app bar */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  /* Header on Mobile */
+  header.site-header {
+    padding: 2px 0;
+  }
+
+  .nav-container {
+    padding: 8px 0;
+  }
+
+  header .main-nav {
+    display: none; /* Replaced by Bottom App Bar */
+  }
+
+  .brand-logo {
+    font-size: 1.15rem;
+    gap: 8px;
+  }
+
+  .brand-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .brand-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .link-settings-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .sound-toggle-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  /* Journey Progress Bar on Mobile */
+  .tracker-steps {
+    display: none; /* Hide 4 step labels on tiny screens to avoid clumping */
+  }
+
+  .tracker-content {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .progress-bar-container {
+    max-width: 180px;
+  }
+
+  /* Hero Section on Mobile */
+  .hero-card {
+    padding: 24px 18px;
+    margin-bottom: 24px;
+    border-radius: var(--radius-md);
+  }
+
+  .hero-title {
+    font-size: 1.85rem;
+    line-height: 1.35;
+  }
+
+  .hero-description {
+    font-size: 1.05rem;
+    margin-bottom: 20px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-primary, .btn-secondary, .btn-accent {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 18px;
+    font-size: 1rem;
+  }
+
+  /* Organ Explorer on Mobile */
+  .explorer-tabs-container {
+    gap: 8px;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+
+  .organ-tab-btn {
+    padding: 10px 15px;
+    font-size: 0.95rem;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  .organ-view-wrapper {
+    grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 20px;
+    border-radius: var(--radius-md);
+  }
+
+  .viewer-content-frame {
+    height: 360px; /* Optimal mobile viewport height */
+  }
+
+  .natural-3d-stage {
+    padding: 8px;
+  }
+
+  .natural-3d-card {
+    width: 250px;
+    height: 250px;
+  }
+
+  .natural-model-controls {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+    padding: 6px 10px;
+  }
+
+  .ctrl-hint {
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .natural-zoom-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .organ-name {
+    font-size: 1.7rem;
+  }
+
+  /* Organ Questions on Mobile */
+  .organ-quick-quiz-section {
+    padding: 18px 14px;
+  }
+
+  .organ-questions-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  /* Quiz on Mobile */
+  .quiz-container {
+    padding: 20px 16px;
+  }
+
+  .question-text {
+    font-size: 1.18rem;
+  }
+
+  .option-btn {
+    padding: 14px 16px;
+    font-size: 0.98rem;
+  }
+
+  .quiz-nav-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .quiz-nav-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Portfolio on Mobile */
+  .portfolio-tabs {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .portfolio-tab-btn {
+    padding: 12px;
+    font-size: 1rem;
+  }
+
+  .portfolio-form {
+    padding: 20px 16px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Certificate on Mobile */
+  .certificate-box {
+    padding: 24px 16px;
+    border-width: 6px;
+  }
+
+  .cert-header {
+    font-size: 1.7rem;
+  }
+
+  .cert-student-name {
+    font-size: 1.6rem;
+    padding: 0 16px 6px;
+  }
+
+  .cert-body-text {
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+
+  .cert-footer {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center !important;
+  }
+
+  .cert-seal {
+    order: -1;
+  }
+
+  /* Mobile Bottom Navigation Bar */
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1.5px solid var(--border);
+    box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
+    z-index: 2500;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 4px;
+  }
+
+  .m-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    cursor: pointer;
+    padding: 6px 0;
+    transition: var(--transition);
+  }
+
+  .m-nav-icon {
+    font-size: 1.35rem;
+    margin-bottom: 2px;
+    transition: transform 0.2s ease;
+  }
+
+  .m-nav-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  .m-nav-item:active .m-nav-icon,
+  .m-nav-item.active .m-nav-icon {
+    transform: scale(1.18);
+  }
+
+  .m-nav-item.active {
+    color: var(--primary);
+  }
+
+  .m-nav-item.active .m-nav-label {
+    color: var(--primary-dark);
+  }
+}

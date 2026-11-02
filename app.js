@@ -439,6 +439,16 @@ function setupNavigation() {
     });
   });
 
+  // Mobile Bottom App Bar Navigation
+  const mNavBtns = document.querySelectorAll('.m-nav-item');
+  mNavBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetTab = btn.getAttribute('data-tab');
+      triggerHaptic(25);
+      switchTab(targetTab);
+    });
+  });
+
   const roadmapCards = document.querySelectorAll('.roadmap-card');
   roadmapCards.forEach(card => {
     card.addEventListener('click', () => {
@@ -448,14 +458,35 @@ function setupNavigation() {
   });
 }
 
+// Haptic feedback for Mobile Devices
+function triggerHaptic(pattern) {
+  if (navigator && typeof navigator.vibrate === 'function') {
+    try {
+      navigator.vibrate(pattern);
+    } catch (e) {
+      // Ignore vibration error
+    }
+  }
+}
+
 function switchTab(tabId) {
   state.currentTab = tabId;
+  
+  // Desktop Nav Buttons
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
   });
+
+  // Mobile Bottom Nav Items
+  document.querySelectorAll('.m-nav-item').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+  });
+
+  // Content Tabs
   document.querySelectorAll('.app-tab-content').forEach(section => {
     section.classList.toggle('active', section.id === `tab-${tabId}`);
   });
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -768,8 +799,10 @@ window.answerOrganQuestion = function(qIdx, selectedOption) {
   if (isCorrect) {
     state.quizScore++;
     sounds.playCorrect();
+    triggerHaptic(40); // Gentle success buzz on mobile
   } else {
     sounds.playWrong();
+    triggerHaptic([50, 40, 50]); // Double alert buzz on mobile
   }
 
   updateProgressTracker();
@@ -889,8 +922,10 @@ function handleQuizAnswer(selectedOption) {
   if (isCorrect) {
     state.quizScore++;
     sounds.playCorrect();
+    triggerHaptic(40); // Gentle success buzz on mobile
   } else {
     sounds.playWrong();
+    triggerHaptic([50, 40, 50]); // Double alert buzz on mobile
   }
 
   updateProgressTracker();
