@@ -1,0 +1,6 @@
+# Temporary python scripts
+*.py
+*.pyc
+__pycache__/
+*.json
+raw_site.html

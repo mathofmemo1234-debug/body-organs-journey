@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>رحلة أعضاء الجسم الداخلية | منصة تفاعلية متكاملة</title>
+  <!-- Google Fonts: Tajawal & Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body dir="rtl">
+
+  <!-- Site Header (Strict RTL) -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo" onclick="switchTab('home'); return false;">
+        <div class="brand-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </div>
+        <div>
+          <span>رحلة أعضاء الجسم</span>
+          <span style="font-size:0.75rem;display:block;color:var(--primary);font-weight:700;">منصة التعلم التفاعلي المبهجة</span>
+        </div>
+      </a>
+
+      <nav class="main-nav">
+        <button class="nav-btn active" data-tab="home"><span>الرئيسية</span></button>
+        <button class="nav-btn" data-tab="organs"><span>مستكشف الأعضاء</span></button>
+        <button class="nav-btn" data-tab="quiz"><span>بنك الأسئلة (18)</span></button>
+        <button class="nav-btn" data-tab="portfolio"><span>ملف الإنجاز</span></button>
+        <button class="nav-btn" data-tab="survey"><span>الاستبيان</span></button>
+      </nav>
+
+      <div class="header-controls">
+        <button id="open-links-settings-btn" class="link-settings-btn" title="تعديل وتخصيص روابط ThingLink للأعضاء">
+          <span>تعديل روابط ThingLink</span>
+        </button>
+        <button id="sound-toggle-btn" class="sound-toggle-btn" title="تشغيل / كتم الصوت">
+          <span>الصوت مفعّل</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Journey Tracker Bar (Strict RTL) -->
+  <div class="journey-tracker">
+    <div class="container tracker-content">
+      <div class="tracker-steps">
+        <div class="step-indicator" id="step-indicator-organs">
+          <span class="step-badge">1</span>
+          <span>استكشاف الأعضاء</span>
+        </div>
+        <div class="step-indicator" id="step-indicator-quiz">
+          <span class="step-badge">2</span>
+          <span>بنك الأسئلة</span>
+        </div>
+        <div class="step-indicator" id="step-indicator-portfolio">
+          <span class="step-badge">3</span>
+          <span>توثيق الإنجاز</span>
+        </div>
+        <div class="step-indicator" id="step-indicator-survey">
+          <span class="step-badge">4</span>
+          <span>التقييم والشهادة</span>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-weight:800;color:var(--primary-dark);">إنجازك:</span>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="journey-progress-bar"></div>
+        </div>
+        <span id="journey-progress-percent" style="font-weight:900;color:var(--primary);">10%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Container (Strict RTL) -->
+  <main class="container">
+
+    <!-- 1. Home Tab -->
+    <section id="tab-home" class="app-tab-content active">
+      <div class="hero-card">
+        <span class="hero-tag">رحلة استكشافية تفاعلية مشوقة</span>
+        <h1 class="hero-title">رحلة في أعماق جسم الإنسان المدهش</h1>
+        <p class="hero-description">
+          انطلقي في رحلة تعليمية شائقة ومبهجة للتعرف على أسرار ووظائف أعضاء الجسم الستة (القلب، الرئتان، الدماغ، المعدة، المريء، والعين) عبر النماذج التفاعلية الحية ومشاهد ThingLink، وأجيبي عن أسئلة كل عضو مباشرة، ثم وثّقي إنجازك المتميز لتحصلي على شهادة تكريم ذهبية!
+        </p>
+
+        <!-- Global Student Identity -->
+        <div style="background:#ffffff;border:2px solid var(--border);border-radius:var(--radius-md);padding:18px 24px;margin-bottom:28px;max-width:560px;box-shadow:var(--shadow-sm);">
+          <label for="global-student-name" style="display:block;font-weight:800;margin-bottom:8px;color:var(--primary-dark);">
+            أدخلي اسمكِ لتخصيص ملف الإنجاز وشهادة التميز:
+          </label>
+          <input type="text" id="global-student-name" placeholder="اكتبي اسمك الكامل هنا..." style="width:100%;padding:12px 16px;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:10px;color:#0f172a;font-family:inherit;font-size:1.05rem;outline:none;">
+        </div>
+
+        <div class="hero-actions" style="display:flex;gap:14px;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="switchTab('organs')">
+            <span>ابدئي الرحلة واستكشفي الأعضاء</span> <span>←</span>
+          </button>
+          <button class="btn-secondary" onclick="switchTab('quiz')">
+            <span>بنك الأسئلة الشامل (18 سؤالاً)</span>
+          </button>
+          <button class="btn-accent" onclick="document.getElementById('open-links-settings-btn').click()">
+            <span>تخصيص روابط ThingLink</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Roadmap Grid -->
+      <h2 style="font-size:1.7rem;font-weight:900;margin-bottom:18px;color:var(--text-main);">مسار الرحلة التعليمية الممتعة</h2>
+      <div class="roadmap-grid">
+        <div class="roadmap-card" data-target="organs">
+          <span class="roadmap-number">01</span>
+          <div class="roadmap-icon" style="color:#f43f5e;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </div>
+          <h3>استكشاف الأعضاء الستة</h3>
+          <p>استكشفي القلب، الرئتين، الدماغ، المعدة، المريء، والعين عبر النماذج التفاعلية الدقيقة وسيناريوهات ThingLink مع مؤثرات صوتية حية.</p>
+        </div>
+
+        <div class="roadmap-card" data-target="organs">
+          <span class="roadmap-number">02</span>
+          <div class="roadmap-icon" style="color:#0284c7;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          </div>
+          <h3>تحدي أسئلة كل عضو مباشرة</h3>
+          <p>أجيبي عن الأسئلة الخاصة بكل عضو بجوار المشهد مباشرة، مع تصحيح فوري وشروحات علمية تعزز استيعابك.</p>
+        </div>
+
+        <div class="roadmap-card" data-target="portfolio">
+          <span class="roadmap-number">03</span>
+          <div class="roadmap-icon" style="color:#8b5cf6;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+          </div>
+          <h3>ملف الإنجاز (مبتدئ / مطوّر)</h3>
+          <p>وثّقي نواتج تعلمكِ وتأملاتكِ وخطة التحسين، مع إمكانية طباعة ملف إنجاز رسمي بصيغة PDF بضغطة زر واحدة.</p>
+        </div>
+
+        <div class="roadmap-card" data-target="survey">
+          <span class="roadmap-number">04</span>
+          <div class="roadmap-icon" style="color:#f59e0b;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          </div>
+          <h3>التقييم وشهادة التميز</h3>
+          <p>شاركينا رأيكِ في التجربة واحصلي على شهادة تكريم وإتمام ذهبية باسمكِ ودرجتكِ قابلة للحفظ والطباعة.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Organ Explorer Tab -->
+    <section id="tab-organs" class="app-tab-content">
+      <div style="margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+          <h2 style="font-size:1.85rem;font-weight:900;color:var(--text-main);">مستكشف الأعضاء التفاعلي</h2>
+          <p style="color:var(--text-muted);">اختاري العضو للغوص في تركيبه ووظائفه الحيوية مع إمكانية تغيير رابط المشهد:</p>
+        </div>
+        <button class="btn-accent" style="padding:10px 18px;font-size:0.95rem;" onclick="document.getElementById('open-links-settings-btn').click()">
+          <span>وضع روابط ThingLink خاصة بك</span>
+        </button>
+      </div>
+
+      <!-- Organ Tabs -->
+      <div class="explorer-tabs-container" id="organ-tabs-container"></div>
+
+      <!-- Organ Viewer & Scientific Details Split -->
+      <div class="organ-view-wrapper">
+        <!-- Interactive Viewer Pane -->
+        <div class="viewer-pane">
+          <div class="viewer-header">
+            <span style="font-size:0.95rem;font-weight:800;color:var(--primary-dark);">المشهد المعروض</span>
+            <div class="viewer-toggle">
+              <button id="view-opt-thinglink" class="toggle-opt-btn active">مشهد ThingLink</button>
+              <button id="view-opt-simulation" class="toggle-opt-btn">المجسم العلمي التفاعلي</button>
+            </div>
+          </div>
+          
+          <div class="viewer-content-frame" id="viewer-frame-container">
+            <!-- Dynamic Iframe / Sim -->
+          </div>
+
+          <div id="viewer-link-bar-container"></div>
+        </div>
+
+        <!-- Scientific Info Pane -->
+        <div class="organ-info-pane">
+          <div>
+            <div class="organ-info-header">
+              <span class="organ-tag" id="organ-info-tag">الجهاز الدوراني</span>
+              <h3 class="organ-name" id="organ-info-name">القلب</h3>
+              <p class="organ-summary" id="organ-info-summary"></p>
+            </div>
+
+            <div class="info-cards-stack">
+              <div class="mini-info-box">
+                <h4>الموقع في الجسم:</h4>
+                <p id="organ-info-location"></p>
+              </div>
+
+              <div class="mini-info-box">
+                <h4>الوظيفة الأساسية:</h4>
+                <p id="organ-info-function"></p>
+              </div>
+
+              <div class="mini-info-box" style="border-right-color:#ec4899;">
+                <h4 style="color:#db2777;">هل تعلمين؟</h4>
+                <p id="organ-info-funfact"></p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <button id="organ-sound-btn" class="btn-secondary" style="width:100%;margin-bottom:12px;justify-content:center;">
+              <span>استمع للمؤثر الحيوي</span>
+            </button>
+
+            <button id="mark-organ-complete-btn" class="organ-complete-btn">
+              <span>تأكيد استكشاف هذا العضو</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEDICATED ORGAN QUESTIONS (Appears right on the organ in Explorer!) -->
+      <div class="organ-quick-quiz-section">
+        <div class="organ-quick-quiz-header">
+          <h3 id="organ-quick-quiz-title">تحدي المعرفة السريع لهذا العضو</h3>
+          <span style="color:#059669;font-weight:800;font-size:0.95rem;">تصحيح فوري وتوضيح علمي لكل سؤال</span>
+        </div>
+        <div class="organ-questions-grid" id="organ-questions-list">
+          <!-- Rendered dynamically for active organ -->
+        </div>
+      </div>
+
+      <!-- Guidance Card for adding questions in ThingLink -->
+      <div class="guidance-banner">
+        <h4>كيف تضعين الأسئلة والاختبارات داخل ThingLink مباشرة؟</h4>
+        <ol>
+          <li><strong>إضافة سؤال تصويت (Poll Tag):</strong> داخل محرر ThingLink، اضغطي على <strong>Add tag</strong> ثم اختاري <strong>Poll</strong> واكتبي السؤال وخيارات الإجابة لتظهر كأيقونة تفاعلية نابضة على مجسم العضو.</li>
+          <li><strong>قفل الانتقال بسؤال (Scenario Branching):</strong> إذا كنتِ تستخدمين <em>Scenario Builder</em>، يمكنكِ إضافة عقدة <strong>Question node</strong> تشترط الإجابة الصحيحة لفتح العضو التالي للطالب.</li>
+          <li><strong>تضمين نموذج أو سؤال (Embed tag):</strong> اختاري <strong>Add tag -> Add content from website</strong> وضعي رابط السؤال أو الاختبار ليفتح كنافذة منبثقة تفاعلية داخل المجسم.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 3. Quiz Tab -->
+    <section id="tab-quiz" class="app-tab-content">
+      <div class="quiz-container">
+        
+        <!-- Active Question View -->
+        <div id="quiz-active-view">
+          <div class="quiz-header-bar">
+            <div style="display:flex;gap:18px;align-items:center;">
+              <span class="quiz-badge" id="quiz-q-num">سؤال 1 من 18</span>
+              <span class="quiz-score-tracker">الدرجة الحالية: <span id="quiz-score-val">0 / 18</span></span>
+            </div>
+            <div style="color:var(--text-muted);font-size:0.95rem;font-weight:600;">
+              اختاري إجابة واحدة صحيحة لكل سيناريو
+            </div>
+          </div>
+
+          <div style="margin-bottom:26px;">
+            <h3 class="question-text" id="quiz-question-title">ما العضو الذي يضخ الدم إلى أنحاء الجسم؟</h3>
+            <div class="options-grid" id="quiz-options-container"></div>
+          </div>
+
+          <div class="quiz-feedback-box" id="quiz-feedback"></div>
+
+          <div class="quiz-nav-actions">
+            <button id="quiz-prev-btn" class="btn-secondary">→ السؤال السابق</button>
+            <button id="quiz-next-btn" class="btn-primary">السؤال التالي ←</button>
+          </div>
+        </div>
+
+        <!-- Quiz Finished View -->
+        <div id="quiz-finish-view" style="display:none;text-align:center;padding:40px 20px;">
+          <div style="font-size:4.5rem;display:inline-block;margin-bottom:16px;">🏆</div>
+          <h2 style="font-size:2.2rem;color:var(--text-main);margin-bottom:12px;font-weight:900;">تهانينا! أنهيتِ بنك الأسئلة بنجاح</h2>
+          <div style="font-size:1.8rem;font-weight:900;color:#d97706;margin-bottom:16px;" id="quiz-final-score">
+            18 / 18
+          </div>
+          <p id="quiz-final-message" style="font-size:1.15rem;color:var(--text-muted);max-width:650px;margin:0 auto 30px;line-height:1.7;">
+            أداء استثنائي رائع! لقد أتقنت جميع وظائف الأعضاء بنجاح وتميز.
+          </p>
+
+          <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+            <button class="btn-primary" onclick="switchTab('portfolio')">
+              <span>الانتقال لتوثيق ملف الإنجاز</span> <span>←</span>
+            </button>
+            <button class="btn-secondary" id="quiz-restart-btn">
+              <span>إعادة الاختبار</span>
+            </button>
+            <button class="btn-accent" onclick="showCertificate()">
+              <span>عرض شهادة التكريم</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. Portfolio Tab -->
+    <section id="tab-portfolio" class="app-tab-content">
+      <div style="margin-bottom:22px;">
+        <h2 style="font-size:1.85rem;font-weight:900;color:var(--text-main);">ملف الإنجاز الرقمي</h2>
+        <p style="color:var(--text-muted);">اختاري المستوى المناسب لتوثيق رحلتك التعليمية وتصديرها بصيغة PDF:</p>
+      </div>
+
+      <div class="portfolio-tabs">
+        <button id="p-tab-beginner" class="portfolio-tab-btn active">ملف الإنجاز المبتدئ</button>
+        <button id="p-tab-advanced" class="portfolio-tab-btn">ملف الإنجاز المطوّر</button>
+      </div>
+
+      <!-- Beginner Form -->
+      <div id="form-portfolio-beginner" class="portfolio-form">
+        <h3 style="color:var(--primary-dark);margin-bottom:18px;font-size:1.3rem;font-weight:900;">توثيق المستوى المبتدئ</h3>
+        
+        <div class="form-group">
+          <label for="pb-organ">أي عضو استكشفتِ؟</label>
+          <select id="pb-organ"></select>
+        </div>
+
+        <div class="form-group">
+          <label for="pb-learned">ما المعلومة التي تعلمتها عن هذا العضو؟</label>
+          <textarea id="pb-learned" rows="3" placeholder="سجلي معلومة علمية جديدة اكتشفتها أثناء التجربة..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="pb-evidence">أرفقي رابطًا للدليل أو اكتبي وصفًا لما أنجزته:</label>
+          <textarea id="pb-evidence" rows="3" placeholder="اكتبي وصفاً للنشاط أو أرفقي رابط صورة/مستند دال على إنجازك..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="pb-review">ما أكثر عضو تحتاجين إلى مراجعته؟ وما السؤال الذي ما زال لديك؟</label>
+          <textarea id="pb-review" rows="3" placeholder="سجلي العضو الذي ترغبين في استكشافه أكثر وأي سؤال يدور في ذهنك..."></textarea>
+        </div>
+
+        <div class="form-actions" style="display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;">
+          <button id="pb-print-btn" class="btn-primary">
+            <span>معاينة وطباعة ملف الإنجاز (PDF)</span>
+          </button>
+          <button class="btn-secondary" onclick="showCertificate()">
+            <span>عرض شهادة التكريم</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Advanced Form -->
+      <div id="form-portfolio-advanced" class="portfolio-form" style="display:none;">
+        <h3 style="color:#4f46e5;margin-bottom:18px;font-size:1.3rem;font-weight:900;">توثيق المستوى المطوّر والتأمل الذاتي</h3>
+
+        <div class="form-group">
+          <label for="pa-organ">ما العضو أو السيناريو الذي وثّقت إنجازه؟</label>
+          <select id="pa-organ"></select>
+        </div>
+
+        <div class="form-group">
+          <label for="pa-mastered">ما الذي أتقنته؟ وما الجزء الذي واجهت فيه صعوبة؟</label>
+          <textarea id="pa-mastered" rows="3" placeholder="صفي المهارات والمعلومات التي أتقنتها وما التحديات التي ظهرت أثناء الاستكشاف..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="pa-next-steps">ما خطوتك القادمة للتحسين؟ وكيف ستتحققين من تقدمك؟</label>
+          <textarea id="pa-next-steps" rows="3" placeholder="حددي خطة تطويرية إضافية وكيفية تقييم فهمك الذاتي..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="pa-evidence">ما الدليل أو الناتج الذي أظهر تعلمك في هذا النشاط؟</label>
+          <textarea id="pa-evidence" rows="3" placeholder="صفي نتاجك العملي أو أرفقي رابط دليل إنجازك..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="pa-outcome">ما نتيجة النشاط؟ وما الذي تمكنت من إنجازه؟</label>
+          <textarea id="pa-outcome" rows="3" placeholder="سجلي الخلاصة النهائية لنتائجك المعرفية والعملية..."></textarea>
+        </div>
+
+        <div class="form-actions" style="display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;">
+          <button id="pa-print-btn" class="btn-primary">
+            <span>معاينة وطباعة ملف الإنجاز المطوّر (PDF)</span>
+          </button>
+          <button class="btn-secondary" onclick="showCertificate()">
+            <span>عرض شهادة التكريم</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Survey Tab -->
+    <section id="tab-survey" class="app-tab-content">
+      <div class="portfolio-form">
+        <h2 style="font-size:1.85rem;font-weight:900;color:var(--text-main);margin-bottom:10px;">استبيان تقييم الرحلة التعليمية</h2>
+        <p style="color:var(--text-muted);margin-bottom:26px;">
+          رأيك وملاحظاتكِ تسهم في تحسين وتطوير هذه التجربة التفاعلية باستمرار:
+        </p>
+
+        <div class="form-group">
+          <label>1) ما مدى وضوح العرض والتجربة التفاعلية؟</label>
+          <div class="rating-stars-container">
+            <span class="rating-star selected" data-val="1">★</span>
+            <span class="rating-star selected" data-val="2">★</span>
+            <span class="rating-star selected" data-val="3">★</span>
+            <span class="rating-star selected" data-val="4">★</span>
+            <span class="rating-star selected" data-val="5">★</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="survey-help-needed">2) ما أكثر شيء احتجتِ فيه إلى مساعدة أو ترغبين في تطويره؟</label>
+          <textarea id="survey-help-needed" rows="4" placeholder="اكتبي أي صعوبات واجهتك أو اقتراحات لتطوير النماذج والأسئلة..."></textarea>
+        </div>
+
+        <div id="survey-thank-msg" style="display:none;background:#ecfdf5;border:1.5px solid #10b981;color:#065f46;padding:16px 20px;border-radius:var(--radius-md);margin-bottom:20px;font-weight:800;">
+          ✓ شكرًا جزيلاً لكِ على مشاركتنا تقييمك القيّم! تم تسجيل إجاباتك بنجاح.
+        </div>
+
+        <button id="submit-survey-btn" class="btn-primary">
+          <span>إرسال التقييم</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- THINGLINK LINKS SETTINGS MODAL (Strict RTL) -->
+  <div class="modal-overlay" id="thinglink-modal" dir="rtl">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>تخصيص روابط ThingLink للأعضاء</span>
+        </div>
+        <button class="modal-close-btn" id="close-links-modal-btn">✕</button>
+      </div>
+
+      <p style="color:var(--text-muted);font-size:0.95rem;margin-bottom:18px;line-height:1.6;">
+        يمكنك هنا وضع أو لصق أي رابط أو معرف مشهد (Scene/Scenario ID) من منصة ThingLink لأي عضو من الأعضاء الستة، وسيتم حفظها في متصفحك وعرضها مباشرة:
+      </p>
+
+      <div class="links-editor-grid">
+        <div class="link-field-row">
+          <div class="link-field-header">
+            <span>رابط القلب (السيناريو / المشهد):</span>
+          </div>
+          <input type="text" id="tl-input-heart" placeholder="https://www.thinglink.com/view/scenario/...">
+        </div>
+
+        <div class="link-field-row">
+          <div class="link-field-header">
+            <span>رابط الرئتان:</span>
+          </div>
+          <input type="text" id="tl-input-lungs" placeholder="https://www.thinglink.com/scene/...">
+        </div>
+
+        <div class="link-field-row">
+          <div class="link-field-header">
+            <span>رابط المعدة:</span>
+          </div>
+          <input type="text" id="tl-input-stomach" placeholder="https://www.thinglink.com/scene/...">
+        </div>
+
+        <div class="link-field-row">
+          <div class="link-field-header">
+            <span>رابط الدماغ:</span>
+          </div>
+          <input type="text" id="tl-input-brain" placeholder="https://www.thinglink.com/scene/...">
+        </div>
+
+        <div class="link-field-row">
+          <div class="link-field-header">
+            <span>رابط العين:</span>
+          </div>
+          <input type="text" id="tl-input-eye" placeholder="https://www.thinglink.com/scene/...">
+        </div>
+
+        <div class="link-field-row">
+          <div class="link-field-header">
+            <span>رابط المريء والمعدة:</span>
+          </div>
+          <input type="text" id="tl-input-esophagus" placeholder="https://www.thinglink.com/scene/...">
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;margin-top:24px;flex-wrap:wrap;gap:12px;">
+        <button id="save-links-btn" class="btn-primary">
+          <span>حفظ وتحديث المشاهد الآن</span>
+        </button>
+        <button id="reset-links-btn" class="btn-secondary">
+          <span>استعادة الروابط الافتراضية</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CERTIFICATE OVERLAY MODAL (Strict RTL) -->
+  <div class="certificate-preview-overlay" id="cert-overlay" dir="rtl">
+    <div class="cert-overlay-actions">
+      <button id="print-cert-btn" class="btn-primary" style="padding:10px 20px;font-size:0.95rem;">طباعة / حفظ كـ PDF</button>
+      <button id="close-cert-btn" class="btn-secondary" style="padding:10px 20px;font-size:0.95rem;">إغلاق ✕</button>
+    </div>
+
+    <div class="certificate-box">
+      <div class="cert-header">شهادة إتمام وتميز</div>
+      <div class="cert-subtitle">رحلة أعضاء الجسم الداخلية التفاعلية</div>
+      
+      <p style="font-size:1.15rem;color:#475569;">يُمنح هذا التكريم بفخر واعتزاز إلى:</p>
+      
+      <div class="cert-student-name" id="cert-student-display">الطالبة المتميزة</div>
+      
+      <p class="cert-body-text">
+        تقديراً لمشاركتها الفاعلة في استكشاف أعضاء الجسم الستة، والتميز في حل سيناريوهات بنك الأسئلة، وتوثيق نواتج التعلم بدقة واحترافية في ملف الإنجاز.
+      </p>
+
+      <div class="cert-footer">
+        <div style="text-align:right;">
+          <p style="font-size:0.95rem;color:#64748b;margin-bottom:4px;">تاريخ الإنجاز:</p>
+          <p style="font-weight:900;color:#0369a1;" id="cert-date-display"></p>
+        </div>
+
+        <div class="cert-seal" title="ختم التميز">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </div>
+
+        <div style="text-align:left;">
+          <p style="font-size:0.95rem;color:#64748b;margin-bottom:4px;">نتيجة الاختبار:</p>
+          <p style="font-weight:900;color:#059669;" id="cert-score-display">18 / 18</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
