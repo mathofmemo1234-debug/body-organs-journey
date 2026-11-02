@@ -705,6 +705,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setupSoundToggle();
   setupThingLinkModal();
   updateProgressTracker();
+  if (typeof setupBody3DViewer === 'function') {
+    setupBody3DViewer();
+  }
 });
 
 // Setup Navigation
@@ -767,6 +770,12 @@ function switchTab(tabId) {
   document.querySelectorAll('.app-tab-content').forEach(section => {
     section.classList.toggle('active', section.id === `tab-${tabId}`);
   });
+
+  if (tabId === 'home' && window.body3D) {
+    setTimeout(() => {
+      window.body3D.onWindowResize();
+    }, 60);
+  }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

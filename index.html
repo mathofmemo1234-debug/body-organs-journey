@@ -111,8 +111,159 @@
           <button class="btn-accent" onclick="document.getElementById('open-links-settings-btn').click()">
             <span>تخصيص روابط ThingLink</span>
           </button>
+          <button class="btn-primary" onclick="document.getElementById('body-3d-section').scrollIntoView({behavior: 'smooth'})" style="background:linear-gradient(135deg, #0284c7, #8b5cf6);box-shadow:0 8px 20px rgba(139, 92, 246, 0.25);">
+            <span>🔬 استكشفي المجسم ثلاثي الأبعاد 360°</span>
+          </button>
         </div>
       </div>
+
+      <!-- 3D Anatomical Human Body Explorer Section -->
+      <section class="body-3d-showcase-section" id="body-3d-section">
+        <div class="body-3d-header">
+          <div class="body-3d-header-text">
+            <div class="section-badge">
+              <span>🔬</span> <span>نموذج تشريحي ثلاثي الأبعاد تفاعلي 360°</span>
+            </div>
+            <h2 class="body-3d-title">استكشف جسم الإنسان وتفاعل مع نبض أعضائه</h2>
+            <p class="body-3d-subtitle">
+              حرّك المجسم بحرية بالفأرة أو اللمس في جميع الاتجاهات، وراقب نبض ووميض وظائف الأعضاء الحيوية، واضغط على أي عضو لاكتشاف تركيبه والاستماع لصوته الحقيقي!
+            </p>
+          </div>
+          <div class="body-3d-quick-badges">
+            <span class="badge-pill">🔄 دوران حر 360°</span>
+            <span class="badge-pill">💓 نبض وميض حيوي</span>
+            <span class="badge-pill">🔊 أصوات حقيقية 10 ثوانٍ</span>
+            <span class="badge-pill">📱 متوافق مع الجوال واللمس</span>
+          </div>
+        </div>
+
+        <!-- Organ Quick Selection Tabs -->
+        <div class="body-3d-organs-bar" id="body-3d-organ-pills">
+          <button class="organ-3d-pill active" data-organ="all">
+            <span class="pill-icon">✨</span> <span>المجسم كاملاً</span>
+          </button>
+          <button class="organ-3d-pill" data-organ="heart">
+            <span class="pill-icon">🫀</span> <span>القلب</span>
+          </button>
+          <button class="organ-3d-pill" data-organ="lungs">
+            <span class="pill-icon">🫁</span> <span>الرئتان</span>
+          </button>
+          <button class="organ-3d-pill" data-organ="brain">
+            <span class="pill-icon">🧠</span> <span>الدماغ</span>
+          </button>
+          <button class="organ-3d-pill" data-organ="stomach">
+            <span class="pill-icon">🥗</span> <span>المعدة</span>
+          </button>
+          <button class="organ-3d-pill" data-organ="esophagus">
+            <span class="pill-icon">🥢</span> <span>المريء</span>
+          </button>
+          <button class="organ-3d-pill" data-organ="eye">
+            <span class="pill-icon">👁️</span> <span>العين</span>
+          </button>
+        </div>
+
+        <!-- 3D Viewport & Interactive Stage Layout -->
+        <div class="body-3d-workspace">
+          <!-- 3D Canvas Stage -->
+          <div class="body-3d-stage-container" id="body-3d-canvas-wrapper">
+            <div id="body-3d-webgl-container"></div>
+            
+            <!-- Floating Hover Tooltip -->
+            <div id="body-3d-tooltip" class="body-3d-tooltip" style="display:none;">
+              <span class="tooltip-icon" id="b3d-tooltip-icon">🫀</span>
+              <div>
+                <strong id="b3d-tooltip-name">القلب</strong>
+                <small id="b3d-tooltip-desc">انقر لاستكشاف الوظيفة والاستماع للصوت</small>
+              </div>
+            </div>
+
+            <!-- Stage Overlay Controls -->
+            <div class="body-3d-stage-controls">
+              <!-- Camera Presets -->
+              <div class="stage-control-group">
+                <button class="stage-btn" id="b3d-btn-front" title="منظور أمامي">
+                  <span>👤</span> <span>أمامي</span>
+                </button>
+                <button class="stage-btn" id="b3d-btn-side" title="منظور جانبي">
+                  <span>🔄</span> <span>جانبي</span>
+                </button>
+                <button class="stage-btn" id="b3d-btn-back" title="منظور خلفي">
+                  <span>🔙</span> <span>خلفي</span>
+                </button>
+                <button class="stage-btn" id="b3d-btn-reset" title="إعادة ضبط المشهد">
+                  <span>🎯</span> <span>إعادة ضبط</span>
+                </button>
+              </div>
+
+              <!-- Toggles -->
+              <div class="stage-control-group">
+                <button class="stage-btn active" id="b3d-btn-autorotate" title="تشغيل / إيقاف الدوران التلقائي">
+                  <span>⏯️</span> <span>دوران تلقائي</span>
+                </button>
+                <button class="stage-btn active" id="b3d-btn-pulse" title="وميض ونبض الوظائف الحيوية">
+                  <span>💡</span> <span>وميض الوظائف</span>
+                </button>
+                <button class="stage-btn" id="b3d-btn-opacity" title="تغيير شفافية هيكل الجسم">
+                  <span>🦴</span> <span id="b3d-opacity-label">شفافية تشريحية (35%)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Zoom In / Zoom Out floating buttons -->
+            <div class="body-3d-zoom-controls">
+              <button class="zoom-btn" id="b3d-zoom-in" title="تكبير">+</button>
+              <button class="zoom-btn" id="b3d-zoom-out" title="تصغير">−</button>
+            </div>
+
+            <!-- Touch / Mouse Help Hint -->
+            <div class="body-3d-hint">
+              <span>👆 اسحب للتدوير 360° • حرّك العجلة أو باعد إصبعيك للتكبير • اضغط على أي عضو</span>
+            </div>
+          </div>
+
+          <!-- Side Interactive Organ Details Panel -->
+          <div class="body-3d-info-panel" id="body-3d-info-panel">
+            <div class="info-panel-inner" id="body-3d-info-content">
+              <div class="organ-hero-banner" id="b3d-organ-banner">
+                <span class="organ-system-tag" id="b3d-panel-tag">الجسم البشري</span>
+                <h3 class="organ-hero-name" id="b3d-panel-name">جسم الإنسان المتكامل</h3>
+                <p class="organ-hero-desc" id="b3d-panel-desc">
+                  معجزة الخلق والتكامل الحيوي؛ يحتوي على شبكات وأجهزة دقيقة تعمل في تناسق مذهل على مدار اللحظة. اضغط على أي عضو لتفحصه عن قرب!
+                </p>
+              </div>
+
+              <div class="organ-vital-metrics" id="b3d-panel-metrics">
+                <div class="vital-card">
+                  <span class="vital-label">عدد الأعضاء الرئيسية:</span>
+                  <strong class="vital-value" style="color:var(--primary);">6 أعضاء تفاعلية</strong>
+                </div>
+                <div class="vital-card">
+                  <span class="vital-label">الحالة الحيوية:</span>
+                  <strong class="vital-value" style="color:#10b981;">نشط ومتناغم 🟢</strong>
+                </div>
+              </div>
+
+              <!-- Interactive Actions for selected organ -->
+              <div class="panel-action-buttons" id="b3d-panel-actions">
+                <button class="btn-secondary b3d-sound-btn" id="b3d-play-audio-btn" style="display:none;">
+                  <span>🔊</span> <span id="b3d-audio-label">استمع لصوت العضو (10 ثوانٍ)</span>
+                </button>
+                <button class="btn-primary b3d-explore-btn" id="b3d-deep-explore-btn" style="display:none;">
+                  <span>🚀</span> <span>انتقل لدراسة العضو في المستكشف التفصيلي</span>
+                </button>
+              </div>
+
+              <!-- Organ Quick Fact -->
+              <div class="funfact-callout" id="b3d-funfact-box" style="display:none;">
+                <div class="funfact-header">
+                  <span>💡</span> <strong>معلومة ذهبية مدهشة:</strong>
+                </div>
+                <p id="b3d-funfact-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Roadmap Grid -->
       <h2 style="font-size:1.7rem;font-weight:900;margin-bottom:18px;color:var(--text-main);">مسار الرحلة التعليمية الممتعة</h2>
@@ -558,6 +709,10 @@
     </button>
   </nav>
 
+  <!-- Three.js 3D Engine & Orbit Controls -->
+  <script src="assets/three.min.js"></script>
+  <script src="assets/OrbitControls.js"></script>
+  <script src="body3d.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
