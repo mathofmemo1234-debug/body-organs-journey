@@ -2,15 +2,7 @@
  * 🫀 Interactive 3D Human Anatomy Viewer (Three.js r128)
  * رحلة أعضاء الجسم الداخلية - المجسم التشريحي ثلاثي الأبعاد التفاعلي
  * 
- * Features:
- * - 360° Free rotation with OrbitControls (Mouse & Touch gestures)
- * - Translucent holographic human body shell with adjustable opacity & X-ray mode
- * - Anatomically placed internal organs: Heart, Lungs, Brain, Stomach, Esophagus, Eyes
- * - Biological pulsing and blinking animations (heartbeat lub-dub, breathing lungs, neural synapses, peristalsis)
- * - Raycasting hover & click on organs with glowing highlight beacons & 3D floating tooltips
- * - Camera smooth glide & focus on each organ
- * - Integration with Web Audio / Authentic 10-second Medical Audio recordings
- * - Direct deep-link to the Organ Explorer tab
+ * High-performance, crash-proof, fully responsive WebGL human anatomy model.
  */
 
 class Body3DViewer {
@@ -55,7 +47,7 @@ class Body3DViewer {
 
     // Camera animation state
     this.cameraTarget = {
-      pos: new THREE.Vector3(2.5, 4.5, 14.5),
+      pos: new THREE.Vector3(2.0, 4.2, 14.5),
       lookAt: new THREE.Vector3(0, 3.8, 0),
       active: false,
       progress: 0,
@@ -67,14 +59,17 @@ class Body3DViewer {
     // Highlight ring / beacon
     this.beaconMesh = null;
 
-    // Biological heartbeat sound / audio sync
-    this.lastBeatTime = 0;
-
     this.init();
   }
 
   init() {
     this.setupScene();
+    if (!this.renderer) {
+      this.renderFallback();
+      this.setupDOMBindings();
+      return;
+    }
+
     this.setupLights();
     this.buildPedestal();
     this.buildHumanSilhouette();
@@ -83,34 +78,144 @@ class Body3DViewer {
     this.setupControls();
     this.setupEventListeners();
     this.setupDOMBindings();
+
+    // Initial render and start animation loop
+    this.onWindowResize();
+    if (this.renderer && this.scene && this.camera) {
+      this.renderer.render(this.scene, this.camera);
+    }
     this.animate();
 
-    // Initial resize to ensure crisp rendering
+    // Delayed resize to ensure container dimensions are settled
     setTimeout(() => this.onWindowResize(), 150);
+    setTimeout(() => this.onWindowResize(), 500);
+  }
+
+  renderFallback() {
+    this.container.innerHTML = `
+      <div class="fallback-anatomy-stage" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle at 50% 50%, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%);padding:20px;box-sizing:border-box;">
+        <svg viewBox="0 0 400 680" style="max-height:92%;width:auto;filter:drop-shadow(0 10px 20px rgba(2, 132, 199, 0.15));" dir="ltr">
+          <!-- Holographic Pedestal -->
+          <ellipse cx="200" cy="640" rx="140" ry="26" fill="none" stroke="#38bdf8" stroke-width="2.5" opacity="0.6"/>
+          <ellipse cx="200" cy="640" rx="90" ry="16" fill="none" stroke="#0284c7" stroke-width="1.8" opacity="0.4"/>
+          
+          <!-- Human Body Silhouette -->
+          <!-- Head -->
+          <ellipse cx="200" cy="85" rx="42" ry="52" fill="#bae6fd" fill-opacity="0.3" stroke="#38bdf8" stroke-width="2"/>
+          <!-- Neck -->
+          <rect x="186" y="132" width="28" height="26" rx="6" fill="#bae6fd" fill-opacity="0.3" stroke="#38bdf8" stroke-width="2"/>
+          <!-- Torso -->
+          <path d="M 140 160 C 130 200, 145 280, 160 320 C 150 350, 145 380, 155 410 L 245 410 C 255 380, 250 350, 240 320 C 255 280, 270 200, 260 160 Z" fill="#bae6fd" fill-opacity="0.25" stroke="#38bdf8" stroke-width="2"/>
+          <!-- Arms -->
+          <path d="M 140 165 C 110 220, 95 300, 85 370" fill="none" stroke="#38bdf8" stroke-width="12" stroke-linecap="round" opacity="0.3"/>
+          <path d="M 260 165 C 290 220, 305 300, 315 370" fill="none" stroke="#38bdf8" stroke-width="12" stroke-linecap="round" opacity="0.3"/>
+          <!-- Legs -->
+          <path d="M 172 410 C 170 470, 165 540, 160 630" fill="none" stroke="#38bdf8" stroke-width="22" stroke-linecap="round" opacity="0.28"/>
+          <path d="M 228 410 C 230 470, 235 540, 240 630" fill="none" stroke="#38bdf8" stroke-width="22" stroke-linecap="round" opacity="0.28"/>
+
+          <!-- Interactive 6 Organs with Glowing Rings and Click Actions -->
+          <!-- 1. Brain -->
+          <g class="fallback-organ-node" data-organ="brain" style="cursor:pointer;" transform="translate(200, 80)">
+            <circle r="26" fill="#8b5cf6" fill-opacity="0.35" stroke="#a855f7" stroke-width="3">
+              <animate attributeName="r" values="24;28;24" dur="1.8s" repeatCount="indefinite"/>
+            </circle>
+            <text text-anchor="middle" dominant-baseline="central" font-size="22">🧠</text>
+          </g>
+
+          <!-- 2. Eyes -->
+          <g class="fallback-organ-node" data-organ="eye" style="cursor:pointer;" transform="translate(200, 96)">
+            <circle r="14" fill="#0284c7" fill-opacity="0.4" stroke="#38bdf8" stroke-width="2"/>
+            <text text-anchor="middle" dominant-baseline="central" font-size="14">👁️</text>
+          </g>
+
+          <!-- 3. Esophagus -->
+          <g class="fallback-organ-node" data-organ="esophagus" style="cursor:pointer;" transform="translate(200, 185)">
+            <line x1="0" y1="-25" x2="0" y2="35" stroke="#f97316" stroke-width="6" stroke-linecap="round" stroke-dasharray="4,3"/>
+            <circle cx="0" cy="5" r="16" fill="#f97316" fill-opacity="0.4" stroke="#ea580c" stroke-width="2"/>
+            <text text-anchor="middle" dominant-baseline="central" y="5" font-size="15">🥢</text>
+          </g>
+
+          <!-- 4. Lungs -->
+          <g class="fallback-organ-node" data-organ="lungs" style="cursor:pointer;" transform="translate(170, 215)">
+            <circle r="26" fill="#0284c7" fill-opacity="0.35" stroke="#38bdf8" stroke-width="2.5">
+              <animate attributeName="r" values="24;29;24" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <text text-anchor="middle" dominant-baseline="central" font-size="22">🫁</text>
+          </g>
+          <g class="fallback-organ-node" data-organ="lungs" style="cursor:pointer;" transform="translate(230, 215)">
+            <circle r="26" fill="#0284c7" fill-opacity="0.35" stroke="#38bdf8" stroke-width="2.5">
+              <animate attributeName="r" values="24;29;24" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <text text-anchor="middle" dominant-baseline="central" font-size="22">🫁</text>
+          </g>
+
+          <!-- 5. Heart -->
+          <g class="fallback-organ-node" data-organ="heart" style="cursor:pointer;" transform="translate(200, 235)">
+            <circle r="24" fill="#ef4444" fill-opacity="0.4" stroke="#dc2626" stroke-width="3">
+              <animate attributeName="r" values="22;27;22" dur="0.85s" repeatCount="indefinite"/>
+            </circle>
+            <text text-anchor="middle" dominant-baseline="central" font-size="22">🫀</text>
+          </g>
+
+          <!-- 6. Stomach -->
+          <g class="fallback-organ-node" data-organ="stomach" style="cursor:pointer;" transform="translate(195, 305)">
+            <circle r="24" fill="#10b981" fill-opacity="0.35" stroke="#059669" stroke-width="2.5">
+              <animate attributeName="r" values="22;26;22" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <text text-anchor="middle" dominant-baseline="central" font-size="22">🥗</text>
+          </g>
+        </svg>
+      </div>
+    `;
+
+    this.container.querySelectorAll('.fallback-organ-node').forEach(node => {
+      node.addEventListener('click', () => {
+        const organId = node.getAttribute('data-organ');
+        this.selectOrgan(organId);
+      });
+    });
   }
 
   setupScene() {
     this.scene = new THREE.Scene();
-    
-    // Transparent / Medical gradient background
+
     const width = this.container.clientWidth || 800;
-    const height = this.container.clientHeight || 550;
+    const height = this.container.clientHeight || 560;
 
-    this.camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
-    this.camera.position.set(2.5, 4.5, 14.5);
+    this.camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+    this.camera.position.set(2.0, 4.2, 14.5);
 
-    this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance'
-    });
+    // Create canvas explicitly
+    const canvas = document.createElement('canvas');
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.display = 'block';
+
+    try {
+      this.renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'default'
+      });
+    } catch (e1) {
+      try {
+        this.renderer = new THREE.WebGLRenderer({
+          canvas: canvas,
+          antialias: false,
+          alpha: true
+        });
+      } catch (e2) {
+        console.warn('WebGL Renderer creation failed, falling back:', e2);
+        this.renderer = null;
+        return;
+      }
+    }
+
+    this.container.appendChild(canvas);
     this.renderer.setSize(width, height);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.15;
-    this.container.appendChild(this.renderer.domElement);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    // Add main groups to scene
     this.scene.add(this.bodyGroup);
     this.scene.add(this.organsGroup);
     this.scene.add(this.skeletonGroup);
@@ -118,29 +223,17 @@ class Body3DViewer {
   }
 
   setupLights() {
-    // Soft Ambient Light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+    // Optimal 3-point light setup (Low uniform count, universally compatible)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.92);
     this.scene.add(ambientLight);
 
-    // Front-Top Key Light
-    const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
-    keyLight.position.set(6, 12, 9);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.85);
+    keyLight.position.set(5, 10, 8);
     this.scene.add(keyLight);
 
-    // Soft Fill Light from left
-    const fillLight = new THREE.DirectionalLight(0xe0f2fe, 0.5);
-    fillLight.position.set(-8, 6, 6);
-    this.scene.add(fillLight);
-
-    // Cyber Rim / Holographic Edge Backlight (Sky Blue)
-    const rimLight = new THREE.DirectionalLight(0x38bdf8, 1.1);
-    rimLight.position.set(-4, 7, -8);
+    const rimLight = new THREE.DirectionalLight(0x38bdf8, 0.65);
+    rimLight.position.set(-5, 6, -7);
     this.scene.add(rimLight);
-
-    // Bottom Upward Luminescence from scanner platform
-    const bottomLight = new THREE.DirectionalLight(0x0284c7, 0.4);
-    bottomLight.position.set(0, -6, 2);
-    this.scene.add(bottomLight);
   }
 
   buildPedestal() {
@@ -200,18 +293,16 @@ class Body3DViewer {
   }
 
   buildHumanSilhouette() {
-    // Holographic Skin Material with smooth specular highlights
     this.bodyShellMaterial = new THREE.MeshPhongMaterial({
       color: 0x7dd3fc,
       specular: 0xffffff,
-      shininess: 90,
+      shininess: 80,
       transparent: true,
       opacity: 0.35,
       depthWrite: false,
       side: THREE.DoubleSide
     });
 
-    // Wireframe Overlay for High-Tech Holographic Medical Visual
     this.bodyWireMaterial = new THREE.MeshBasicMaterial({
       color: 0x0284c7,
       wireframe: true,
@@ -239,7 +330,6 @@ class Body3DViewer {
     const headGeo = new THREE.SphereGeometry(0.92, 32, 28);
     addBodyPart(headGeo, { x: 0, y: 7.42, z: 0.1 }, null, { x: 0.88, y: 1.08, z: 0.98 });
 
-    // Jaw / Chin contour
     const chinGeo = new THREE.CylinderGeometry(0.48, 0.32, 0.6, 18);
     addBodyPart(chinGeo, { x: 0, y: 6.85, z: 0.35 }, { x: 0.2, y: 0, z: 0 });
 
@@ -247,26 +337,23 @@ class Body3DViewer {
     const neckGeo = new THREE.CylinderGeometry(0.42, 0.52, 0.85, 20);
     addBodyPart(neckGeo, { x: 0, y: 6.35, z: 0.05 });
 
-    // 3. Torso (Shoulders to Waist)
-    // Upper Thorax / Chest
+    // 3. Torso
     const chestGeo = new THREE.CylinderGeometry(1.35, 1.1, 1.8, 28);
     addBodyPart(chestGeo, { x: 0, y: 4.85, z: 0.08 }, null, { x: 1.18, y: 1, z: 0.82 });
 
-    // Mid Abdomen / Waist
     const abdomenGeo = new THREE.CylinderGeometry(1.1, 0.98, 1.4, 26);
     addBodyPart(abdomenGeo, { x: 0, y: 3.35, z: 0.05 }, null, { x: 1.1, y: 1, z: 0.78 });
 
-    // 4. Pelvis / Hips
+    // 4. Pelvis
     const pelvisGeo = new THREE.CylinderGeometry(0.98, 1.15, 1.5, 26);
     addBodyPart(pelvisGeo, { x: 0, y: 1.95, z: 0.02 }, null, { x: 1.12, y: 1, z: 0.82 });
 
-    // 5. Clavicles & Shoulders
+    // 5. Shoulders
     const shoulderGeo = new THREE.SphereGeometry(0.52, 20, 20);
     addBodyPart(shoulderGeo, { x: -1.72, y: 5.45, z: 0.02 }, null, { x: 1, y: 0.85, z: 0.9 });
     addBodyPart(shoulderGeo, { x: 1.72, y: 5.45, z: 0.02 }, null, { x: 1, y: 0.85, z: 0.9 });
 
-    // 6. Arms (Relaxed anatomical clearance pose)
-    // Left Arm
+    // 6. Arms
     const armUpperGeo = new THREE.CylinderGeometry(0.35, 0.3, 1.7, 18);
     addBodyPart(armUpperGeo, { x: -1.95, y: 4.25, z: 0.02 }, { x: 0, y: 0, z: 0.12 });
     const armForeGeo = new THREE.CylinderGeometry(0.3, 0.22, 1.6, 18);
@@ -274,12 +361,11 @@ class Body3DViewer {
     const handGeo = new THREE.SphereGeometry(0.24, 16, 16);
     addBodyPart(handGeo, { x: -2.35, y: 1.65, z: 0.08 }, null, { x: 0.7, y: 1.3, z: 0.5 });
 
-    // Right Arm
     addBodyPart(armUpperGeo, { x: 1.95, y: 4.25, z: 0.02 }, { x: 0, y: 0, z: -0.12 });
     addBodyPart(armForeGeo, { x: 2.18, y: 2.65, z: 0.05 }, { x: 0, y: 0, z: -0.14 });
     addBodyPart(handGeo, { x: 2.35, y: 1.65, z: 0.08 }, null, { x: 0.7, y: 1.3, z: 0.5 });
 
-    // 7. Legs & Feet
+    // 7. Legs
     const thighGeo = new THREE.CylinderGeometry(0.55, 0.42, 2.8, 20);
     addBodyPart(thighGeo, { x: -0.65, y: -0.15, z: 0.02 }, { x: -0.02, y: 0, z: 0.04 });
     addBodyPart(thighGeo, { x: 0.65, y: -0.15, z: 0.02 }, { x: -0.02, y: 0, z: -0.04 });
@@ -296,7 +382,6 @@ class Body3DViewer {
     addBodyPart(footGeo, { x: -0.78, y: -5.35, z: 0.28 }, { x: 0.06, y: 0, z: 0 });
     addBodyPart(footGeo, { x: 0.78, y: -5.35, z: 0.28 }, { x: 0.06, y: 0, z: 0 });
 
-    // 8. Spinal Column & Rib Cage (Anatomical Internal Structure)
     this.buildVertebralColumn();
     this.buildRibCage();
   }
@@ -310,11 +395,9 @@ class Body3DViewer {
       opacity: 0.45
     });
 
-    // 16 Vertebrae discs along cervical, thoracic, and lumbar spine
     const vertebraeCount = 16;
     for (let i = 0; i < vertebraeCount; i++) {
       const y = 6.4 - (i * 0.32);
-      // Gentle S-curve of the human spine
       const z = -0.32 + Math.sin(i / vertebraeCount * Math.PI) * 0.12;
       const vGeo = new THREE.CylinderGeometry(0.24, 0.26, 0.16, 16);
       const vMesh = new THREE.Mesh(vGeo, spineMat);
@@ -332,13 +415,11 @@ class Body3DViewer {
       opacity: 0.38
     });
 
-    // 8 Pairs of curved Thoracic Ribs
     for (let i = 0; i < 8; i++) {
       const y = 5.4 - (i * 0.28);
       const radius = 1.05 - (i * 0.04);
       const tubeRadius = 0.042;
       
-      // Right Rib Arc
       const ribGeoRight = new THREE.TorusGeometry(radius, tubeRadius, 8, 24, Math.PI * 0.58);
       const ribRight = new THREE.Mesh(ribGeoRight, ribMat);
       ribRight.position.set(0.12, y, 0.05);
@@ -347,7 +428,6 @@ class Body3DViewer {
       ribRight.rotation.z = -Math.PI * 0.28;
       this.skeletonGroup.add(ribRight);
 
-      // Left Rib Arc
       const ribGeoLeft = new THREE.TorusGeometry(radius, tubeRadius, 8, 24, Math.PI * 0.58);
       const ribLeft = new THREE.Mesh(ribGeoLeft, ribMat);
       ribLeft.position.set(-0.12, y, 0.05);
@@ -359,22 +439,11 @@ class Body3DViewer {
   }
 
   buildInternalOrgans() {
-    // 🫀 1. Heart (القلب)
     this.buildHeart();
-
-    // 🫁 2. Lungs (الرئتان)
     this.buildLungs();
-
-    // 🧠 3. Brain (الدماغ)
     this.buildBrain();
-
-    // 🥗 4. Stomach (المعدة)
     this.buildStomach();
-
-    // 🥢 5. Esophagus (المريء)
     this.buildEsophagus();
-
-    // 👁️ 6. Eyes (العينان)
     this.buildEyes();
   }
 
@@ -390,14 +459,12 @@ class Body3DViewer {
       shininess: 95
     });
 
-    // Anatomical Ventricles (Left & Right Conical Body)
     const ventricleGeo = new THREE.ConeGeometry(0.48, 0.85, 20);
     const ventricles = new THREE.Mesh(ventricleGeo, heartMat);
     ventricles.rotation.z = Math.PI - 0.25;
     ventricles.rotation.x = 0.18;
     heartGroup.add(ventricles);
 
-    // Atria (Upper Muscular Chambers)
     const atriaGeo = new THREE.SphereGeometry(0.35, 18, 18);
     const leftAtrium = new THREE.Mesh(atriaGeo, heartMat);
     leftAtrium.position.set(-0.2, 0.36, -0.05);
@@ -407,7 +474,6 @@ class Body3DViewer {
     rightAtrium.position.set(0.22, 0.34, 0.05);
     heartGroup.add(rightAtrium);
 
-    // Aortic Arch (Great Vessel)
     const aortaMat = new THREE.MeshPhongMaterial({ color: 0xdc2626, shininess: 80 });
     const aortaGeo = new THREE.TorusGeometry(0.24, 0.08, 12, 24, Math.PI * 0.95);
     const aorta = new THREE.Mesh(aortaGeo, aortaMat);
@@ -416,7 +482,6 @@ class Body3DViewer {
     aorta.rotation.z = -0.3;
     heartGroup.add(aorta);
 
-    // Pulmonary Artery (Blue/Cyan Trunk)
     const paMat = new THREE.MeshPhongMaterial({ color: 0x0284c7, shininess: 80 });
     const paGeo = new THREE.CylinderGeometry(0.07, 0.08, 0.45, 14);
     const pa = new THREE.Mesh(paGeo, paMat);
@@ -425,12 +490,6 @@ class Body3DViewer {
     pa.rotation.x = 0.25;
     heartGroup.add(pa);
 
-    // Internal Pulsing PointLight
-    const heartLight = new THREE.PointLight(0xff1744, 1.8, 3.5);
-    heartLight.position.set(0, 0.1, 0.2);
-    heartGroup.add(heartLight);
-
-    // Interactive Organ Collider & User Data
     ventricles.userData = { organId: 'heart', group: heartGroup, name: 'القلب' };
     leftAtrium.userData = { organId: 'heart', group: heartGroup, name: 'القلب' };
     rightAtrium.userData = { organId: 'heart', group: heartGroup, name: 'القلب' };
@@ -440,7 +499,6 @@ class Body3DViewer {
       id: 'heart',
       name: 'القلب',
       group: heartGroup,
-      light: heartLight,
       baseMat: heartMat,
       focusPos: new THREE.Vector3(-0.28, 4.42, 4.2),
       targetPos: new THREE.Vector3(-0.28, 4.42, 0.42),
@@ -464,14 +522,13 @@ class Body3DViewer {
       opacity: 0.92
     });
 
-    // Trachea & Main Bronchi
     const tracheaMat = new THREE.MeshPhongMaterial({ color: 0x38bdf8, shininess: 80 });
     const tracheaGeo = new THREE.CylinderGeometry(0.12, 0.12, 1.1, 16);
     const trachea = new THREE.Mesh(tracheaGeo, tracheaMat);
     trachea.position.set(0, 0.85, 0.05);
     lungsGroup.add(trachea);
 
-    // Right Lung (3 Anatomical Lobes: Superior, Middle, Inferior)
+    // Right Lung (3 Lobes)
     const rightLungGroup = new THREE.Group();
     rightLungGroup.position.set(0.82, -0.05, 0);
 
@@ -493,7 +550,7 @@ class Body3DViewer {
 
     lungsGroup.add(rightLungGroup);
 
-    // Left Lung (2 Lobes with Cardiac Notch contour)
+    // Left Lung (2 Lobes)
     const leftLungGroup = new THREE.Group();
     leftLungGroup.position.set(-0.84, -0.08, 0);
 
@@ -509,12 +566,6 @@ class Body3DViewer {
 
     lungsGroup.add(leftLungGroup);
 
-    // Pulmonary Internal PointLight
-    const lungsLight = new THREE.PointLight(0x38bdf8, 1.4, 4);
-    lungsLight.position.set(0, 0.2, 0.2);
-    lungsGroup.add(lungsLight);
-
-    // Interactive Colliders
     [rSuperior, rMiddle, rInferior, lSuperior, lInferior].forEach(mesh => {
       mesh.userData = { organId: 'lungs', group: lungsGroup, name: 'الرئتان' };
       this.raycastMeshes.push(mesh);
@@ -526,7 +577,6 @@ class Body3DViewer {
       group: lungsGroup,
       leftLung: leftLungGroup,
       rightLung: rightLungGroup,
-      light: lungsLight,
       baseMat: lungMat,
       focusPos: new THREE.Vector3(0, 4.55, 4.5),
       targetPos: new THREE.Vector3(0, 4.55, 0.12),
@@ -548,7 +598,6 @@ class Body3DViewer {
       shininess: 90
     });
 
-    // Left & Right Cerebral Hemispheres with distinct convolution lobes
     const hemiGeo = new THREE.SphereGeometry(0.52, 24, 22);
     const leftHemi = new THREE.Mesh(hemiGeo, brainMat);
     leftHemi.position.set(-0.25, 0.12, 0);
@@ -560,7 +609,6 @@ class Body3DViewer {
     rightHemi.scale.set(0.85, 0.95, 1.25);
     brainGroup.add(rightHemi);
 
-    // Cerebellum (Posterior-Inferior structure)
     const cerebMat = new THREE.MeshPhongMaterial({ color: 0x7c3aed, emissive: 0x5b21b6, shininess: 70 });
     const cerebGeo = new THREE.SphereGeometry(0.32, 18, 16);
     const cerebellum = new THREE.Mesh(cerebGeo, cerebMat);
@@ -568,18 +616,11 @@ class Body3DViewer {
     cerebellum.scale.set(1.2, 0.7, 0.85);
     brainGroup.add(cerebellum);
 
-    // Brainstem (Pons & Medulla)
     const stemGeo = new THREE.CylinderGeometry(0.14, 0.18, 0.6, 16);
     const brainStem = new THREE.Mesh(stemGeo, cerebMat);
     brainStem.position.set(0, -0.58, -0.15);
     brainGroup.add(brainStem);
 
-    // Neural Synapse PointLight
-    const brainLight = new THREE.PointLight(0xc084fc, 1.6, 3.5);
-    brainLight.position.set(0, 0.15, 0.1);
-    brainGroup.add(brainLight);
-
-    // Interactive Colliders
     [leftHemi, rightHemi, cerebellum].forEach(mesh => {
       mesh.userData = { organId: 'brain', group: brainGroup, name: 'الدماغ' };
       this.raycastMeshes.push(mesh);
@@ -589,7 +630,6 @@ class Body3DViewer {
       id: 'brain',
       name: 'الدماغ',
       group: brainGroup,
-      light: brainLight,
       baseMat: brainMat,
       focusPos: new THREE.Vector3(0, 7.38, 3.6),
       targetPos: new THREE.Vector3(0, 7.38, 0.12),
@@ -611,15 +651,12 @@ class Body3DViewer {
       shininess: 85
     });
 
-    // Anatomical J-shaped Muscular Stomach Body
-    // Fundus (Rounded upper dome)
     const fundusGeo = new THREE.SphereGeometry(0.42, 20, 20);
     const fundus = new THREE.Mesh(fundusGeo, stomachMat);
     fundus.position.set(-0.15, 0.38, 0.04);
     fundus.scale.set(0.9, 1.05, 0.85);
     stomachGroup.add(fundus);
 
-    // Body of the Stomach (Sweeping curved pocket)
     const bodyGeo = new THREE.CylinderGeometry(0.42, 0.34, 0.85, 20);
     const body = new THREE.Mesh(bodyGeo, stomachMat);
     body.position.set(0, 0.05, 0);
@@ -627,17 +664,11 @@ class Body3DViewer {
     body.scale.set(1.15, 1, 0.85);
     stomachGroup.add(body);
 
-    // Pyloric Antrum & Duodenal Junction (Curving rightward)
     const antrumGeo = new THREE.SphereGeometry(0.32, 18, 18);
     const antrum = new THREE.Mesh(antrumGeo, stomachMat);
     antrum.position.set(0.32, -0.28, 0.08);
     antrum.scale.set(1.1, 0.85, 0.85);
     stomachGroup.add(antrum);
-
-    // Gastric Churning PointLight
-    const stomachLight = new THREE.PointLight(0x10b981, 1.4, 3.2);
-    stomachLight.position.set(0, 0.1, 0.15);
-    stomachGroup.add(stomachLight);
 
     [fundus, body, antrum].forEach(mesh => {
       mesh.userData = { organId: 'stomach', group: stomachGroup, name: 'المعدة' };
@@ -648,7 +679,6 @@ class Body3DViewer {
       id: 'stomach',
       name: 'المعدة',
       group: stomachGroup,
-      light: stomachLight,
       baseMat: stomachMat,
       focusPos: new THREE.Vector3(-0.52, 3.25, 4.0),
       targetPos: new THREE.Vector3(-0.52, 3.25, 0.35),
@@ -669,20 +699,18 @@ class Body3DViewer {
       shininess: 85
     });
 
-    // Anatomical Peristaltic Curve from Pharynx to Stomach Cardia
     const curvePoints = [
-      new THREE.Vector3(0, 6.25, 0.22),     // Pharynx / Throat
-      new THREE.Vector3(0, 5.4, 0.05),      // Upper thoracic inlet
-      new THREE.Vector3(-0.04, 4.4, -0.08), // Posterior mediastinum (behind heart)
-      new THREE.Vector3(-0.24, 3.65, 0.18), // Esophageal hiatus in diaphragm
-      new THREE.Vector3(-0.48, 3.42, 0.32)  // Cardia junction entering stomach
+      new THREE.Vector3(0, 6.25, 0.22),
+      new THREE.Vector3(0, 5.4, 0.05),
+      new THREE.Vector3(-0.04, 4.4, -0.08),
+      new THREE.Vector3(-0.24, 3.65, 0.18),
+      new THREE.Vector3(-0.48, 3.42, 0.32)
     ];
     const curve = new THREE.CatmullRomCurve3(curvePoints);
     const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.11, 14, false);
     const tube = new THREE.Mesh(tubeGeo, esoMat);
     esoGroup.add(tube);
 
-    // Muscular Sphincter Rings along the tube
     const ringMat = new THREE.MeshBasicMaterial({ color: 0xfdba74, transparent: true, opacity: 0.6 });
     for (let i = 0; i < 9; i++) {
       const t = 0.1 + (i / 9) * 0.8;
@@ -694,11 +722,6 @@ class Body3DViewer {
       esoGroup.add(ring);
     }
 
-    // Traveling Peristalsis Bolus Light
-    const bolusLight = new THREE.PointLight(0xf97316, 1.8, 2.5);
-    bolusLight.position.copy(curvePoints[0]);
-    esoGroup.add(bolusLight);
-
     tube.userData = { organId: 'esophagus', group: esoGroup, name: 'المريء' };
     this.raycastMeshes.push(tube);
 
@@ -707,7 +730,6 @@ class Body3DViewer {
       name: 'المريء',
       group: esoGroup,
       curve: curve,
-      light: bolusLight,
       baseMat: esoMat,
       focusPos: new THREE.Vector3(0, 4.8, 4.2),
       targetPos: new THREE.Vector3(-0.1, 4.8, 0.1),
@@ -744,34 +766,26 @@ class Body3DViewer {
       const eyeSubGroup = new THREE.Group();
       eyeSubGroup.position.set(xOffset, 0, 0);
 
-      // Sclera Globe
       const eyeGeo = new THREE.SphereGeometry(0.18, 20, 20);
       const sclera = new THREE.Mesh(eyeGeo, scleraMat);
       eyeSubGroup.add(sclera);
 
-      // Iris Ring
       const irisGeo = new THREE.CircleGeometry(0.085, 20);
       const iris = new THREE.Mesh(irisGeo, irisMat);
       iris.position.set(0, 0, 0.178);
       eyeSubGroup.add(iris);
 
-      // Pupil
-      const pupilGeo = new THREE.CircleGeometry(0.045, 18);
-      const pupil = new THREE.Mesh(pupilGeo, pupilMat);
+      const pupil = new THREE.Mesh(new THREE.CircleGeometry(0.045, 18), pupilMat);
       pupil.position.set(0, 0, 0.181);
       eyeSubGroup.add(pupil);
 
-      // Transparent Cornea Cap
-      const corneaGeo = new THREE.SphereGeometry(0.11, 16, 16);
-      const cornea = new THREE.Mesh(corneaGeo, corneaMat);
+      const cornea = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 16), corneaMat);
       cornea.position.set(0, 0, 0.12);
       cornea.scale.set(1, 1, 0.75);
       eyeSubGroup.add(cornea);
 
-      // Optic Nerve exiting posterior
       const nerveMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
-      const nerveGeo = new THREE.CylinderGeometry(0.03, 0.04, 0.35, 10);
-      const nerve = new THREE.Mesh(nerveGeo, nerveMat);
+      const nerve = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.04, 0.35, 10), nerveMat);
       nerve.position.set(0, 0, -0.22);
       nerve.rotation.x = Math.PI / 2;
       eyeSubGroup.add(nerve);
@@ -787,18 +801,12 @@ class Body3DViewer {
     eyesGroup.add(leftEye);
     eyesGroup.add(rightEye);
 
-    // Visual Focus PointLight
-    const eyeLight = new THREE.PointLight(0x38bdf8, 1.4, 2.5);
-    eyeLight.position.set(0, 0, 0.35);
-    eyesGroup.add(eyeLight);
-
     this.organs.eye = {
       id: 'eye',
       name: 'العين',
       group: eyesGroup,
       leftEye: leftEye,
       rightEye: rightEye,
-      light: eyeLight,
       baseMat: irisMat,
       focusPos: new THREE.Vector3(0, 7.42, 3.2),
       targetPos: new THREE.Vector3(0, 7.42, 0.86),
@@ -809,7 +817,6 @@ class Body3DViewer {
   }
 
   buildHighlightBeacon() {
-    // Glowing orbital ring indicating selected organ
     const beaconGeo = new THREE.TorusGeometry(0.85, 0.035, 12, 36);
     const beaconMat = new THREE.MeshBasicMaterial({
       color: 0x38bdf8,
@@ -834,7 +841,6 @@ class Body3DViewer {
       this.controls.maxPolarAngle = Math.PI * 0.86;
       this.controls.target.set(0, 3.8, 0);
 
-      // Decelerate auto-rotation when user manually interacts
       this.controls.addEventListener('start', () => {
         this.isDragging = true;
       });
@@ -862,7 +868,6 @@ class Body3DViewer {
 
     dom.addEventListener('pointerup', (e) => {
       const dist = Math.hypot(e.clientX - this.pointerDownPos.x, e.clientY - this.pointerDownPos.y);
-      // Only register click if pointer didn't drag extensively
       if (dist < 6) {
         this.handleClick();
       }
@@ -932,8 +937,8 @@ class Body3DViewer {
 
     if (organId === 'all' || !organId) {
       this.selectedOrgan = null;
-      this.beaconMesh.material.opacity = 0;
-      this.flyCameraTo(new THREE.Vector3(2.5, 4.5, 14.5), new THREE.Vector3(0, 3.8, 0));
+      if (this.beaconMesh) this.beaconMesh.material.opacity = 0;
+      this.flyCameraTo(new THREE.Vector3(2.0, 4.2, 14.5), new THREE.Vector3(0, 3.8, 0));
       this.updateDetailsPanel(null);
       this.updatePillsUI('all');
       return;
@@ -945,17 +950,14 @@ class Body3DViewer {
     this.setOrganHighlight(organId, true);
     this.updatePillsUI(organId);
 
-    // Position highlight beacon at organ location
-    this.beaconMesh.position.copy(organ.targetPos);
-    this.beaconMesh.material.opacity = 0.85;
+    if (this.beaconMesh) {
+      this.beaconMesh.position.copy(organ.targetPos);
+      this.beaconMesh.material.opacity = 0.85;
+    }
 
-    // Smooth camera glide to frame the organ
     this.flyCameraTo(organ.focusPos, organ.targetPos);
-
-    // Update Arabic side info card
     this.updateDetailsPanel(organId);
 
-    // Provide subtle haptic feedback on mobile if supported
     if (navigator.vibrate) {
       try { navigator.vibrate(30); } catch (e) {}
     }
@@ -964,14 +966,7 @@ class Body3DViewer {
   setOrganHighlight(organId, highlight) {
     const organ = this.organs[organId];
     if (!organ) return;
-
-    if (highlight) {
-      organ.baseMat.emissiveIntensity = 0.95;
-      if (organ.light) organ.light.intensity = 2.4;
-    } else {
-      organ.baseMat.emissiveIntensity = 0.45;
-      if (organ.light) organ.light.intensity = 1.4;
-    }
+    organ.baseMat.emissiveIntensity = highlight ? 1.2 : 0.5;
   }
 
   flyCameraTo(targetPos, targetLookAt) {
@@ -1072,7 +1067,6 @@ class Body3DViewer {
   }
 
   setupDOMBindings() {
-    // 1. Organ Pills Selection
     document.querySelectorAll('.organ-3d-pill').forEach(pill => {
       pill.addEventListener('click', () => {
         const organId = pill.getAttribute('data-organ');
@@ -1080,7 +1074,6 @@ class Body3DViewer {
       });
     });
 
-    // 2. View Preset Buttons
     const btnFront = document.getElementById('b3d-btn-front');
     if (btnFront) {
       btnFront.addEventListener('click', () => {
@@ -1109,7 +1102,6 @@ class Body3DViewer {
       });
     }
 
-    // 3. Auto-Rotate Toggle
     const btnAutoRotate = document.getElementById('b3d-btn-autorotate');
     if (btnAutoRotate) {
       btnAutoRotate.addEventListener('click', () => {
@@ -1119,7 +1111,6 @@ class Body3DViewer {
       });
     }
 
-    // 4. Biological Pulse Toggle
     const btnPulse = document.getElementById('b3d-btn-pulse');
     if (btnPulse) {
       btnPulse.addEventListener('click', () => {
@@ -1128,7 +1119,6 @@ class Body3DViewer {
       });
     }
 
-    // 5. Body Shell Opacity Toggle
     const btnOpacity = document.getElementById('b3d-btn-opacity');
     const opacityLabel = document.getElementById('b3d-opacity-label');
     if (btnOpacity) {
@@ -1147,7 +1137,6 @@ class Body3DViewer {
       });
     }
 
-    // 6. Zoom Buttons
     const btnZoomIn = document.getElementById('b3d-zoom-in');
     if (btnZoomIn) {
       btnZoomIn.addEventListener('click', () => {
@@ -1175,16 +1164,13 @@ class Body3DViewer {
     const delta = this.clock.getDelta();
     const time = this.clock.getElapsedTime();
 
-    // 1. Update Camera Orbit Controls
     if (this.controls) {
       this.controls.update();
     }
 
-    // 2. Camera Glide Tween
     if (this.cameraTarget.active) {
       this.cameraTarget.progress += delta / this.cameraTarget.duration;
       const t = Math.min(1.0, this.cameraTarget.progress);
-      // Smooth cubic ease out
       const ease = 1 - Math.pow(1 - t, 3);
 
       this.camera.position.lerpVectors(this.cameraTarget.startPos, this.cameraTarget.pos, ease);
@@ -1197,115 +1183,102 @@ class Body3DViewer {
       }
     }
 
-    // 3. Highlight Beacon Rotation
     if (this.beaconMesh && this.beaconMesh.material.opacity > 0) {
       this.beaconMesh.rotation.z += delta * 1.5;
       const pulseScale = 1.0 + Math.sin(time * 4) * 0.08;
       this.beaconMesh.scale.set(pulseScale, pulseScale, pulseScale);
     }
 
-    // 4. Pedestal Slow Rotation
     if (this.pedestalGroup) {
       this.pedestalGroup.rotation.y += delta * 0.12;
     }
 
-    // 5. Biological Organ Animations & Blinking Glow Effects
     if (this.pulseEnabled) {
       this.animateOrganFunctions(time, delta);
+    }
+
+    // Always render frame to screen
+    if (this.renderer && this.scene && this.camera) {
+      this.renderer.render(this.scene, this.camera);
     }
   }
 
   animateOrganFunctions(time, delta) {
-    // 🫀 1. Heart: Double-beat Cardiac Lub-Dub Cycle (~72 bpm)
+    // 🫀 1. Heart: Double-beat Lub-Dub Cycle (~72 bpm)
     if (this.organs.heart) {
-      const beatCycle = (time * 1.2) % 1.0;
+      const beatCycle = (time * 1.22) % 1.0;
       let heartScale = 1.0;
-      let lightFlash = 1.2;
+      let emissiveVal = 0.5;
 
-      if (beatCycle < 0.15) {
-        // Ventricular Systole (Lub)
-        const subT = beatCycle / 0.15;
-        heartScale = 1.0 + Math.sin(subT * Math.PI) * 0.18;
-        lightFlash = 2.4;
-      } else if (beatCycle >= 0.22 && beatCycle < 0.35) {
-        // Atrial kick & valve snap (Dub)
-        const subT = (beatCycle - 0.22) / 0.13;
-        heartScale = 1.0 + Math.sin(subT * Math.PI) * 0.11;
-        lightFlash = 1.9;
+      if (beatCycle < 0.16) {
+        const subT = beatCycle / 0.16;
+        heartScale = 1.0 + Math.sin(subT * Math.PI) * 0.22;
+        emissiveVal = 1.3;
+      } else if (beatCycle >= 0.22 && beatCycle < 0.36) {
+        const subT = (beatCycle - 0.22) / 0.14;
+        heartScale = 1.0 + Math.sin(subT * Math.PI) * 0.14;
+        emissiveVal = 1.0;
       }
 
       this.organs.heart.group.scale.set(heartScale, heartScale, heartScale);
-      if (this.organs.heart.light) {
-        this.organs.heart.light.intensity = lightFlash;
-      }
+      this.organs.heart.baseMat.emissiveIntensity = emissiveVal;
     }
 
-    // 🫁 2. Lungs: Smooth Respiratory Inhalation & Exhalation (~15 breaths/min)
+    // 🫁 2. Lungs: Smooth Respiratory Cycle (~15 breaths/min)
     if (this.organs.lungs) {
       const breath = Math.sin(time * 1.6);
-      const breathScaleX = 1.0 + breath * 0.12;
-      const breathScaleZ = 1.0 + breath * 0.15;
-      const breathScaleY = 1.0 + breath * 0.05;
+      const breathScaleX = 1.0 + breath * 0.14;
+      const breathScaleZ = 1.0 + breath * 0.16;
+      const breathScaleY = 1.0 + breath * 0.06;
 
       this.organs.lungs.leftLung.scale.set(breathScaleX, breathScaleY, breathScaleZ);
       this.organs.lungs.rightLung.scale.set(breathScaleX, breathScaleY, breathScaleZ);
-
-      if (this.organs.lungs.light) {
-        this.organs.lungs.light.intensity = 1.2 + breath * 0.6;
-      }
+      this.organs.lungs.baseMat.emissiveIntensity = 0.45 + (breath + 1) * 0.22;
     }
 
-    // 🧠 3. Brain: Rapid Neural Synapses Scintillation
+    // 🧠 3. Brain: Rapid Neural Synapses
     if (this.organs.brain) {
       const synPulse = 0.5 + 0.5 * Math.sin(time * 7.5) * Math.cos(time * 3.2);
-      this.organs.brain.baseMat.emissiveIntensity = 0.4 + synPulse * 0.45;
-      if (this.organs.brain.light) {
-        this.organs.brain.light.intensity = 1.2 + synPulse * 0.8;
-      }
+      this.organs.brain.baseMat.emissiveIntensity = 0.4 + synPulse * 0.55;
     }
 
-    // 🥗 4. Stomach: Gastrointestinal Churning Peristalsis
+    // 🥗 4. Stomach: Gastrointestinal Churning
     if (this.organs.stomach) {
       const digest = Math.sin(time * 2.2);
-      this.organs.stomach.group.scale.y = 1.0 + digest * 0.05;
-      this.organs.stomach.group.scale.x = 1.0 - digest * 0.04;
-      if (this.organs.stomach.light) {
-        this.organs.stomach.light.intensity = 1.1 + Math.abs(digest) * 0.5;
-      }
+      this.organs.stomach.group.scale.y = 1.0 + digest * 0.06;
+      this.organs.stomach.group.scale.x = 1.0 - digest * 0.05;
+      this.organs.stomach.baseMat.emissiveIntensity = 0.4 + Math.abs(digest) * 0.4;
     }
 
-    // 🥢 5. Esophagus: Traveling Peristaltic Bolus Pulse (Every 3.2 seconds)
-    if (this.organs.esophagus && this.organs.esophagus.curve) {
-      const waveT = (time * 0.35) % 1.0;
-      const wavePt = this.organs.esophagus.curve.getPoint(waveT);
-      if (this.organs.esophagus.light) {
-        this.organs.esophagus.light.position.copy(wavePt);
-        this.organs.esophagus.light.intensity = 1.6 + Math.sin(time * 10) * 0.3;
-      }
+    // 🥢 5. Esophagus: Peristalsis Swallowing Wave
+    if (this.organs.esophagus) {
+      const wave = Math.sin(time * 3.0);
+      this.organs.esophagus.baseMat.emissiveIntensity = 0.4 + Math.max(0, wave) * 0.6;
     }
 
-    // 👁️ 6. Eyes: Saccadic Focus & Blink Dilation
+    // 👁️ 6. Eyes: Visual Focus Glow
     if (this.organs.eye) {
-      const eyeBlink = Math.sin(time * 0.8);
-      if (this.organs.eye.light) {
-        this.organs.eye.light.intensity = 1.0 + Math.max(0, eyeBlink) * 0.6;
-      }
+      const eyeGlow = Math.sin(time * 1.5);
+      this.organs.eye.baseMat.emissiveIntensity = 0.45 + Math.max(0, eyeGlow) * 0.5;
     }
   }
 
   onWindowResize() {
     if (!this.container || !this.renderer || !this.camera) return;
-    const width = this.container.clientWidth;
-    const height = this.container.clientHeight || 550;
+    const width = this.container.clientWidth || 800;
+    const height = this.container.clientHeight || 560;
     if (width === 0 || height === 0) return;
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
+    if (this.scene) {
+      this.renderer.render(this.scene, this.camera);
+    }
   }
 }
 
-// Global initialization function invoked from app.js
+// Global initialization function
 let globalBody3DInstance = null;
 
 function setupBody3DViewer() {
