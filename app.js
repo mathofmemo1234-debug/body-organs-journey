@@ -1,8 +1,13 @@
-// Web Audio API Sound Engine
+// Web Audio API Sound Engine (with 10-second immersive biological audio loops)
 class SoundEngine {
   constructor() {
     this.ctx = null;
     this.enabled = true;
+    this.currentOrgan = null;
+    this.timerId = null;
+    this.intervalId = null;
+    this.activeNodes = [];
+    this.remainingSeconds = 0;
   }
 
   init() {
@@ -17,66 +22,269 @@ class SoundEngine {
 
   toggleSound() {
     this.enabled = !this.enabled;
+    if (!this.enabled) this.stopOrganSound();
     return this.enabled;
   }
 
-  playHeartbeat() {
+  stopOrganSound() {
+    if (this.timerId) clearTimeout(this.timerId);
+    if (this.intervalId) clearInterval(this.intervalId);
+    this.activeNodes.forEach(node => {
+      try { node.stop(); } catch (e) {}
+      try { node.disconnect(); } catch (e) {}
+    });
+    this.activeNodes = [];
+    this.currentOrgan = null;
+    this.remainingSeconds = 0;
+    updateSoundButtonUI(false, 0);
+  }
+
+  playOrgan10Seconds(organId) {
     if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;
+
+    // Toggle off if already playing the same organ
+    if (this.currentOrgan === organId) {
+      this.stopOrganSound();
+      return;
+    }
+
+    // Stop any existing playback first
+    this.stopOrganSound();
+    this.currentOrgan = organId;
+    this.remainingSeconds = 10;
+    updateSoundButtonUI(true, this.remainingSeconds);
+
     const now = this.ctx.currentTime;
-    [0, 0.22].forEach((offset, idx) => {
+    const duration = 10; // Exactly 10 seconds
+
+    // Countdown interval for button UI
+    this.intervalId = setInterval(() => {
+      this.remainingSeconds--;
+      if (this.remainingSeconds > 0) {
+        updateSoundButtonUI(true, this.remainingSeconds);
+      } else {
+        this.stopOrganSound();
+      }
+    }, 1000);
+
+    // Generate organ specific 10-second soundscape
+    switch (organId) {
+      case 'heart':
+        this.synthesizeHeartbeat10s(now, duration);
+        break;
+      case 'lungs':
+        this.synthesizeBreathing10s(now, duration);
+        break;
+      case 'brain':
+        this.synthesizeBrainwaves10s(now, duration);
+        break;
+      case 'stomach':
+        this.synthesizeStomachDigestion10s(now, duration);
+        break;
+      case 'esophagus':
+        this.synthesizePeristalsis10s(now, duration);
+        break;
+      case 'eye':
+        this.synthesizeOpticSignals10s(now, duration);
+        break;
+      default:
+        this.synthesizeHeartbeat10s(now, duration);
+    }
+
+    // Safety timeout to ensure stop at 10 seconds
+    this.timerId = setTimeout(() => {
+      this.stopOrganSound();
+    }, duration * 1000);
+  }
+
+  // 1. Heart: 10 seconds of realistic lub-dub pulses (~72 BPM)
+  synthesizeHeartbeat10s(startTime, totalDuration) {
+    const pulseInterval = 0.83; // ~72 BPM
+    const count = Math.floor(totalDuration / pulseInterval);
+
+    for (let i = 0; i < count; i++) {
+      const beatTime = startTime + i * pulseInterval;
+      
+      // Lub (First heart sound - low frequency)
+      const osc1 = this.ctx.createOscillator();
+      const gain1 = this.ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(68, beatTime);
+      osc1.frequency.exponentialRampToValueAtTime(32, beatTime + 0.16);
+      gain1.gain.setValueAtTime(0.42, beatTime);
+      gain1.gain.exponentialRampToValueAtTime(0.001, beatTime + 0.16);
+      osc1.connect(gain1);
+      gain1.connect(this.ctx.destination);
+      osc1.start(beatTime);
+      osc1.stop(beatTime + 0.18);
+      this.activeNodes.push(osc1);
+
+      // Dub (Second heart sound - slightly higher pitch, shorter)
+      const dubTime = beatTime + 0.22;
+      const osc2 = this.ctx.createOscillator();
+      const gain2 = this.ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(85, dubTime);
+      osc2.frequency.exponentialRampToValueAtTime(36, dubTime + 0.14);
+      gain2.gain.setValueAtTime(0.35, dubTime);
+      gain2.gain.exponentialRampToValueAtTime(0.001, dubTime + 0.14);
+      osc2.connect(gain2);
+      gain2.connect(this.ctx.destination);
+      osc2.start(dubTime);
+      osc2.stop(dubTime + 0.16);
+      this.activeNodes.push(osc2);
+    }
+  }
+
+  // 2. Lungs: 10 seconds of calm deep breathing cycles (Inhale ~2.2s, Exhale ~2.2s)
+  synthesizeBreathing10s(startTime, totalDuration) {
+    const breathDuration = 4.8; // ~2.2s inhale + ~0.4s pause + ~2.2s exhale
+    const count = Math.ceil(totalDuration / breathDuration);
+
+    for (let i = 0; i < count; i++) {
+      const cycleStart = startTime + i * breathDuration;
+      if (cycleStart >= startTime + totalDuration) break;
+
+      // Inhale (شهيق)
+      const oscIn = this.ctx.createOscillator();
+      const gainIn = this.ctx.createGain();
+      oscIn.type = 'triangle';
+      oscIn.frequency.setValueAtTime(130, cycleStart);
+      oscIn.frequency.exponentialRampToValueAtTime(260, cycleStart + 2.0);
+      gainIn.gain.setValueAtTime(0.02, cycleStart);
+      gainIn.gain.linearRampToValueAtTime(0.28, cycleStart + 1.8);
+      gainIn.gain.exponentialRampToValueAtTime(0.001, cycleStart + 2.2);
+      oscIn.connect(gainIn);
+      gainIn.connect(this.ctx.destination);
+      oscIn.start(cycleStart);
+      oscIn.stop(cycleStart + 2.2);
+      this.activeNodes.push(oscIn);
+
+      // Exhale (زفير)
+      const exStart = cycleStart + 2.4;
+      if (exStart < startTime + totalDuration) {
+        const oscEx = this.ctx.createOscillator();
+        const gainEx = this.ctx.createGain();
+        oscEx.type = 'sine';
+        oscEx.frequency.setValueAtTime(220, exStart);
+        oscEx.frequency.exponentialRampToValueAtTime(110, exStart + 2.2);
+        gainEx.gain.setValueAtTime(0.24, exStart);
+        gainEx.gain.exponentialRampToValueAtTime(0.001, exStart + 2.2);
+        oscEx.connect(gainEx);
+        gainEx.connect(this.ctx.destination);
+        oscEx.start(exStart);
+        oscEx.stop(exStart + 2.2);
+        this.activeNodes.push(oscEx);
+      }
+    }
+  }
+
+  // 3. Brain: 10 seconds of gentle neural frequencies & synaptic sparks
+  synthesizeBrainwaves10s(startTime, totalDuration) {
+    // Ambient theta carrier wave (Relaxing brainwave)
+    const carrier = this.ctx.createOscillator();
+    const carrierGain = this.ctx.createGain();
+    carrier.type = 'sine';
+    carrier.frequency.setValueAtTime(216, startTime);
+    carrierGain.gain.setValueAtTime(0.08, startTime);
+    carrierGain.gain.linearRampToValueAtTime(0.001, startTime + totalDuration);
+    carrier.connect(carrierGain);
+    carrierGain.connect(this.ctx.destination);
+    carrier.start(startTime);
+    carrier.stop(startTime + totalDuration);
+    this.activeNodes.push(carrier);
+
+    // Neural Synaptic Spark Chimes across the 10 seconds
+    const chimesCount = 14;
+    const notes = [523.25, 659.25, 783.99, 880.00, 1046.50];
+    for (let i = 0; i < chimesCount; i++) {
+      const sparkTime = startTime + i * 0.7 + (Math.random() * 0.2);
+      if (sparkTime >= startTime + totalDuration) break;
+
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const note = notes[i % notes.length];
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(note, sparkTime);
+      gain.gain.setValueAtTime(0.12, sparkTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, sparkTime + 0.35);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(sparkTime);
+      osc.stop(sparkTime + 0.38);
+      this.activeNodes.push(osc);
+    }
+  }
+
+  // 4. Stomach: 10 seconds of rhythmic gastric churning & enzymatic digestion
+  synthesizeStomachDigestion10s(startTime, totalDuration) {
+    const churnCount = 5;
+    for (let i = 0; i < churnCount; i++) {
+      const churnTime = startTime + i * 1.9;
+      if (churnTime >= startTime + totalDuration) break;
+
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(80, churnTime);
+      osc.frequency.linearRampToValueAtTime(130, churnTime + 0.8);
+      osc.frequency.exponentialRampToValueAtTime(65, churnTime + 1.6);
+      gain.gain.setValueAtTime(0.03, churnTime);
+      gain.gain.linearRampToValueAtTime(0.22, churnTime + 0.8);
+      gain.gain.exponentialRampToValueAtTime(0.001, churnTime + 1.6);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(churnTime);
+      osc.stop(churnTime + 1.6);
+      this.activeNodes.push(osc);
+    }
+  }
+
+  // 5. Esophagus: 10 seconds of peristaltic wave downward gliding
+  synthesizePeristalsis10s(startTime, totalDuration) {
+    const wavesCount = 3;
+    for (let i = 0; i < wavesCount; i++) {
+      const waveTime = startTime + i * 3.2;
+      if (waveTime >= startTime + totalDuration) break;
+
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(idx === 0 ? 70 : 55, now + offset);
-      osc.frequency.exponentialRampToValueAtTime(30, now + offset + 0.18);
-      gain.gain.setValueAtTime(0.4, now + offset);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.18);
+      osc.frequency.setValueAtTime(320, waveTime);
+      osc.frequency.exponentialRampToValueAtTime(95, waveTime + 2.5);
+      gain.gain.setValueAtTime(0.05, waveTime);
+      gain.gain.linearRampToValueAtTime(0.24, waveTime + 1.0);
+      gain.gain.exponentialRampToValueAtTime(0.001, waveTime + 2.6);
       osc.connect(gain);
       gain.connect(this.ctx.destination);
-      osc.start(now + offset);
-      osc.stop(now + offset + 0.2);
-    });
+      osc.start(waveTime);
+      osc.stop(waveTime + 2.6);
+      this.activeNodes.push(osc);
+    }
   }
 
-  playBreathe() {
-    if (!this.enabled) return;
-    this.init();
-    if (!this.ctx) return;
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(140, now);
-    osc.frequency.exponentialRampToValueAtTime(260, now + 0.5);
-    osc.frequency.exponentialRampToValueAtTime(120, now + 1.2);
-    gain.gain.setValueAtTime(0.05, now);
-    gain.gain.linearRampToValueAtTime(0.25, now + 0.5);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + 1.2);
-  }
+  // 6. Eye: 10 seconds of focused optic pulses & light refraction sweep
+  synthesizeOpticSignals10s(startTime, totalDuration) {
+    const pulseCount = 7;
+    for (let i = 0; i < pulseCount; i++) {
+      const pulseTime = startTime + i * 1.4;
+      if (pulseTime >= startTime + totalDuration) break;
 
-  playBrainPulse() {
-    if (!this.enabled) return;
-    this.init();
-    if (!this.ctx) return;
-    const now = this.ctx.currentTime;
-    [520, 650, 780].forEach((freq, i) => {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now + i * 0.08);
-      gain.gain.setValueAtTime(0.15, now + i * 0.08);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.25);
+      osc.frequency.setValueAtTime(440, pulseTime);
+      osc.frequency.exponentialRampToValueAtTime(880, pulseTime + 0.4);
+      gain.gain.setValueAtTime(0.18, pulseTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, pulseTime + 0.6);
       osc.connect(gain);
       gain.connect(this.ctx.destination);
-      osc.start(now + i * 0.08);
-      osc.stop(now + i * 0.08 + 0.25);
-    });
+      osc.start(pulseTime);
+      osc.stop(pulseTime + 0.62);
+      this.activeNodes.push(osc);
+    }
   }
 
   playCorrect() {
@@ -138,6 +346,41 @@ class SoundEngine {
 }
 
 const sounds = new SoundEngine();
+
+// Helper to update both sound buttons (Sidebar + 3D Card) with 10-second countdown
+function updateSoundButtonUI(isPlaying, secondsLeft) {
+  const organ = organsData[state.currentOrgan];
+  const soundBtn = document.getElementById('organ-sound-btn');
+  const stageBtn = document.querySelector('.natural-zoom-btn');
+
+  if (isPlaying) {
+    const playingText = `🔊 جاري الاستماع (${secondsLeft} ثوانٍ) • اضغط للإيقاف`;
+    if (soundBtn) {
+      soundBtn.innerHTML = `<span>⏹️</span> <span>${playingText}</span>`;
+      soundBtn.style.background = 'linear-gradient(135deg, #fce7f3, #ffe4e6)';
+      soundBtn.style.borderColor = '#f43f5e';
+      soundBtn.style.color = '#e11d48';
+    }
+    if (stageBtn) {
+      stageBtn.innerHTML = `<span>⏹️</span> <span>${playingText}</span>`;
+      stageBtn.style.background = '#ffe4e6';
+      stageBtn.style.color = '#e11d48';
+    }
+  } else {
+    if (!organ) return;
+    if (soundBtn) {
+      soundBtn.innerHTML = `<span>🔊</span> <span>${organ.soundLabel} (10 ثوانٍ)</span>`;
+      soundBtn.style.background = '';
+      soundBtn.style.borderColor = '';
+      soundBtn.style.color = '';
+    }
+    if (stageBtn) {
+      stageBtn.innerHTML = `<span>🔊</span> <span>${organ.soundLabel} (10 ثوانٍ)</span>`;
+      stageBtn.style.background = '';
+      stageBtn.style.color = '';
+    }
+  }
+}
 
 // Natural realistic image paths
 const organImages = {
@@ -227,7 +470,7 @@ const organsData = {
     location: 'في وسط الصدر بين الرئتين مع ميل بسيط نحو اليسار، محمي بالقفص الصدري.',
     function: 'استقبال الدم وتوزيعه عبر شبكة واسعة من الأوعية والشرايين لنقل الغذاء والأكسجين لكل خلية في جسمك.',
     funFact: 'يضخ القلب ما يعادل 7,500 لتر من الدم يومياً، ولو مدّدنا شبكة الأوعية الدموية في جسم الإنسان لالتفت حول الأرض مرتين!',
-    soundAction: () => sounds.playHeartbeat(),
+    soundAction: () => sounds.playOrgan10Seconds('heart'),
     soundLabel: 'استمع لنبضات القلب 💓'
   },
   lungs: {
@@ -239,7 +482,7 @@ const organsData = {
     location: 'داخل التجويف الصدري، تملأ جانبي الصدر ويحميها القفص الصدري.',
     function: 'تبادل الغازات بين الهواء الخارجي ومجرى الدم من خلال الحويصلات الهوائية الدقيقة.',
     funFact: 'الرئة اليسرى أصغر قليلاً من الرئة اليمنى لتترك مساحة كافية للقلب، وتحتوي الرئتان معاً على حوالي 300 إلى 500 مليون حويصلة هوائية!',
-    soundAction: () => sounds.playBreathe(),
+    soundAction: () => sounds.playOrgan10Seconds('lungs'),
     soundLabel: 'استمع لصوت التنفس 🌬️'
   },
   stomach: {
@@ -251,7 +494,7 @@ const organsData = {
     location: 'في الجزء العلوي الأيسر من تجويف البطن، أسفل الحجاب الحاجز مباشرة.',
     function: 'تفتيت البروتينات وخلط الطعام بالعصارة الهيدروكلورية وإنزيم البيبسين للقضاء على البكتيريا وهضم الطعام.',
     funFact: 'حمض المعدة قوي جداً لدرجة أنه قادر على إذابة بعض المعادن، لكن جدار المعدة يفرز طبقة مخاطية سميكة تجدّد نفسها باستمرار لحماية نفسها!',
-    soundAction: () => sounds.playCorrect(),
+    soundAction: () => sounds.playOrgan10Seconds('stomach'),
     soundLabel: 'تنشيط العصارة الهاضمة 🧪'
   },
   brain: {
@@ -263,7 +506,7 @@ const organsData = {
     location: 'داخل الجمجمة الصلبة التي تحميه من الصدمات.',
     function: 'معالجة المعلومات، التفكير، الذاكرة، المشاعر، وتوجيه إشارات سريعة عبر الأعصاب لجميع الأعضاء.',
     funFact: 'يحتوي الدماغ البشري على نحو 86 مليار خلية عصبية ترسل الإشارات الكهربائية بسرعة فائقة تصل إلى 400 كم في الساعة!',
-    soundAction: () => sounds.playBrainPulse(),
+    soundAction: () => sounds.playOrgan10Seconds('brain'),
     soundLabel: 'إشارات ونبضات العصبونات ⚡'
   },
   eye: {
@@ -275,7 +518,7 @@ const organsData = {
     location: 'في محجر العين العظمي في الوجه لحمايتها.',
     function: 'استقبال الضوء وتكوين الصور البصرية ونقلها للدماغ عبر العصب البصري.',
     funFact: 'تستطيع العين البشرية التمييز بين أكثر من 10 ملايين لون مختلف، وترمش العين حوالي 15-20 مرة في الدقيقة لترطيبها وحمايتها!',
-    soundAction: () => sounds.playCorrect(),
+    soundAction: () => sounds.playOrgan10Seconds('eye'),
     soundLabel: 'تفاعل العدسة والضوء 💡'
   },
   esophagus: {
@@ -287,7 +530,7 @@ const organsData = {
     location: 'يمتد خلف القصبة الهوائية والقلب ماراً عبر الحجاب الحاجز ليصل إلى أعلى المعدة.',
     function: 'توصيل اللقمة الغذائية بأمان وسلاسة من الفم إلى المعدة ومنع رجوعها بالصمام العاصر.',
     funFact: 'بفضل الحركات العضلية الدودية، يمكن للإنسان بلع الطعام والماء حتى لو كان مقلوباً رأساً على عقب!',
-    soundAction: () => sounds.playBrainPulse(),
+    soundAction: () => sounds.playOrgan10Seconds('esophagus'),
     soundLabel: 'محاكاة الحركة الدودية 🔄'
   }
 };
@@ -470,6 +713,9 @@ function triggerHaptic(pattern) {
 }
 
 function switchTab(tabId) {
+  if (state.currentTab !== tabId && tabId !== 'organs') {
+    sounds.stopOrganSound();
+  }
   state.currentTab = tabId;
   
   // Desktop Nav Buttons
@@ -564,6 +810,9 @@ function setupOrganExplorer() {
 }
 
 function selectOrgan(organKey) {
+  if (state.currentOrgan !== organKey) {
+    sounds.stopOrganSound();
+  }
   state.currentOrgan = organKey;
   document.querySelectorAll('.organ-tab-btn').forEach(btn => {
     const isSelected = btn.textContent.includes(organsData[organKey].name);
