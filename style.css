@@ -1168,6 +1168,19 @@ section.app-tab-content.active {
   box-shadow: 0 6px 20px rgba(2, 132, 199, 0.28);
 }
 
+.student-portfolio-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.42) !important;
+}
+
+.student-nav-btn:hover {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: #10b981 !important;
+  color: #047857 !important;
+  transform: translateY(-1px);
+}
+
 .portfolio-form {
   background: #ffffff;
   border: 1.5px solid var(--border);
@@ -1477,7 +1490,8 @@ section.app-tab-content.active {
   .btn-primary,
   .btn-secondary,
   .btn-accent,
-  .portfolio-tabs {
+  .portfolio-tabs,
+  .student-portfolio-card {
     display: none !important;
   }
   .certificate-preview-overlay {
