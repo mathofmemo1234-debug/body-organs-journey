@@ -1371,6 +1371,200 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+
+// ==========================================
+// INSTANT PART SELECTION & FUNCTION DISPLAY
+// ==========================================
+window.selectPart = function(organKey, partId, openModal = false) {
+  state.selectedPartId = partId;
+  const organ = organsSimulatorData[organKey];
+  if (!organ) return;
+  const part = organ.parts.find(p => p.id === partId);
+  if (!part) return;
+
+  sounds.playBrainPulse();
+
+  // 1. Update Active Card in Scientific Info Pane
+  const card = document.getElementById('active-part-card');
+  if (card) {
+    card.style.display = 'block';
+    const numBadge = document.getElementById('active-part-num');
+    const nameElem = document.getElementById('active-part-name');
+    const enElem = document.getElementById('active-part-en');
+    const funcElem = document.getElementById('active-part-function-text');
+    const anatElem = document.getElementById('active-part-anatomy-text');
+    const clinElem = document.getElementById('active-part-clinical-text');
+    const ytTitle = document.getElementById('active-part-yt-title');
+    const ytInput = document.getElementById('active-part-yt-input');
+    const ytPlayer = document.getElementById('active-part-yt-player');
+    const toggleYtBtn = document.getElementById('toggle-part-yt-btn');
+    const modalBtn = document.getElementById('active-part-modal-btn');
+    const ytSaveBtn = document.getElementById('active-part-yt-save-btn');
+
+    const partIdx = organ.parts.findIndex(p => p.id === partId);
+    if (numBadge) {
+      numBadge.textContent = `#${partIdx + 1}`;
+      numBadge.style.background = part.color;
+    }
+    if (nameElem) nameElem.textContent = part.name;
+    if (enElem) enElem.textContent = part.enName || '';
+    if (funcElem) funcElem.textContent = part.function;
+    if (anatElem) anatElem.textContent = part.anatomy;
+    if (clinElem) clinElem.textContent = part.clinical;
+    if (ytTitle) ytTitle.textContent = `فيديو: ${part.ytTitle || part.name}`;
+    
+    const currentYt = getPartYouTubeUrl(organKey, partId);
+    if (ytInput) ytInput.value = currentYt;
+
+    if (ytPlayer) {
+      ytPlayer.style.display = 'none';
+      ytPlayer.innerHTML = '';
+    }
+
+    if (toggleYtBtn) {
+      toggleYtBtn.textContent = '▶️ تشغيل الفيديو';
+      toggleYtBtn.onclick = () => {
+        if (ytPlayer.style.display === 'none') {
+          const embedUrl = formatYouTubeEmbedUrl(getPartYouTubeUrl(organKey, partId));
+          ytPlayer.innerHTML = `<iframe src="${embedUrl}" title="${part.name}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+          ytPlayer.style.display = 'block';
+          toggleYtBtn.textContent = '⏹️ إخفاء الفيديو';
+        } else {
+          ytPlayer.style.display = 'none';
+          ytPlayer.innerHTML = '';
+          toggleYtBtn.textContent = '▶️ تشغيل الفيديو';
+        }
+      };
+    }
+
+    if (ytSaveBtn) {
+      ytSaveBtn.onclick = () => {
+        if (ytInput) {
+          const val = ytInput.value.trim();
+          setPartYouTubeUrl(partId, val);
+          sounds.playCorrect();
+          alert(`تم حفظ رابط فيديو يوتيوب لـ (${part.name}) بنجاح!`);
+        }
+      };
+    }
+
+    if (modalBtn) {
+      modalBtn.onclick = () => openPartModal(organKey, partId);
+    }
+  }
+
+  // 2. Render Live Floating Toast on Viewer Frame
+  renderViewerLiveToast(part, organKey);
+
+  // 3. Highlight active pins in viewer and quick strip
+  document.querySelectorAll('.chart-clickable-pin').forEach(pin => {
+    const isAct = pin.getAttribute('data-part-id') === partId;
+    pin.classList.toggle('active', isAct);
+  });
+  document.querySelectorAll('.floating-tag-pin').forEach(pin => {
+    const isAct = pin.getAttribute('data-part-id') === partId;
+    pin.classList.toggle('active', isAct);
+  });
+  document.querySelectorAll('.part-pill-chip').forEach(chip => {
+    const isAct = chip.getAttribute('data-part-id') === partId;
+    chip.classList.toggle('active-chip', isAct);
+  });
+
+  if (openModal) {
+    openPartModal(organKey, partId);
+  }
+};
+
+function renderViewerLiveToast(part, organKey) {
+  const container = document.getElementById('viewer-live-toast-container');
+  if (!container) return;
+
+  const organ = organsSimulatorData[organKey];
+  const partIdx = organ ? organ.parts.findIndex(p => p.id === part.id) : 0;
+  const currentYt = getPartYouTubeUrl(organKey, part.id);
+
+  container.innerHTML = `
+    <div class="viewer-instant-function-card animate-pop-in">
+      <div class="v-func-header">
+        <div class="v-func-title-group">
+          <span class="v-func-badge" style="background:${part.color};">#${partIdx + 1}</span>
+          <div>
+            <h4 class="v-func-part-name">${part.name}</h4>
+            <span class="v-func-part-en">${part.enName || ''}</span>
+          </div>
+        </div>
+        <div class="v-func-header-actions">
+          <button class="btn-subtle-pill" onclick="openPartModal('${organKey}', '${part.id}')" title="فتح الشرح في نافذة مكبرة">
+            🔍 نافذة مكبرة
+          </button>
+        </div>
+      </div>
+
+      <!-- Prominent Function Box: وظيفة وعمل هذا الجزء في الجسم -->
+      <div class="v-func-box-primary">
+        <div class="v-func-box-lbl">
+          <span>⚙️</span> <strong>وظيفة وعمل هذا الجزء في الجسم:</strong>
+        </div>
+        <p class="v-func-box-text">${part.function}</p>
+      </div>
+
+      <!-- Two-column Anatomy & Clinical Details -->
+      <div class="v-func-details-grid">
+        <div class="v-func-box-sub v-func-anatomy">
+          <div class="v-func-sub-lbl"><span>🔬</span> <strong>التشريح والموقع:</strong></div>
+          <p class="v-func-sub-text">${part.anatomy}</p>
+        </div>
+        <div class="v-func-box-sub v-func-clinical">
+          <div class="v-func-sub-lbl"><span>💡</span> <strong>الأهمية عند تعطل الوظيفة:</strong></div>
+          <p class="v-func-sub-text">${part.clinical}</p>
+        </div>
+      </div>
+
+      <!-- YouTube Inline Area -->
+      <div class="v-func-youtube-bar">
+        <div class="v-func-yt-head">
+          <span>🎥 <strong>فيديو تعليمي:</strong> ${part.ytTitle || part.name}</span>
+          <button id="v-func-toggle-yt-btn" class="btn-yt-toggle" onclick="toggleViewerPartVideo('${organKey}', '${part.id}')">
+            ▶️ تشغيل الفيديو
+          </button>
+        </div>
+        <div id="v-func-yt-player-box" class="active-yt-player-container" style="display:none;"></div>
+        <div class="active-part-yt-custom-row">
+          <input type="text" id="v-func-yt-input" value="${currentYt}" placeholder="تعديل رابط يوتيوب لهذا الجزء..." style="flex:1;padding:6px 10px;border-radius:6px;border:1.5px solid #cbd5e1;font-size:0.8rem;font-family:monospace;direction:ltr;">
+          <button class="btn-primary" style="padding:6px 12px;font-size:0.8rem;" onclick="saveViewerPartVideo('${part.id}', '${part.name}')">💾 حفظ الرابط</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+window.toggleViewerPartVideo = function(organKey, partId) {
+  const playerBox = document.getElementById('v-func-yt-player-box');
+  const btn = document.getElementById('v-func-toggle-yt-btn');
+  if (!playerBox) return;
+
+  if (playerBox.style.display === 'none') {
+    const rawUrl = getPartYouTubeUrl(organKey, partId);
+    const embedUrl = formatYouTubeEmbedUrl(rawUrl);
+    playerBox.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    playerBox.style.display = 'block';
+    if (btn) btn.textContent = '⏹️ إخفاء الفيديو';
+  } else {
+    playerBox.style.display = 'none';
+    playerBox.innerHTML = '';
+    if (btn) btn.textContent = '▶️ تشغيل الفيديو';
+  }
+};
+
+window.saveViewerPartVideo = function(partId, partName) {
+  const input = document.getElementById('v-func-yt-input');
+  if (!input) return;
+  const val = input.value.trim();
+  setPartYouTubeUrl(partId, val);
+  sounds.playCorrect();
+  alert(`تم حفظ وتحديث رابط فيديو يوتيوب لـ (${partName}) بنجاح!`);
+};
+
 // Setup Navigation
 function setupNavigation() {
   const navBtns = document.querySelectorAll('.nav-btn');
@@ -1503,6 +1697,11 @@ function setupOrganExplorer() {
   renderOrganViewer();
   renderQuickPartsStrip();
   renderOrganQuestions();
+
+  const initialOrgan = organsSimulatorData[state.currentOrgan];
+  if (initialOrgan && initialOrgan.parts && initialOrgan.parts.length > 0) {
+    selectPart(state.currentOrgan, initialOrgan.parts[0].id);
+  }
 }
 
 function updateViewerToggleButtons() {
@@ -1529,6 +1728,11 @@ function selectOrgan(organKey) {
   renderQuickPartsStrip();
   renderOrganQuestions();
   updateOrganCompletedState();
+
+  const organ = organsSimulatorData[organKey];
+  if (organ && organ.parts && organ.parts.length > 0) {
+    selectPart(organKey, organ.parts[0].id);
+  }
 }
 
 function renderOrganDetails() {
@@ -1576,10 +1780,11 @@ function renderOrganViewer() {
     let hotspotsHtml = '';
     organ.parts.forEach((part, idx) => {
       hotspotsHtml += `
-        <div class="chart-clickable-pin" style="top: ${part.target.top}; left: ${part.target.left};" onclick="openPartModal('${organ.id}', '${part.id}')" title="انقري لعرض عمل ${part.name} وفيديو الشرح">
+        <div class="chart-clickable-pin ${part.id === state.selectedPartId ? 'active' : ''}" data-part-id="${part.id}" style="top: ${part.target.top}; left: ${part.target.left};" onclick="selectPart('${organ.id}', '${part.id}')" title="انقري لعرض وظيفة وعمل ${part.name}">
           <div class="chart-pin-dot" style="background:${part.color};">
             ${idx + 1}
           </div>
+          <div class="chart-pin-tag-label" style="border-color:${part.color};">${part.name}</div>
         </div>
       `;
     });
@@ -1599,11 +1804,11 @@ function renderOrganViewer() {
     let floatingTagsHtml = '';
     organ.parts.forEach((part, idx) => {
       floatingTagsHtml += `
-        <div class="floating-tag-pin" style="top: ${part.target.top}; left: ${part.target.left};" onclick="openPartModal('${organ.id}', '${part.id}')">
+        <div class="floating-tag-pin ${part.id === state.selectedPartId ? 'active' : ''}" data-part-id="${part.id}" style="top: ${part.target.top}; left: ${part.target.left};" onclick="selectPart('${organ.id}', '${part.id}')">
           <span class="hotspot-pulse" style="border-color:${part.color};"></span>
           <span class="hotspot-dot" style="background:${part.color};">${idx + 1}</span>
           <div class="floating-tag-card" style="border-color:${part.color};">
-            ${part.name} ↗
+            ${part.name}
           </div>
         </div>
       `;
@@ -1632,14 +1837,14 @@ function renderOrganViewer() {
     let rosterHtml = '';
     organ.parts.forEach((part, idx) => {
       rosterHtml += `
-        <div class="roster-card" onclick="openPartModal('${organ.id}', '${part.id}')">
+        <div class="roster-card ${part.id === state.selectedPartId ? 'active-card' : ''}" onclick="selectPart('${organ.id}', '${part.id}')">
           <div class="roster-card-header">
             <span class="roster-card-title">${part.name}</span>
             <span class="yt-badge">🎥 فيديو</span>
           </div>
-          <div class="roster-card-desc">${part.shortDesc}</div>
+          <div class="roster-card-desc">${part.function}</div>
           <div class="roster-card-action">
-            <span>عرض وظيفة الجزء والشرح الوافي</span>
+            <span>عرض وظيفة هذا الجزء فورياً</span>
             <span>←</span>
           </div>
         </div>
@@ -1706,8 +1911,10 @@ function renderQuickPartsStrip() {
       <span>${part.name}</span>
       <span class="yt-badge">🎥</span>
     `;
-    chip.title = `انقري لعرض عمل ${part.name} وشرحه وفيديو يوتيوب`;
-    chip.onclick = () => openPartModal(organ.id, part.id);
+    chip.title = `انقري لعرض عمل ووظيفة ${part.name}`;
+    chip.setAttribute('data-part-id', part.id);
+    if (part.id === state.selectedPartId) chip.classList.add('active-chip');
+    chip.onclick = () => selectPart(organ.id, part.id);
     pillsWrap.appendChild(chip);
   });
 }

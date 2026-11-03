@@ -644,6 +644,19 @@ section.app-tab-content.active {
   box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
 }
 
+.part-pill-chip.active-chip {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+  transform: translateY(-2px);
+}
+
+.part-pill-chip.active-chip .yt-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
 .part-pill-chip .yt-badge {
   background: #fee2e2;
   color: #dc2626;
@@ -651,6 +664,255 @@ section.app-tab-content.active {
   padding: 1px 6px;
   border-radius: 10px;
   font-weight: 800;
+}
+
+/* Instant Active Part Function Card in Info Pane */
+.active-part-card {
+  background: #ffffff;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.14);
+  transition: all 0.3s ease;
+}
+
+.active-part-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1.5px solid #e2e8f0;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.active-part-num-badge {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 0.92rem;
+  padding: 4px 12px;
+  border-radius: 50px;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+}
+
+.active-part-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.active-part-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.btn-subtle-pill {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.btn-subtle-pill:hover {
+  background: #e0f2fe;
+  color: #0284c7;
+  border-color: #0284c7;
+}
+
+.active-part-function-box {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-right: 5px solid #16a34a;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+
+.active-box-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.92rem;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.active-function-text {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.7;
+  color: #14532d;
+  font-weight: 600;
+}
+
+.active-part-anatomy-box {
+  background: #f0f9ff;
+  border: 1.5px solid #bae6fd;
+  border-right: 5px solid #0284c7;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+
+.active-anatomy-text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #0369a1;
+}
+
+.active-part-clinical-box {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-right: 5px solid #d97706;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+
+.active-clinical-text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #92400e;
+}
+
+.active-part-youtube-wrap {
+  background: #ffffff;
+  border: 1.5px solid #fecdd3;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.btn-yt-toggle {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.btn-yt-toggle:hover {
+  background: #dc2626;
+}
+
+.active-yt-player-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 10px 0;
+  background: #000;
+}
+
+.active-yt-player-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.active-part-yt-custom-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+/* Floating Live Toast on Viewer Frame */
+.viewer-live-toast-wrap {
+  position: relative;
+}
+
+.viewer-live-function-toast {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  border-top: 2px solid #38bdf8;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.88rem;
+}
+
+.toast-part-name {
+  color: #38bdf8;
+  font-weight: 900;
+  font-size: 0.95rem;
+}
+
+.toast-part-func {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 480px;
+}
+
+/* Active Pin Highlight */
+.chart-clickable-pin.active .chart-pin-dot {
+  transform: scale(1.4);
+  box-shadow: 0 0 0 4px #ffffff, 0 0 16px rgba(239, 68, 68, 0.9);
+  animation: none;
+  border-color: #ff0055;
+}
+
+.chart-pin-tag-label {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: rgba(15, 23, 42, 0.94);
+  color: #ffffff;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+  pointer-events: auto;
+  cursor: pointer;
+  border: 1.5px solid var(--primary-light);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+}
+
+.chart-clickable-pin:hover .chart-pin-tag-label {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+  transform: translateX(-50%) translateY(4px) scale(1.08);
+}
+
+.chart-clickable-pin.active .chart-pin-tag-label {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+  color: #ffffff;
+  border-color: #38bdf8;
+  font-weight: 900;
+  box-shadow: 0 0 14px rgba(2, 132, 199, 0.7);
+}
+
+.floating-tag-pin.active .floating-tag-card {
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #b91c1c;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.6);
+  transform: scale(1.1);
 }
 
 /* Labeled Diagram Simulator Container */
@@ -2657,4 +2919,153 @@ section.app-tab-content.active {
   .body-3d-hint {
     display: none;
   }
+}
+
+/* Viewer Instant Function Card (Directly Below Diagram) */
+.viewer-instant-function-card {
+  background: #ffffff;
+  border-top: 3px solid var(--primary);
+  border-bottom: 1.5px solid #e2e8f0;
+  padding: 16px 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.v-func-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 8px;
+}
+
+.v-func-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.v-func-badge {
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 0.95rem;
+  padding: 4px 12px;
+  border-radius: 50px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.v-func-part-name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.v-func-part-en {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.v-func-box-primary {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-right: 5px solid #16a34a;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.08);
+}
+
+.v-func-box-lbl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.98rem;
+  color: #14532d;
+  margin-bottom: 6px;
+  font-weight: 900;
+}
+
+.v-func-box-text {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: #166534;
+  font-weight: 700;
+}
+
+.v-func-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 768px) {
+  .v-func-details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.v-func-box-sub {
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.v-func-anatomy {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-right: 4px solid #0284c7;
+}
+
+.v-func-clinical {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-right: 4px solid #d97706;
+}
+
+.v-func-sub-lbl {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.88rem;
+  color: #0f172a;
+  margin-bottom: 4px;
+  font-weight: 800;
+}
+
+.v-func-sub-text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #334155;
+}
+
+.v-func-youtube-bar {
+  background: #fafafa;
+  border: 1.5px solid #fecdd3;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.v-func-yt-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: #991b1b;
 }

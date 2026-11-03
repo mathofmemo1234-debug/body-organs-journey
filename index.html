@@ -13,7 +13,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="stylesheet" href="style.css?v=20261103_v3">
 </head>
 <body dir="rtl">
 
@@ -348,6 +351,9 @@
             <!-- Dynamic Simulator Rendered Here -->
           </div>
 
+          <!-- Instant Floating Function Toast inside Viewer -->
+          <div id="viewer-live-toast-container" class="viewer-live-toast-wrap"></div>
+
           <div class="viewer-footer-bar">
             <span>💡 <strong>نصيحة تفاعلية:</strong> انقري على أي اسم أو نقطة ملونة لمعرفة وظيفة الجزء بدقة ومشاهدة فيديو يوتيوب المخصص له!</span>
           </div>
@@ -360,6 +366,57 @@
               <span class="organ-tag" id="organ-info-tag">الجهاز الدوراني</span>
               <h3 class="organ-name" id="organ-info-name">القلب</h3>
               <p class="organ-summary" id="organ-info-summary"></p>
+            </div>
+
+            <!-- INSTANT ACTIVE PART FUNCTION DISPLAY (Appears immediately on part click) -->
+            <div id="active-part-card" class="active-part-card">
+              <div class="active-part-header">
+                <span class="active-part-num-badge" id="active-part-num">#1</span>
+                <div style="flex:1;">
+                  <h4 id="active-part-name" class="active-part-title">الشريان الأورطي (الأبهر)</h4>
+                  <span id="active-part-en" class="active-part-subtitle">Aorta</span>
+                </div>
+                <button id="active-part-modal-btn" class="btn-subtle-pill" title="فتح الشرح في نافذة مكبرة">🔍 مكبر</button>
+              </div>
+
+              <!-- Function & Mechanism (Prominent) -->
+              <div class="active-part-function-box">
+                <div class="active-box-heading">
+                  <span>⚙️</span> <strong>وظيفة وعمل هذا الجزء في الجسم:</strong>
+                </div>
+                <p id="active-part-function-text" class="active-function-text"></p>
+              </div>
+
+              <!-- Anatomy & Structure -->
+              <div class="active-part-anatomy-box">
+                <div class="active-box-heading">
+                  <span>🔬</span> <strong>التشريح والموقع الدقيق:</strong>
+                </div>
+                <p id="active-part-anatomy-text" class="active-anatomy-text"></p>
+              </div>
+
+              <!-- Clinical Importance -->
+              <div class="active-part-clinical-box">
+                <div class="active-box-heading">
+                  <span>💡</span> <strong>الأهمية وما يحدث عند تعطل وظائفه:</strong>
+                </div>
+                <p id="active-part-clinical-text" class="active-clinical-text"></p>
+              </div>
+
+              <!-- Inline YouTube Player -->
+              <div class="active-part-youtube-wrap">
+                <div class="active-box-heading" style="justify-content:space-between;">
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span>🎥</span> <strong id="active-part-yt-title">فيديو يوتيوب التعليمي:</strong>
+                  </div>
+                  <button id="toggle-part-yt-btn" class="btn-yt-toggle">▶️ تشغيل الفيديو</button>
+                </div>
+                <div id="active-part-yt-player" class="active-yt-player-container" style="display:none;"></div>
+                <div class="active-part-yt-custom-row">
+                  <input type="text" id="active-part-yt-input" placeholder="تعديل رابط يوتيوب لهذا الجزء..." style="flex:1;padding:6px 10px;border-radius:6px;border:1.5px solid #cbd5e1;font-size:0.8rem;font-family:monospace;direction:ltr;">
+                  <button id="active-part-yt-save-btn" class="btn-primary" style="padding:6px 12px;font-size:0.8rem;">💾 حفظ</button>
+                </div>
+              </div>
             </div>
 
             <div class="info-cards-stack">
@@ -880,7 +937,7 @@
   <!-- Three.js 3D Engine & Orbit Controls -->
   <script src="assets/three.min.js"></script>
   <script src="assets/OrbitControls.js"></script>
-  <script src="body3d.js"></script>
-  <script src="app.js"></script>
+  <script src="body3d.js?v=20261103_v3"></script>
+  <script src="app.js?v=20261103_v3"></script>
 </body>
 </html>
