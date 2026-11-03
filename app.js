@@ -359,6 +359,25 @@ class SoundEngine {
     osc.stop(now + 0.28);
   }
 
+  playBrainPulse() {
+    if (!this.enabled) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(580, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.1);
+    } catch (e) {}
+  }
+
   playVictory() {
     if (!this.enabled) return;
     this.init();
@@ -416,6 +435,7 @@ function updateSoundButtonUI(isPlaying, secondsLeft) {
     }
   }
 }
+
 
 
 // Natural realistic image paths
@@ -1382,7 +1402,7 @@ window.selectPart = function(organKey, partId, openModal = false) {
   const part = organ.parts.find(p => p.id === partId);
   if (!part) return;
 
-  sounds.playBrainPulse();
+  if (typeof sounds !== 'undefined' && typeof sounds.playBrainPulse === 'function') { try { sounds.playBrainPulse(); } catch(e){} }
 
   // 1. Update Active Card in Scientific Info Pane
   const card = document.getElementById('active-part-card');
@@ -1985,7 +2005,7 @@ window.openPartModal = function(organKey, partId) {
   if (!part) return;
 
   state.activePartModal = { organKey, partId };
-  sounds.playBrainPulse();
+  if (typeof sounds !== 'undefined' && typeof sounds.playBrainPulse === 'function') { try { sounds.playBrainPulse(); } catch(e){} }
 
   const modal = document.getElementById('part-detail-modal');
   const badge = document.getElementById('part-modal-organ-badge');
