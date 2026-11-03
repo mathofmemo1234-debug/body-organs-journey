@@ -7,8 +7,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="description" content="رحلة أعضاء الجسم الداخلية - منصة تعليمية تفاعلية مبهجة للجوال والكمبيوتر">
-  <title>رحلة أعضاء الجسم الداخلية | منصة تفاعلية متكاملة</title>
+  <meta name="description" content="أعضاء الجسم - منصة تعليمية تفاعلية مبهجة للجوال والكمبيوتر">
+  <title>أعضاء الجسم | منصة تعليمية تفاعلية</title>
   <!-- Google Fonts: Tajawal & Cairo -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,15 +25,15 @@
           <svg width="26" height="26" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
         </div>
         <div>
-          <span>رحلة أعضاء الجسم</span>
+          <span>أعضاء الجسم</span>
           <span style="font-size:0.75rem;display:block;color:var(--primary);font-weight:700;">منصة التعلم التفاعلي المبهجة</span>
         </div>
       </a>
 
       <nav class="main-nav">
         <button class="nav-btn active" data-tab="home"><span>الرئيسية</span></button>
-        <button class="nav-btn" data-tab="organs"><span>مستكشف الأعضاء</span></button>
-        <button class="nav-btn" data-tab="quiz"><span>بنك الأسئلة (18)</span></button>
+        <button class="nav-btn" data-tab="organs"><span>مستكشف ومحاكي الأعضاء</span></button>
+        <button class="nav-btn" data-tab="quiz"><span>بنك الأسئلة (12)</span></button>
         <button class="nav-btn" data-tab="portfolio"><span>ملف الإنجاز</span></button>
         <a href="https://sites.google.com/view/wesaif-990?usp=sharing" target="_blank" rel="noopener noreferrer" class="nav-btn student-nav-btn" style="text-decoration:none;color:#047857;background:rgba(16, 185, 129, 0.12);border:1.5px solid rgba(16, 185, 129, 0.4);font-weight:800;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;" title="ملف إنجاز الطالبة : وصايف حسن">
           <span>🎓 ملف إنجاز الطالبة : وصايف حسن</span>
@@ -43,8 +43,8 @@
       </nav>
 
       <div class="header-controls">
-        <button id="open-links-settings-btn" class="link-settings-btn" title="تعديل وتخصيص روابط ThingLink للأعضاء">
-          <span>تعديل روابط ThingLink</span>
+        <button id="open-youtube-manager-btn" class="link-settings-btn" style="background:rgba(239, 68, 68, 0.1);color:#dc2626;border:1.5px solid rgba(239, 68, 68, 0.3);font-weight:800;" title="إدارة وتخصيص روابط يوتيوب لجميع أجزاء الأعضاء">
+          <span>🎥 فيديوهات يوتيوب للأجزاء</span>
         </button>
         <button id="sound-toggle-btn" class="sound-toggle-btn" title="تشغيل / كتم الصوت">
           <span>الصوت مفعّل</span>
@@ -94,7 +94,7 @@
         <span class="hero-tag">رحلة استكشافية تفاعلية مشوقة</span>
         <h1 class="hero-title">رحلة في أعماق جسم الإنسان المدهش</h1>
         <p class="hero-description">
-          انطلقي في رحلة تعليمية شائقة ومبهجة للتعرف على أسرار ووظائف أعضاء الجسم الستة (القلب، الرئتان، الدماغ، المعدة، المريء، والعين) عبر النماذج التفاعلية الحية ومشاهد ThingLink، وأجيبي عن أسئلة كل عضو مباشرة، ثم وثّقي إنجازك المتميز لتحصلي على شهادة تكريم ذهبية!
+          انطلقي في رحلة تعليمية شائقة ومبهجة للتعرف على أسرار ووظائف أعضاء الجسم الستة (القلب، الرئتان، الدماغ، المعدة، المريء، والعين) عبر المحاكيات التشريحية الذكية المكتوبة، واضغطي على أي جزء لعرض عمله والشرح الوافي وفيديو يوتيوب، مع سؤالين لكل عضو وتحفيز فوري وأوسمة تميز!
         </p>
 
         <!-- Global Student Identity -->
@@ -110,10 +110,10 @@
             <span>ابدئي الرحلة واستكشفي الأعضاء</span> <span>←</span>
           </button>
           <button class="btn-secondary" onclick="switchTab('quiz')">
-            <span>بنك الأسئلة الشامل (18 سؤالاً)</span>
+            <span>بنك الأسئلة الشامل (12 سؤالاً - سؤالين لكل عضو)</span>
           </button>
-          <button class="btn-accent" onclick="document.getElementById('open-links-settings-btn').click()">
-            <span>تخصيص روابط ThingLink</span>
+          <button class="btn-accent" onclick="openAllYoutubeModal()" style="background:#ef4444;border-color:#dc2626;">
+            <span>🎥 إدارة فيديوهات يوتيوب للأجزاء</span>
           </button>
           <button class="btn-primary" onclick="document.getElementById('body-3d-section').scrollIntoView({behavior: 'smooth'})" style="background:linear-gradient(135deg, #0284c7, #8b5cf6);box-shadow:0 8px 20px rgba(139, 92, 246, 0.25);">
             <span>🔬 استكشفي المجسم ثلاثي الأبعاد 360°</span>
@@ -277,8 +277,8 @@
           <div class="roadmap-icon" style="color:#f43f5e;">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
           </div>
-          <h3>استكشاف الأعضاء الستة</h3>
-          <p>استكشفي القلب، الرئتين، الدماغ، المعدة، المريء، والعين عبر النماذج التفاعلية الدقيقة وسيناريوهات ThingLink مع مؤثرات صوتية حية.</p>
+          <h3>محاكيات الأعضاء الستة التفاعلية</h3>
+          <p>استكشفي القلب، الرئتين، الدماغ، المعدة، المريء، والعين عبر المخططات التشريحية المكتوبة والمجسمات مع فيديوهات يوتيوب لكل جزء.</p>
         </div>
 
         <div class="roadmap-card" data-target="organs">
@@ -286,8 +286,8 @@
           <div class="roadmap-icon" style="color:#0284c7;">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
           </div>
-          <h3>تحدي أسئلة كل عضو مباشرة</h3>
-          <p>أجيبي عن الأسئلة الخاصة بكل عضو بجوار المشهد مباشرة، مع تصحيح فوري وشروحات علمية تعزز استيعابك.</p>
+          <h3>سؤالين لكل عضو مع التحفيز الإيجابي</h3>
+          <p>أجيبي عن سؤالين مخصصين لكل عضو مباشرة في المحاكي، مع تصحيح فوري وشروحات وأوسمة تميز تشجيعية.</p>
         </div>
 
         <div class="roadmap-card" data-target="portfolio">
@@ -320,11 +320,11 @@
     <section id="tab-organs" class="app-tab-content">
       <div style="margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
         <div>
-          <h2 style="font-size:1.85rem;font-weight:900;color:var(--text-main);">مستكشف الأعضاء التفاعلي</h2>
-          <p style="color:var(--text-muted);">اختاري العضو للغوص في تركيبه ووظائفه الحيوية مع إمكانية تغيير رابط المشهد:</p>
+          <h2 style="font-size:1.85rem;font-weight:900;color:var(--text-main);">مستكشف ومحاكي الأعضاء التفاعلي</h2>
+          <p style="color:var(--text-muted);">انقري على أي جزء في المخطط أو المجسم للتعرف على عمله وشرحه الوافي وفيديو الشرح التعليمي:</p>
         </div>
-        <button class="btn-accent" style="padding:10px 18px;font-size:0.95rem;" onclick="document.getElementById('open-links-settings-btn').click()">
-          <span>وضع روابط ThingLink خاصة بك</span>
+        <button class="btn-accent" style="padding:10px 18px;font-size:0.95rem;background:#ef4444;border-color:#dc2626;" onclick="openAllYoutubeModal()">
+          <span>🎥 تخصيص فيديوهات يوتيوب للأجزاء</span>
         </button>
       </div>
 
@@ -336,18 +336,21 @@
         <!-- Interactive Viewer Pane -->
         <div class="viewer-pane">
           <div class="viewer-header">
-            <span style="font-size:0.95rem;font-weight:800;color:var(--primary-dark);">المشهد المعروض</span>
+            <span style="font-size:0.95rem;font-weight:800;color:var(--primary-dark);">المحاكي التشريحي الذكي</span>
             <div class="viewer-toggle">
-              <button id="view-opt-thinglink" class="toggle-opt-btn active">مشهد ThingLink</button>
-              <button id="view-opt-simulation" class="toggle-opt-btn">المجسم العلمي التفاعلي</button>
+              <button id="view-opt-labeled" class="toggle-opt-btn active" title="عرض المخطط التوضيحي مع كتابة أسماء الأجزاء ومواقعها">🏷️ المخطط المكتوب</button>
+              <button id="view-opt-3d" class="toggle-opt-btn" title="عرض المجسم ثلاثي الأبعاد مع بطاقات الأجزاء الطافية والتفاعل الحركي">🔬 المجسم ثلاثي الأبعاد</button>
+              <button id="view-opt-parts" class="toggle-opt-btn" title="استعراض قائمة كامل أجزاء هذا العضو وشروحاتها">📋 دليل الأجزاء (فهرس)</button>
             </div>
           </div>
           
           <div class="viewer-content-frame" id="viewer-frame-container">
-            <!-- Dynamic Iframe / Sim -->
+            <!-- Dynamic Simulator Rendered Here -->
           </div>
 
-          <div id="viewer-link-bar-container"></div>
+          <div class="viewer-footer-bar">
+            <span>💡 <strong>نصيحة تفاعلية:</strong> انقري على أي اسم أو نقطة ملونة لمعرفة وظيفة الجزء بدقة ومشاهدة فيديو يوتيوب المخصص له!</span>
+          </div>
         </div>
 
         <!-- Scientific Info Pane -->
@@ -389,25 +392,41 @@
         </div>
       </div>
 
-      <!-- DEDICATED ORGAN QUESTIONS (Appears right on the organ in Explorer!) -->
-      <div class="organ-quick-quiz-section">
-        <div class="organ-quick-quiz-header">
-          <h3 id="organ-quick-quiz-title">تحدي المعرفة السريع لهذا العضو</h3>
-          <span style="color:#059669;font-weight:800;font-size:0.95rem;">تصحيح فوري وتوضيح علمي لكل سؤال</span>
+      <!-- Quick Parts Strip -->
+      <div class="parts-quick-strip-container">
+        <div class="parts-strip-title">
+          <span>⚡ وصول سريع لأجزاء <strong id="quick-parts-organ-name">القلب</strong> (انقري على أي جزء للشرح وفيديو يوتيوب):</span>
         </div>
-        <div class="organ-questions-grid" id="organ-questions-list">
-          <!-- Rendered dynamically for active organ -->
+        <div class="parts-pills-wrap" id="organ-parts-pills">
+          <!-- Dynamic Parts Pills -->
         </div>
       </div>
 
-      <!-- Guidance Card for adding questions in ThingLink -->
-      <div class="guidance-banner">
-        <h4>كيف تضعين الأسئلة والاختبارات داخل ThingLink مباشرة؟</h4>
-        <ol>
-          <li><strong>إضافة سؤال تصويت (Poll Tag):</strong> داخل محرر ThingLink، اضغطي على <strong>Add tag</strong> ثم اختاري <strong>Poll</strong> واكتبي السؤال وخيارات الإجابة لتظهر كأيقونة تفاعلية نابضة على مجسم العضو.</li>
-          <li><strong>قفل الانتقال بسؤال (Scenario Branching):</strong> إذا كنتِ تستخدمين <em>Scenario Builder</em>، يمكنكِ إضافة عقدة <strong>Question node</strong> تشترط الإجابة الصحيحة لفتح العضو التالي للطالب.</li>
-          <li><strong>تضمين نموذج أو سؤال (Embed tag):</strong> اختاري <strong>Add tag -> Add content from website</strong> وضعي رابط السؤال أو الاختبار ليفتح كنافذة منبثقة تفاعلية داخل المجسم.</li>
-        </ol>
+      <!-- DEDICATED ORGAN QUESTIONS (2 Questions with Motivational Feedback) -->
+      <div class="organ-quick-quiz-section">
+        <div class="organ-quick-quiz-header">
+          <div>
+            <h3 id="organ-quick-quiz-title">🎯 تحدي المعرفة: سؤالين عن هذا العضو</h3>
+            <span style="color:#059669;font-weight:800;font-size:0.95rem;">تصحيح فوري مع التحفيز الإيجابي وأوسمة التميز 🌟</span>
+          </div>
+          <div id="organ-trophy-display" class="organ-trophy-display" style="display:none;">
+            <span class="trophy-icon">🏆</span>
+            <span class="trophy-text">وسام الإتقان التام لهذا العضو!</span>
+          </div>
+        </div>
+        <div class="organ-questions-grid" id="organ-questions-list">
+          <!-- Rendered dynamically for active organ (2 questions) -->
+        </div>
+
+        <!-- Add Question & Custom Questions Action Bar -->
+        <div class="organ-quiz-actions-bar">
+          <button class="btn-primary" onclick="openAddQuestionModal(state.currentOrgan)" style="padding:9px 18px;font-size:0.9rem;display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg, #0284c7, #2563eb);">
+            <span>➕ إضافة سؤال جديد لهذا العضو</span>
+          </button>
+          <button class="btn-secondary" onclick="resetOrganCustomQuestions(state.currentOrgan)" style="padding:9px 16px;font-size:0.85rem;" title="استعادة الأسئلة الافتراضية للعضو">
+            <span>🔄 استعادة الأسئلة الافتراضية</span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -419,11 +438,13 @@
         <div id="quiz-active-view">
           <div class="quiz-header-bar">
             <div style="display:flex;gap:18px;align-items:center;">
-              <span class="quiz-badge" id="quiz-q-num">سؤال 1 من 18</span>
-              <span class="quiz-score-tracker">الدرجة الحالية: <span id="quiz-score-val">0 / 18</span></span>
+              <span class="quiz-badge" id="quiz-q-num">سؤال 1 من 12</span>
+              <span class="quiz-score-tracker">الدرجة الحالية: <span id="quiz-score-val">0 / 12</span></span>
             </div>
-            <div style="color:var(--text-muted);font-size:0.95rem;font-weight:600;">
-              اختاري إجابة واحدة صحيحة لكل سيناريو
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <button class="btn-primary" onclick="openAddQuestionModal()" style="padding:7px 16px;font-size:0.85rem;background:linear-gradient(135deg, #0284c7, #2563eb);">
+                <span>➕ إضافة سؤال جديد لبنك الأسئلة</span>
+              </button>
             </div>
           </div>
 
@@ -611,70 +632,185 @@
 
   </main>
 
-  <!-- THINGLINK LINKS SETTINGS MODAL (Strict RTL) -->
-  <div class="modal-overlay" id="thinglink-modal" dir="rtl">
+  <!-- 1. PART DETAIL & YOUTUBE MODAL (Strict RTL) -->
+  <div class="modal-overlay" id="part-detail-modal" dir="rtl">
+    <div class="modal-card part-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="part-modal-badge" id="part-modal-organ-badge">القلب</span>
+          <div>
+            <h3 id="part-modal-title" style="margin:0;font-size:1.45rem;color:var(--text-main);">اسم الجزء التشريحي</h3>
+            <span id="part-modal-subtitle" style="font-size:0.85rem;color:var(--text-muted);font-weight:600;">English Anatomical Name</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="close-part-modal-btn">✕</button>
+      </div>
+
+      <div class="part-modal-body">
+        <!-- Function & Mechanism Card -->
+        <div class="part-info-section function-section">
+          <div class="section-badge-title">
+            <span class="icon">⚙️</span>
+            <span>وظيفة وعمل هذا الجزء في الجسم:</span>
+          </div>
+          <p id="part-modal-function" class="part-desc-text"></p>
+        </div>
+
+        <!-- Anatomy & Structure Card -->
+        <div class="part-info-section anatomy-section">
+          <div class="section-badge-title">
+            <span class="icon">🔬</span>
+            <span>التشريح والتركيب والموقع الدقيق:</span>
+          </div>
+          <p id="part-modal-anatomy" class="part-desc-text"></p>
+        </div>
+
+        <!-- Clinical & Biological Significance -->
+        <div class="part-info-section clinical-section">
+          <div class="section-badge-title">
+            <span class="icon">💡</span>
+            <span>الأهمية الحيوية وماذا يحدث عند تعطل وظائفه:</span>
+          </div>
+          <p id="part-modal-clinical" class="part-desc-text"></p>
+        </div>
+
+        <!-- Educational YouTube Video Section -->
+        <div class="part-youtube-section">
+          <div class="section-badge-title">
+            <span class="icon">🎥</span>
+            <span id="part-modal-yt-title">فيديو تعليمي من يوتيوب لشرح هذا الجزء:</span>
+          </div>
+
+          <div class="part-yt-player-wrap" id="part-yt-player-wrap">
+            <!-- Dynamic YouTube Embed / Player -->
+          </div>
+
+          <!-- YouTube Link Customizer Slot -->
+          <div class="part-yt-customizer-box">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-weight:800;font-size:0.9rem;color:var(--text-main);">✏️ هل تودين وضع رابط فيديو يوتيوب آخر لهذا الجزء؟</span>
+              <span style="font-size:0.75rem;color:#059669;font-weight:700;">يُحفظ تلقائياً في متصفحك</span>
+            </div>
+            <div class="yt-input-group">
+              <input type="text" id="part-yt-input" placeholder="ألصقي رابط يوتيوب هنا (مثال: https://www.youtube.com/watch?v=...)">
+              <button id="save-part-yt-btn" class="btn-primary" style="padding:8px 16px;font-size:0.85rem;white-space:nowrap;">
+                <span>💾 حفظ الرابط</span>
+              </button>
+              <button id="reset-part-yt-btn" class="btn-secondary" style="padding:8px 12px;font-size:0.85rem;white-space:nowrap;" title="استعادة رابط الشرح الافتراضي">
+                <span>🔄 استعادة</span>
+              </button>
+            </div>
+            <div id="yt-save-feedback" class="yt-save-feedback" style="display:none;">✓ تم حفظ رابط الفيديو لهذا الجزء بنجاح!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ADD CUSTOM QUESTION MODAL (Strict RTL) -->
+  <div class="modal-overlay" id="add-question-modal" dir="rtl">
     <div class="modal-card">
       <div class="modal-header">
         <div class="modal-title">
-          <span>تخصيص روابط ThingLink للأعضاء</span>
+          <span>➕ إضافة سؤال جديد لبنك الأسئلة والمحاكي</span>
         </div>
-        <button class="modal-close-btn" id="close-links-modal-btn">✕</button>
+        <button class="modal-close-btn" id="close-add-q-modal-btn">✕</button>
       </div>
 
       <p style="color:var(--text-muted);font-size:0.95rem;margin-bottom:18px;line-height:1.6;">
-        يمكنك هنا وضع أو لصق أي رابط أو معرف مشهد (Scene/Scenario ID) من منصة ThingLink لأي عضو من الأعضاء الستة، وسيتم حفظها في متصفحك وعرضها مباشرة:
+        يمكن للمعلمة أو الطالبة إضافة أسئلة تفاعلية جديدة لأي عضو من الأعضاء الستة، وستظهر فوراً في المحاكي وبنك الأسئلة مع التصحيح والتحفيز الذكي:
       </p>
 
-      <div class="links-editor-grid">
-        <div class="link-field-row">
-          <div class="link-field-header">
-            <span>رابط القلب (السيناريو / المشهد):</span>
-          </div>
-          <input type="text" id="tl-input-heart" placeholder="https://www.thinglink.com/view/scenario/...">
+      <form id="add-question-form" onsubmit="event.preventDefault(); saveCustomQuestion();">
+        <div class="form-group" style="margin-bottom:14px;">
+          <label style="font-weight:800;display:block;margin-bottom:6px;">العضو المستهدف:</label>
+          <select id="new-q-organ" class="form-control" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;font-weight:700;">
+            <option value="heart">القلب</option>
+            <option value="lungs">الرئتان</option>
+            <option value="brain">الدماغ</option>
+            <option value="stomach">المعدة</option>
+            <option value="esophagus">المريء والمعدة</option>
+            <option value="eye">العين</option>
+          </select>
         </div>
 
-        <div class="link-field-row">
-          <div class="link-field-header">
-            <span>رابط الرئتان:</span>
-          </div>
-          <input type="text" id="tl-input-lungs" placeholder="https://www.thinglink.com/scene/...">
+        <div class="form-group" style="margin-bottom:14px;">
+          <label style="font-weight:800;display:block;margin-bottom:6px;">نص السؤال:</label>
+          <input type="text" id="new-q-text" placeholder="اكتبي صيغة السؤال هنا..." required style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
         </div>
 
-        <div class="link-field-row">
-          <div class="link-field-header">
-            <span>رابط المعدة:</span>
+        <div style="margin-bottom:14px;">
+          <label style="font-weight:800;display:block;margin-bottom:8px;">خيارات الإجابة (حددي الإجابة الصحيحة بالدائرة):</label>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="q-opt-input-row">
+              <input type="radio" name="new-q-correct" value="0" checked id="q-radio-0">
+              <input type="text" id="new-q-opt-0" placeholder="الخيار الأول (الإجابة الصحيحة)" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
+            <div class="q-opt-input-row">
+              <input type="radio" name="new-q-correct" value="1" id="q-radio-1">
+              <input type="text" id="new-q-opt-1" placeholder="الخيار الثاني" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
+            <div class="q-opt-input-row">
+              <input type="radio" name="new-q-correct" value="2" id="q-radio-2">
+              <input type="text" id="new-q-opt-2" placeholder="الخيار الثالث" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
+            <div class="q-opt-input-row">
+              <input type="radio" name="new-q-correct" value="3" id="q-radio-3">
+              <input type="text" id="new-q-opt-3" placeholder="الخيار الرابع" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
           </div>
-          <input type="text" id="tl-input-stomach" placeholder="https://www.thinglink.com/scene/...">
         </div>
 
-        <div class="link-field-row">
-          <div class="link-field-header">
-            <span>رابط الدماغ:</span>
-          </div>
-          <input type="text" id="tl-input-brain" placeholder="https://www.thinglink.com/scene/...">
+        <div class="form-group" style="margin-bottom:14px;">
+          <label style="font-weight:800;display:block;margin-bottom:6px;">التفسير والشرح العلمي عند الإجابة:</label>
+          <textarea id="new-q-explain" rows="2" placeholder="وضحي السبب العلمي وراء صحة هذه الإجابة لتعزيز الفهم..." required style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;"></textarea>
         </div>
 
-        <div class="link-field-row">
-          <div class="link-field-header">
-            <span>رابط العين:</span>
-          </div>
-          <input type="text" id="tl-input-eye" placeholder="https://www.thinglink.com/scene/...">
+        <div class="form-group" style="margin-bottom:20px;">
+          <label style="font-weight:800;display:block;margin-bottom:6px;">رسالة التحفيز والتشجيع الإيجابي للطالبة:</label>
+          <input type="text" id="new-q-motivation" placeholder="مثال: 🌟 رائعة ومتميزة! إجابة ذكية تدل على فهمك العميق!" value="🌟 رائعة ومتميزة! إجابة ذكية تدل على فهمك العميق!" style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
         </div>
 
-        <div class="link-field-row">
-          <div class="link-field-header">
-            <span>رابط المريء والمعدة:</span>
-          </div>
-          <input type="text" id="tl-input-esophagus" placeholder="https://www.thinglink.com/scene/...">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+          <button type="submit" class="btn-primary" style="padding:10px 24px;">
+            <span>💾 حفظ السؤال وإضافته الآن</span>
+          </button>
+          <button type="button" class="btn-secondary" onclick="document.getElementById('add-question-modal').classList.remove('show');">
+            <span>إلغاء</span>
+          </button>
         </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. CENTRAL ALL YOUTUBE LINKS MANAGER MODAL (Strict RTL) -->
+  <div class="modal-overlay" id="all-youtube-modal" dir="rtl">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🎥 إدارة وتخصيص روابط يوتيوب لجميع أجزاء الأعضاء</span>
+        </div>
+        <button class="modal-close-btn" id="close-all-yt-modal-btn">✕</button>
       </div>
 
-      <div style="display:flex;justify-content:space-between;margin-top:24px;flex-wrap:wrap;gap:12px;">
-        <button id="save-links-btn" class="btn-primary">
-          <span>حفظ وتحديث المشاهد الآن</span>
+      <p style="color:var(--text-muted);font-size:0.95rem;margin-bottom:16px;line-height:1.6;">
+        يمكنكِ هنا مراجعة وتعديل روابط فيديوهات يوتيوب التعليمية لجميع أجزاء الأعضاء الستة في مكان واحد، وتُحفظ الروابط في متصفحك مباشرة:
+      </p>
+
+      <div class="all-yt-tabs" id="all-yt-tabs">
+        <!-- Organ Select Pills -->
+      </div>
+
+      <div class="all-yt-parts-list" id="all-yt-parts-list" style="margin-top:16px;max-height:50vh;overflow-y:auto;padding-left:6px;">
+        <!-- Dynamic list of parts with input fields -->
+      </div>
+
+      <div style="display:flex;justify-content:space-between;margin-top:20px;flex-wrap:wrap;gap:12px;">
+        <button class="btn-primary" onclick="saveAllYoutubeLinksFromManager()">
+          <span>💾 حفظ جميع التعديلات</span>
         </button>
-        <button id="reset-links-btn" class="btn-secondary">
-          <span>استعادة الروابط الافتراضية</span>
+        <button class="btn-secondary" onclick="resetAllYoutubeLinksToDefault()">
+          <span>🔄 استعادة جميع الروابط الافتراضية</span>
         </button>
       </div>
     </div>
@@ -689,7 +825,7 @@
 
     <div class="certificate-box">
       <div class="cert-header">شهادة إتمام وتميز</div>
-      <div class="cert-subtitle">رحلة أعضاء الجسم الداخلية التفاعلية</div>
+      <div class="cert-subtitle">أعضاء الجسم</div>
       
       <p style="font-size:1.15rem;color:#475569;">يُمنح هذا التكريم بفخر واعتزاز إلى:</p>
       
@@ -711,7 +847,7 @@
 
         <div style="text-align:left;">
           <p style="font-size:0.95rem;color:#64748b;margin-bottom:4px;">نتيجة الاختبار:</p>
-          <p style="font-weight:900;color:#059669;" id="cert-score-display">18 / 18</p>
+          <p style="font-weight:900;color:#059669;" id="cert-score-display">12 / 12</p>
         </div>
       </div>
     </div>
