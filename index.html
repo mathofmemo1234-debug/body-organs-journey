@@ -16,7 +16,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <link rel="stylesheet" href="style.css?v=20261103_v3">
+  <link rel="stylesheet" href="style.css?v=20261103_v4">
 </head>
 <body dir="rtl">
 
@@ -491,30 +491,59 @@
     <section id="tab-quiz" class="app-tab-content">
       <div class="quiz-container">
         
-        <!-- Active Question View -->
+        <!-- Quiz View Mode Toggle & Add Question -->
+        <div class="quiz-top-action-bar">
+          <div class="quiz-view-mode-bar">
+            <button id="quiz-mode-single-btn" class="btn-toggle-quiz active" onclick="setQuizDisplayMode('single')">
+              🎯 عرض سؤال بسؤال (تفاعلي)
+            </button>
+            <button id="quiz-mode-all-btn" class="btn-toggle-quiz" onclick="setQuizDisplayMode('all')">
+              📋 عرض جميع الأسئلة (12 سؤالاً معاً)
+            </button>
+          </div>
+          <button class="btn-primary" onclick="openAddQuestionModal()" style="padding:7px 16px;font-size:0.85rem;background:linear-gradient(135deg, #0284c7, #2563eb);">
+            <span>➕ إضافة سؤال جديد لبنك الأسئلة</span>
+          </button>
+        </div>
+
+        <!-- 12-Question Jump Navigation Bar -->
+        <div class="quiz-question-pills-bar" id="quiz-question-pills-bar">
+          <!-- Rendered dynamically: 12 clickable interactive bubbles -->
+        </div>
+
+        <!-- Mode 1: Active Single Question View -->
         <div id="quiz-active-view">
           <div class="quiz-header-bar">
             <div style="display:flex;gap:18px;align-items:center;">
               <span class="quiz-badge" id="quiz-q-num">سؤال 1 من 12</span>
               <span class="quiz-score-tracker">الدرجة الحالية: <span id="quiz-score-val">0 / 12</span></span>
             </div>
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-              <button class="btn-primary" onclick="openAddQuestionModal()" style="padding:7px 16px;font-size:0.85rem;background:linear-gradient(135deg, #0284c7, #2563eb);">
-                <span>➕ إضافة سؤال جديد لبنك الأسئلة</span>
-              </button>
+            <div style="color:var(--text-muted);font-size:0.88rem;font-weight:700;">
+              انقري على أي رقم في الشريط أعلاه للانتقال المباشر لأي سؤال
             </div>
           </div>
 
           <div style="margin-bottom:26px;">
-            <h3 class="question-text" id="quiz-question-title">ما العضو الذي يضخ الدم إلى أنحاء الجسم؟</h3>
+            <h3 class="question-text" id="quiz-question-title">ما الدور الحيوي الرئيسي للشريان الأورطي؟</h3>
             <div class="options-grid" id="quiz-options-container"></div>
           </div>
 
           <div class="quiz-feedback-box" id="quiz-feedback"></div>
 
           <div class="quiz-nav-actions">
-            <button id="quiz-prev-btn" class="btn-secondary">→ السؤال السابق</button>
-            <button id="quiz-next-btn" class="btn-primary">السؤال التالي ←</button>
+            <button id="quiz-prev-btn" class="btn-secondary" onclick="quizPrevQuestion()">→ السؤال السابق</button>
+            <button id="quiz-next-btn" class="btn-primary" onclick="quizNextQuestion()">السؤال التالي ←</button>
+          </div>
+        </div>
+
+        <!-- Mode 2: Full List of All 12 Questions (All in One Page) -->
+        <div id="quiz-all-questions-view" style="display:none;">
+          <div class="quiz-all-intro">
+            <h4>📋 بنك الأسئلة الشامل لجميع أعضاء الجسم الـ 6 (12 سؤالاً)</h4>
+            <p>يمكنكِ هنا استعراض جميع الأسئلة والإجابة عليها مع التحفيز والتصحيح الفوري لكل سؤال:</p>
+          </div>
+          <div id="quiz-all-questions-list" class="quiz-all-list-container">
+            <!-- Rendered dynamically -->
           </div>
         </div>
 
@@ -937,7 +966,7 @@
   <!-- Three.js 3D Engine & Orbit Controls -->
   <script src="assets/three.min.js"></script>
   <script src="assets/OrbitControls.js"></script>
-  <script src="body3d.js?v=20261103_v3"></script>
-  <script src="app.js?v=20261103_v3"></script>
+  <script src="body3d.js?v=20261103_v4"></script>
+  <script src="app.js?v=20261103_v4"></script>
 </body>
 </html>

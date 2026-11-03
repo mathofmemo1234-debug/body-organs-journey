@@ -2363,37 +2363,68 @@ window.resetAllYoutubeLinksToDefault = function() {
 // ==========================================
 // COMPREHENSIVE QUIZ BANK LOGIC
 // ==========================================
+// ==========================================
+// QUIZ ENGINE WITH QUESTION NAVIGATOR & DUAL VIEWS
+// ==========================================
+let quizDisplayMode = 'single'; // 'single' or 'all'
+
+window.setQuizDisplayMode = function(mode) {
+  quizDisplayMode = mode;
+  const singleBtn = document.getElementById('quiz-mode-single-btn');
+  const allBtn = document.getElementById('quiz-mode-all-btn');
+  const singleView = document.getElementById('quiz-active-view');
+  const allView = document.getElementById('quiz-all-questions-view');
+
+  if (singleBtn) singleBtn.classList.toggle('active', mode === 'single');
+  if (allBtn) allBtn.classList.toggle('active', mode === 'all');
+
+  if (mode === 'single') {
+    if (singleView) singleView.style.display = 'block';
+    if (allView) allView.style.display = 'none';
+    renderQuizQuestion();
+  } else {
+    if (singleView) singleView.style.display = 'none';
+    if (allView) allView.style.display = 'block';
+    renderAllQuizQuestions();
+  }
+};
+
+window.jumpToQuizQuestion = function(idx) {
+  const allQ = getAllQuestions();
+  if (idx >= 0 && idx < allQ.length) {
+    state.quizCurrentIndex = idx;
+    setQuizDisplayMode('single');
+    renderQuizQuestion();
+    const activeView = document.getElementById('quiz-active-view');
+    if (activeView) activeView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+};
+
+window.quizNextQuestion = function() {
+  const allQ = getAllQuestions();
+  if (state.quizCurrentIndex < allQ.length - 1) {
+    state.quizCurrentIndex++;
+    renderQuizQuestion();
+  } else {
+    finishQuiz();
+  }
+};
+
+window.quizPrevQuestion = function() {
+  if (state.quizCurrentIndex > 0) {
+    state.quizCurrentIndex--;
+    renderQuizQuestion();
+  }
+};
+
 function setupQuiz() {
   state.quizCurrentIndex = 0;
   state.quizScore = 0;
   state.quizAnswers = {};
   renderQuizQuestion();
+  renderQuizPillsBar();
 
-  const nextBtn = document.getElementById('quiz-next-btn');
-  const prevBtn = document.getElementById('quiz-prev-btn');
   const restartBtn = document.getElementById('quiz-restart-btn');
-
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      const allQ = getAllQuestions();
-      if (state.quizCurrentIndex < allQ.length - 1) {
-        state.quizCurrentIndex++;
-        renderQuizQuestion();
-      } else {
-        finishQuiz();
-      }
-    });
-  }
-
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      if (state.quizCurrentIndex > 0) {
-        state.quizCurrentIndex--;
-        renderQuizQuestion();
-      }
-    });
-  }
-
   if (restartBtn) {
     restartBtn.addEventListener('click', () => {
       state.quizCurrentIndex = 0;
@@ -2403,11 +2434,47 @@ function setupQuiz() {
       const activeView = document.getElementById('quiz-active-view');
       if (finishView) finishView.style.display = 'none';
       if (activeView) activeView.style.display = 'block';
+      setQuizDisplayMode('single');
       renderQuizQuestion();
       renderOrganQuestions();
       updateProgressTracker();
     });
   }
+}
+
+function renderQuizPillsBar() {
+  const bar = document.getElementById('quiz-question-pills-bar');
+  if (!bar) return;
+  const allQ = getAllQuestions();
+  bar.innerHTML = '';
+
+  const organIcons = {
+    heart: '🫀', lungs: '🫁', brain: '🧠', stomach: '🥗', esophagus: '🥢', eye: '👁️'
+  };
+
+  allQ.forEach((q, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-pill-btn';
+    if (idx === state.quizCurrentIndex && quizDisplayMode === 'single') {
+      btn.classList.add('active');
+    }
+
+    const hasAnswered = state.quizAnswers[q.id] !== undefined;
+    if (hasAnswered) {
+      if (state.quizAnswers[q.id] === q.correct) {
+        btn.classList.add('correct');
+      } else {
+        btn.classList.add('wrong');
+      }
+    }
+
+    const icon = organIcons[q.organKey] || '❓';
+    const statusMark = hasAnswered ? (state.quizAnswers[q.id] === q.correct ? '✓' : '✗') : '';
+    btn.innerHTML = `<span>${icon}</span> <span>س${idx + 1}</span> <span style="font-size:0.75rem;">${statusMark}</span>`;
+    btn.title = `${q.organName}: س${idx + 1}`;
+    btn.onclick = () => jumpToQuizQuestion(idx);
+    bar.appendChild(btn);
+  });
 }
 
 function renderQuizQuestion() {
@@ -2417,6 +2484,8 @@ function renderQuizQuestion() {
   if (state.quizCurrentIndex >= allQ.length) {
     state.quizCurrentIndex = allQ.length - 1;
   }
+
+  renderQuizPillsBar();
 
   const q = allQ[state.quizCurrentIndex];
   const qNumElem = document.getElementById('quiz-q-num');
@@ -2430,7 +2499,7 @@ function renderQuizQuestion() {
   if (scoreElem) scoreElem.textContent = `${state.quizScore} / ${allQ.length}`;
   if (titleElem) {
     titleElem.innerHTML = `
-      <span style="display:inline-block;background:#e0f2fe;color:#0369a1;font-size:0.8rem;padding:2px 10px;border-radius:20px;margin-bottom:6px;">${q.organName}</span>
+      <span style="display:inline-block;background:#e0f2fe;color:#0369a1;font-size:0.85rem;padding:3px 12px;border-radius:20px;margin-bottom:8px;font-weight:800;">${q.organName}</span>
       <div>${q.q}</div>
     `;
   }
@@ -2463,8 +2532,8 @@ function renderQuizQuestion() {
       const isCorrect = state.quizAnswers[q.id] === q.correct;
       feedbackBox.className = `quiz-feedback-box ${isCorrect ? 'correct' : 'wrong'}`;
       feedbackBox.innerHTML = `
-        <div style="font-weight:900;margin-bottom:4px;">${isCorrect ? '✓ ' + (q.motivationSuccess || 'إجابة صحيحة ومتميزة!') : '✗ ' + (q.motivationRetry || 'إجابة غير دقيقة!')}</div>
-        <div style="font-size:0.92rem;line-height:1.6;">${q.explain}</div>
+        <div style="font-weight:900;margin-bottom:4px;font-size:1.02rem;">${isCorrect ? '✓ ' + (q.motivationSuccess || 'إجابة صحيحة ومتميزة!') : '✗ ' + (q.motivationRetry || 'إجابة غير دقيقة!')}</div>
+        <div style="font-size:0.95rem;line-height:1.65;">${q.explain}</div>
       `;
       feedbackBox.style.display = 'block';
     } else {
@@ -2475,6 +2544,61 @@ function renderQuizQuestion() {
   if (nextBtn) {
     nextBtn.textContent = state.quizCurrentIndex === allQ.length - 1 ? 'إنهاء الاختبار وعرض النتيجة 🏁' : 'السؤال التالي ←';
   }
+}
+
+function renderAllQuizQuestions() {
+  const container = document.getElementById('quiz-all-questions-list');
+  if (!container) return;
+  const allQ = getAllQuestions();
+  container.innerHTML = '';
+
+  const organIcons = {
+    heart: '🫀', lungs: '🫁', brain: '🧠', stomach: '🥗', esophagus: '🥢', eye: '👁️'
+  };
+
+  allQ.forEach((q, idx) => {
+    const card = document.createElement('div');
+    card.className = 'all-q-card';
+
+    const hasAnswered = state.quizAnswers[q.id] !== undefined;
+    const chosenAnswer = state.quizAnswers[q.id];
+    const isCorrect = chosenAnswer === q.correct;
+
+    let optionsHtml = '';
+    q.options.forEach(opt => {
+      let optClass = 'quiz-option-btn';
+      if (hasAnswered) {
+        if (opt === q.correct) optClass += ' correct';
+        else if (opt === chosenAnswer) optClass += ' wrong';
+      }
+      optionsHtml += `
+        <button class="${optClass}" ${hasAnswered ? 'disabled' : ''} onclick="selectQuizOption('${q.id}', '${opt.replace(/'/g, "'")}')">
+          <span>${opt}</span>
+        </button>
+      `;
+    });
+
+    let feedbackHtml = '';
+    if (hasAnswered) {
+      feedbackHtml = `
+        <div class="quiz-feedback-box ${isCorrect ? 'correct' : 'wrong'}" style="display:block;margin-top:12px;">
+          <div style="font-weight:900;margin-bottom:4px;">${isCorrect ? '✓ ' + (q.motivationSuccess || 'ممتازة!') : '✗ ' + (q.motivationRetry || 'حاولي ثانية!')}</div>
+          <div style="font-size:0.92rem;line-height:1.6;">${q.explain}</div>
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="all-q-card-header">
+        <span class="all-q-badge">${organIcons[q.organKey] || ''} ${q.organName} (سؤال ${idx + 1} من ${allQ.length})</span>
+        <button class="btn-subtle-pill" onclick="jumpToQuizQuestion(${idx})">🎯 الانتقال لهذا السؤال</button>
+      </div>
+      <h4 class="all-q-text">${q.q}</h4>
+      <div class="options-grid">${optionsHtml}</div>
+      ${feedbackHtml}
+    `;
+    container.appendChild(card);
+  });
 }
 
 function selectQuizOption(qId, selected) {
@@ -2500,7 +2624,12 @@ function selectQuizOption(qId, selected) {
   });
   state.quizScore = score;
 
-  renderQuizQuestion();
+  if (quizDisplayMode === 'all') {
+    renderAllQuizQuestions();
+  } else {
+    renderQuizQuestion();
+  }
+  renderQuizPillsBar();
   renderOrganQuestions();
   updateProgressTracker();
 }

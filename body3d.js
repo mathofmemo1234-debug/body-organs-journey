@@ -70,25 +70,34 @@ class Body3DViewer {
       return;
     }
 
-    this.setupLights();
-    this.buildPedestal();
-    this.buildHumanSilhouette();
-    this.buildInternalOrgans();
-    this.buildHighlightBeacon();
-    this.setupControls();
-    this.setupEventListeners();
-    this.setupDOMBindings();
+    try {
+      this.setupLights();
+      this.buildPedestal();
+      this.buildHumanSilhouette();
+      this.buildInternalOrgans();
+      this.buildHighlightBeacon();
+      this.setupControls();
+      this.setupEventListeners();
+      this.setupDOMBindings();
 
-    // Initial render and start animation loop
-    this.onWindowResize();
-    if (this.renderer && this.scene && this.camera) {
-      this.renderer.render(this.scene, this.camera);
+      if (this.camera) {
+        this.camera.lookAt(0, 3.8, 0);
+      }
+
+      this.onWindowResize();
+      if (this.renderer && this.scene && this.camera) {
+        this.renderer.render(this.scene, this.camera);
+      }
+      this.animate();
+
+      setTimeout(() => this.onWindowResize(), 100);
+      setTimeout(() => this.onWindowResize(), 350);
+      setTimeout(() => this.onWindowResize(), 800);
+    } catch (err) {
+      console.warn('3D initialization failed, falling back to interactive SVG:', err);
+      this.renderFallback();
+      this.setupDOMBindings();
     }
-    this.animate();
-
-    // Delayed resize to ensure container dimensions are settled
-    setTimeout(() => this.onWindowResize(), 150);
-    setTimeout(() => this.onWindowResize(), 500);
   }
 
   renderFallback() {
@@ -198,6 +207,8 @@ class Body3DViewer {
         alpha: true,
         powerPreference: 'default'
       });
+      const gl = this.renderer.getContext();
+      if (!gl) throw new Error('No WebGL Context');
     } catch (e1) {
       try {
         this.renderer = new THREE.WebGLRenderer({
@@ -205,6 +216,8 @@ class Body3DViewer {
           antialias: false,
           alpha: true
         });
+        const gl2 = this.renderer.getContext();
+        if (!gl2) throw new Error('No fallback WebGL Context');
       } catch (e2) {
         console.warn('WebGL Renderer creation failed, falling back:', e2);
         this.renderer = null;
