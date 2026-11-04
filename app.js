@@ -1206,26 +1206,45 @@ const organsSimulatorData = {
 const organsData = organsSimulatorData;
 
 // ==========================================
-// YOUTUBE VIDEO MANAGER HELPERS
+// YOUTUBE VIDEO MANAGER HELPERS & ENGINE
 // ==========================================
+function extractYouTubeVideoId(url) {
+  if (!url) return '';
+  url = String(url).trim();
+
+  // If user pasted an iframe embed code: extract src
+  const iframeSrcMatch = url.match(/src=["']([^"']+)["']/i);
+  if (iframeSrcMatch) {
+    url = iframeSrcMatch[1];
+  }
+
+  // If already an 11-char ID
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url)) {
+    return url;
+  }
+
+  // Match all YouTube URL patterns (watch, embed, shorts, live, youtu.be, etc.)
+  const patterns = [
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|live\/|watch\?(?:.*&)?v=))([a-zA-Z0-9_-]{11})/i,
+    /[?&]v=([a-zA-Z0-9_-]{11})/i,
+    /youtube\.com\/user\/[^/]+\/([a-zA-Z0-9_-]{11})/i
+  ];
+
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m && m[1]) return m[1];
+  }
+
+  return '';
+}
+
 function formatYouTubeEmbedUrl(url) {
   if (!url) return '';
-  url = url.trim();
-  // Extract 11-char YouTube ID
-  let videoId = '';
-  if (url.length === 11 && /^[a-zA-Z0-9_-]+$/.test(url)) {
-    videoId = url;
-  } else {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
-    if (match && match[2].length === 11) {
-      videoId = match[2];
-    }
-  }
+  const videoId = extractYouTubeVideoId(url);
   if (videoId) {
     return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=0&rel=0`;
   }
-  return url;
+  return String(url).trim();
 }
 
 function getCustomYouTubeLinks() {
@@ -1238,15 +1257,97 @@ function getCustomYouTubeLinks() {
   return {};
 }
 
-function getPartYouTubeUrl(organKey, partId) {
-  const custom = getCustomYouTubeLinks();
-  if (custom[partId]) return custom[partId];
-  const organ = organsSimulatorData[organKey];
-  if (organ && organ.parts) {
-    const part = organ.parts.find(p => p.id === partId);
-    if (part) return part.defaultYt;
+function getPartYouTubeUrl(organKeyOrPartId, maybePartId) {
+  let organKey = organKeyOrPartId;
+  let partId = maybePartId;
+
+  // Flexible argument handling: getPartYouTubeUrl('heart-aorta') or getPartYouTubeUrl('heart', 'heart-aorta')
+  if (!partId) {
+    partId = organKeyOrPartId;
+    organKey = null;
+  } else if (!organsSimulatorData[organKeyOrPartId]) {
+    // If first argument is partId (e.g. from admin table call)
+    partId = organKeyOrPartId;
   }
+
+  const custom = getCustomYouTubeLinks();
+  if (partId && custom[partId]) {
+    return custom[partId];
+  }
+
+  // Look in specific organ if valid
+  if (organKey && organsSimulatorData[organKey] && organsSimulatorData[organKey].parts) {
+    const part = organsSimulatorData[organKey].parts.find(p => p.id === partId);
+    if (part && part.defaultYt) return part.defaultYt;
+  }
+
+  // Look across all organs
+  if (partId) {
+    for (const key of Object.keys(organsSimulatorData)) {
+      const organ = organsSimulatorData[key];
+      if (organ && organ.parts) {
+        const part = organ.parts.find(p => p.id === partId);
+        if (part && part.defaultYt) return part.defaultYt;
+      }
+    }
+  }
+
   return '';
+}
+
+function syncPartYouTubeAcrossUI(partId, newUrl) {
+  const effectiveUrl = getPartYouTubeUrl(partId);
+  const embedUrl = formatYouTubeEmbedUrl(effectiveUrl);
+
+  // 1. Admin table input
+  const adminInput = document.getElementById(`admin-yt-input-${partId}`);
+  if (adminInput && adminInput.value !== effectiveUrl) {
+    adminInput.value = effectiveUrl;
+  }
+
+  // 2. Manager modal input and link
+  const managerInput = document.getElementById(`manager-yt-${partId}`);
+  if (managerInput && managerInput.value !== effectiveUrl) {
+    managerInput.value = effectiveUrl;
+  }
+  const managerLink = document.getElementById(`manager-yt-link-${partId}`);
+  if (managerLink) {
+    managerLink.href = effectiveUrl;
+  }
+
+  // 3. Detail modal if open for this part
+  if (typeof state !== 'undefined' && state.activePartModal && state.activePartModal.partId === partId) {
+    const modalInput = document.getElementById('part-yt-input');
+    if (modalInput && modalInput.value !== effectiveUrl) {
+      modalInput.value = effectiveUrl;
+    }
+    const modalWrap = document.getElementById('part-yt-player-wrap');
+    if (modalWrap && modalWrap.innerHTML) {
+      modalWrap.innerHTML = `<iframe src="${embedUrl}" title="YouTube Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    }
+  }
+
+  // 4. Active part in Explorer view
+  if (typeof state !== 'undefined' && state.selectedPartId === partId) {
+    const activeInput = document.getElementById('active-part-yt-input');
+    if (activeInput && activeInput.value !== effectiveUrl) {
+      activeInput.value = effectiveUrl;
+    }
+    const activePlayer = document.getElementById('active-part-yt-player');
+    if (activePlayer && activePlayer.style.display !== 'none') {
+      activePlayer.innerHTML = `<iframe src="${embedUrl}" title="YouTube Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    }
+  }
+
+  // 5. Toast if open for this part
+  const toastInput = document.getElementById('v-func-yt-input');
+  if (toastInput) {
+    toastInput.value = effectiveUrl;
+  }
+  const toastPlayer = document.getElementById('v-func-yt-player-box');
+  if (toastPlayer && toastPlayer.style.display !== 'none') {
+    toastPlayer.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+  }
 }
 
 function setPartYouTubeUrl(partId, url) {
@@ -1261,7 +1362,12 @@ function setPartYouTubeUrl(partId, url) {
   } catch (e) {
     console.error(e);
   }
+  syncPartYouTubeAcrossUI(partId, url);
 }
+
+// Global aliases to ensure no ReferenceError anywhere
+window.setPartYouTubeUrl = setPartYouTubeUrl;
+window.savePartYouTubeUrl = setPartYouTubeUrl;
 
 function resetPartYouTubeUrl(partId) {
   const custom = getCustomYouTubeLinks();
@@ -1271,6 +1377,7 @@ function resetPartYouTubeUrl(partId) {
   } catch (e) {
     console.error(e);
   }
+  syncPartYouTubeAcrossUI(partId, '');
 }
 
 function resetAllYouTubeUrls() {
@@ -1279,10 +1386,36 @@ function resetAllYouTubeUrls() {
   } catch (e) {
     console.error(e);
   }
+  if (typeof renderOrganViewer === 'function') renderOrganViewer();
 }
 
 // ==========================================
-// CUSTOM QUESTIONS MANAGER HELPERS
+// PERSISTENT EXPLORED ORGANS HELPERS
+// ==========================================
+function loadExploredOrgans() {
+  try {
+    const saved = localStorage.getItem('explored_organs');
+    if (saved) {
+      const arr = JSON.parse(saved);
+      if (Array.isArray(arr)) {
+        state.exploredOrgans = new Set(arr);
+      }
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function saveExploredOrgans() {
+  try {
+    localStorage.setItem('explored_organs', JSON.stringify([...state.exploredOrgans]));
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// ==========================================
+// CUSTOM QUESTIONS MANAGER HELPERS & NORMALIZER
 // ==========================================
 function getCustomQuestions() {
   try {
@@ -1296,7 +1429,12 @@ function getCustomQuestions() {
 
 function saveCustomQuestionToStorage(qData) {
   const questions = getCustomQuestions();
-  questions.push(qData);
+  const existingIdx = questions.findIndex(q => q.id === qData.id);
+  if (existingIdx !== -1) {
+    questions[existingIdx] = qData;
+  } else {
+    questions.push(qData);
+  }
   try {
     localStorage.setItem('custom_organ_questions', JSON.stringify(questions));
   } catch (e) {
@@ -1314,6 +1452,24 @@ function deleteCustomQuestionFromStorage(qId) {
   }
 }
 
+function getDeletedDefaultQuestions() {
+  try {
+    const saved = localStorage.getItem('deleted_default_questions');
+    if (saved) return JSON.parse(saved);
+  } catch (e) {
+    console.error(e);
+  }
+  return [];
+}
+
+function setDeletedDefaultQuestions(list) {
+  try {
+    localStorage.setItem('deleted_default_questions', JSON.stringify(list));
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 function resetOrganCustomQuestionsInStorage(organKey) {
   let questions = getCustomQuestions();
   questions = questions.filter(q => q.organKey !== organKey);
@@ -1322,14 +1478,95 @@ function resetOrganCustomQuestionsInStorage(organKey) {
   } catch (e) {
     console.error(e);
   }
+  // Also un-delete defaults for this organ
+  const organ = organsSimulatorData[organKey];
+  if (organ && organ.defaultQuestions) {
+    const defIds = organ.defaultQuestions.map((d, i) => d.id || `default_${organKey}_${i}`);
+    let deleted = getDeletedDefaultQuestions();
+    deleted = deleted.filter(id => !defIds.includes(id));
+    setDeletedDefaultQuestions(deleted);
+  }
 }
 
-// Get all questions for an organ (default + custom)
+// Normalize a question object into unified format
+function normalizeQuestion(rawQ, defaultOrganKey = 'heart', isDefault = false) {
+  const organKey = rawQ.organKey || defaultOrganKey;
+  const organ = organsSimulatorData[organKey];
+  const organName = rawQ.organName || (organ ? organ.name : organKey);
+  const questionText = rawQ.q || rawQ.question || '';
+  const options = Array.isArray(rawQ.options) ? [...rawQ.options] : [];
+
+  let correctStr = '';
+  let correctIdx = 0;
+  if (typeof rawQ.correct === 'number') {
+    correctIdx = rawQ.correct;
+    correctStr = options[correctIdx] || '';
+  } else if (typeof rawQ.correct === 'string') {
+    correctStr = rawQ.correct;
+    correctIdx = options.indexOf(correctStr);
+    if (correctIdx === -1) correctIdx = 0;
+  } else if (rawQ.correctIndex !== undefined) {
+    correctIdx = rawQ.correctIndex;
+    correctStr = options[correctIdx] || '';
+  }
+
+  const explainText = rawQ.explain || rawQ.explanation || 'أحسنتِ! فهم علمي سليم.';
+  const motivationSuccessText = rawQ.motivationSuccess || rawQ.motivation || '🌟 رائعة ومتميزة! إجابة ذكية!';
+  const motivationRetryText = rawQ.motivationRetry || '💡 محاولة ممتازة! فكري مجدداً وجربي.';
+
+  return {
+    ...rawQ,
+    id: rawQ.id,
+    organKey,
+    organName,
+    q: questionText,
+    question: questionText,
+    options,
+    correct: correctStr,
+    correctIndex: correctIdx,
+    explain: explainText,
+    explanation: explainText,
+    motivationSuccess: motivationSuccessText,
+    motivationRetry: motivationRetryText,
+    motivation: motivationSuccessText,
+    isDefault: isDefault,
+    isCustom: !isDefault
+  };
+}
+
+// Get all questions for an organ (default with overrides + custom, respecting deletions)
 function getOrganQuestions(organKey) {
   const organ = organsSimulatorData[organKey];
-  const defaults = (organ && organ.defaultQuestions) ? [...organ.defaultQuestions] : [];
+  const defaults = (organ && organ.defaultQuestions) ? organ.defaultQuestions : [];
+  const deletedDefaults = getDeletedDefaultQuestions();
   const customs = getCustomQuestions().filter(q => q.organKey === organKey);
-  return [...defaults, ...customs];
+
+  const result = [];
+  const defaultIds = [];
+
+  // 1. Process defaults: check deletions or overrides
+  defaults.forEach((defQ, idx) => {
+    const defId = defQ.id || `default_${organKey}_${idx}`;
+    defaultIds.push(defId);
+    if (deletedDefaults.includes(defId)) return;
+
+    // Check if customized override exists
+    const override = customs.find(c => c.id === defId);
+    if (override) {
+      result.push(normalizeQuestion(override, organKey, true));
+    } else {
+      result.push(normalizeQuestion({ ...defQ, id: defId }, organKey, true));
+    }
+  });
+
+  // 2. Add custom added questions
+  customs.forEach(c => {
+    if (!defaultIds.includes(c.id)) {
+      result.push(normalizeQuestion(c, organKey, false));
+    }
+  });
+
+  return result;
 }
 
 // Get all questions across all 6 organs
@@ -1338,7 +1575,7 @@ function getAllQuestions() {
   Object.keys(organsSimulatorData).forEach(key => {
     const organQuestions = getOrganQuestions(key);
     organQuestions.forEach(q => {
-      all.push({ ...q, organKey: key, organName: organsSimulatorData[key].name });
+      all.push(q);
     });
   });
   return all;
@@ -1360,7 +1597,6 @@ const quizData = new Proxy([], {
   }
 });
 
-// App State
 const state = {
   currentTab: 'home',
   currentOrgan: 'heart',
@@ -1374,6 +1610,7 @@ const state = {
   soundEnabled: true,
   studentName: 'الطالب/ـة المتميز/ـة'
 };
+window.state = state;
 
 document.addEventListener('DOMContentLoaded', () => {
   setupNavigation();
@@ -1463,7 +1700,11 @@ window.selectPart = function(organKey, partId, openModal = false) {
           const val = ytInput.value.trim();
           setPartYouTubeUrl(partId, val);
           sounds.playCorrect();
-          alert(`تم حفظ رابط فيديو يوتيوب لـ (${part.name}) بنجاح!`);
+          if (ytPlayer && ytPlayer.style.display !== 'none') {
+            const embedUrl = formatYouTubeEmbedUrl(getPartYouTubeUrl(organKey, partId));
+            ytPlayer.innerHTML = `<iframe src="${embedUrl}" title="${part.name}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+          }
+          alert(`✅ تم حفظ وتحديث رابط فيديو يوتيوب لـ (${part.name}) بنجاح!`);
         }
       };
     }
@@ -1582,7 +1823,12 @@ window.saveViewerPartVideo = function(partId, partName) {
   const val = input.value.trim();
   setPartYouTubeUrl(partId, val);
   sounds.playCorrect();
-  alert(`تم حفظ وتحديث رابط فيديو يوتيوب لـ (${partName}) بنجاح!`);
+  const playerBox = document.getElementById('v-func-yt-player-box');
+  if (playerBox && playerBox.style.display !== 'none') {
+    const embedUrl = formatYouTubeEmbedUrl(getPartYouTubeUrl(partId));
+    playerBox.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+  }
+  alert(`✅ تم حفظ وتحديث رابط فيديو يوتيوب لـ (${partName}) بنجاح!`);
 };
 
 // Setup Navigation
@@ -1660,6 +1906,7 @@ function switchTab(tabId) {
 // ORGAN EXPLORER SETUP & RENDERING
 // ==========================================
 function setupOrganExplorer() {
+  loadExploredOrgans();
   const tabsContainer = document.getElementById('organ-tabs-container');
   if (!tabsContainer) return;
 
@@ -1707,6 +1954,7 @@ function setupOrganExplorer() {
   if (completeBtn) {
     completeBtn.addEventListener('click', () => {
       state.exploredOrgans.add(state.currentOrgan);
+      saveExploredOrgans();
       sounds.playCorrect();
       updateOrganCompletedState();
       updateProgressTracker();
@@ -1962,21 +2210,20 @@ function setupPartDetailModal() {
       if (!state.activePartModal) return;
       const input = document.getElementById('part-yt-input');
       const val = input ? input.value.trim() : '';
-      if (val) {
-        setPartYouTubeUrl(state.activePartModal.partId, val);
-        sounds.playCorrect();
-        const feedback = document.getElementById('yt-save-feedback');
-        if (feedback) {
-          feedback.style.display = 'inline-block';
-          setTimeout(() => feedback.style.display = 'none', 3000);
-        }
-        // Refresh player
-        const playerWrap = document.getElementById('part-yt-player-wrap');
-        const embedUrl = formatYouTubeEmbedUrl(val);
-        if (playerWrap) {
-          playerWrap.innerHTML = `<iframe src="${embedUrl}" title="YouTube Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-        }
+      setPartYouTubeUrl(state.activePartModal.partId, val);
+      sounds.playCorrect();
+      const feedback = document.getElementById('yt-save-feedback');
+      if (feedback) {
+        feedback.style.display = 'inline-block';
+        setTimeout(() => feedback.style.display = 'none', 3000);
       }
+      // Refresh player
+      const playerWrap = document.getElementById('part-yt-player-wrap');
+      const embedUrl = formatYouTubeEmbedUrl(getPartYouTubeUrl(state.activePartModal.organKey, state.activePartModal.partId));
+      if (playerWrap) {
+        playerWrap.innerHTML = `<iframe src="${embedUrl}" title="YouTube Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      }
+      alert('✅ تم حفظ رابط الفيديو وتحديثه بنجاح!');
     });
   }
 
@@ -2249,6 +2496,7 @@ window.saveCustomQuestion = function() {
     q: qText,
     options,
     correct,
+    correctIndex: correctIdx,
     explain: explain || 'أحسنتِ! فهم علمي سليم.',
     motivationSuccess: motivation || '🌟 رائعة ومتميزة! إجابة ذكية!',
     motivationRetry: '💡 محاولة ممتازة! فكري مجدداً وجربي.',
@@ -2262,6 +2510,8 @@ window.saveCustomQuestion = function() {
 
   renderOrganQuestions();
   renderQuizQuestion();
+  if (typeof renderQuizPillsBar === 'function') renderQuizPillsBar();
+  if (typeof renderAdminQuestions === 'function') renderAdminQuestions(adminCurrentFilter);
   updateProgressTracker();
 };
 
@@ -2305,13 +2555,31 @@ function setupAllYouTubeModal() {
   }
 }
 
-window.openAllYoutubeModal = function() {
+function saveCurrentTabManagerInputs() {
+  const organ = organsSimulatorData[activeAllYtOrgan];
+  if (!organ || !organ.parts) return;
+  organ.parts.forEach(part => {
+    const input = document.getElementById(`manager-yt-${part.id}`);
+    if (input) {
+      setPartYouTubeUrl(part.id, input.value.trim());
+    }
+  });
+}
+
+window.openAllYoutubeModal = function(initialOrgan = null) {
   const modal = document.getElementById('all-youtube-modal');
   if (!modal) return;
-  activeAllYtOrgan = state.currentOrgan || 'heart';
+  activeAllYtOrgan = initialOrgan || (typeof state !== 'undefined' && state.currentOrgan) || 'heart';
   renderAllYouTubeTabs();
   renderAllYouTubeList(activeAllYtOrgan);
   modal.classList.add('show');
+};
+
+window.switchAllYouTubeOrgan = function(key) {
+  saveCurrentTabManagerInputs();
+  activeAllYtOrgan = key;
+  renderAllYouTubeTabs();
+  renderAllYouTubeList(key);
 };
 
 function renderAllYouTubeTabs() {
@@ -2324,11 +2592,7 @@ function renderAllYouTubeTabs() {
     const btn = document.createElement('button');
     btn.className = `all-yt-tab-btn ${key === activeAllYtOrgan ? 'active' : ''}`;
     btn.innerHTML = `<span>${organ.name}</span>`;
-    btn.onclick = () => {
-      activeAllYtOrgan = key;
-      renderAllYouTubeTabs();
-      renderAllYouTubeList(key);
-    };
+    btn.onclick = () => switchAllYouTubeOrgan(key);
     tabsWrap.appendChild(btn);
   });
 }
@@ -2346,13 +2610,38 @@ function renderAllYouTubeList(organKey) {
     row.innerHTML = `
       <div class="all-yt-part-header">
         <span class="all-yt-part-title">${part.name} (${part.enName})</span>
-        <a href="${currentUrl}" target="_blank" rel="noopener noreferrer" style="font-size:0.8rem;color:#0284c7;font-weight:700;text-decoration:none;">فتح في يوتيوب ↗</a>
+        <a id="manager-yt-link-${part.id}" href="${currentUrl}" target="_blank" rel="noopener noreferrer" style="font-size:0.8rem;color:#0284c7;font-weight:700;text-decoration:none;">فتح في يوتيوب ↗</a>
       </div>
-      <input type="text" id="manager-yt-${part.id}" value="${currentUrl}" placeholder="https://www.youtube.com/watch?v=...">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="manager-yt-${part.id}" value="${currentUrl}" placeholder="https://www.youtube.com/watch?v=..." style="flex:1;">
+        <button class="btn-secondary" onclick="saveSingleYoutubeLinkFromManager('${part.id}', '${organKey}')" style="padding:6px 12px;font-size:0.8rem;white-space:nowrap;">
+          <span>حفظ 💾</span>
+        </button>
+      </div>
     `;
     listWrap.appendChild(row);
+
+    const input = row.querySelector(`#manager-yt-${part.id}`);
+    if (input) {
+      input.addEventListener('change', () => {
+        setPartYouTubeUrl(part.id, input.value.trim());
+        const link = document.getElementById(`manager-yt-link-${part.id}`);
+        if (link) link.href = getPartYouTubeUrl(organKey, part.id);
+      });
+    }
   });
 }
+
+window.saveSingleYoutubeLinkFromManager = function(partId, organKey) {
+  const input = document.getElementById(`manager-yt-${partId}`);
+  if (!input) return;
+  const val = input.value.trim();
+  setPartYouTubeUrl(partId, val);
+  sounds.playCorrect();
+  const link = document.getElementById(`manager-yt-link-${partId}`);
+  if (link) link.href = getPartYouTubeUrl(organKey, partId);
+  alert('✅ تم حفظ رابط الفيديو لهذا الجزء بنجاح!');
+};
 
 window.saveAllYoutubeLinksFromManager = function() {
   const organ = organsSimulatorData[activeAllYtOrgan];
@@ -2362,11 +2651,13 @@ window.saveAllYoutubeLinksFromManager = function() {
     const input = document.getElementById(`manager-yt-${part.id}`);
     if (input) {
       setPartYouTubeUrl(part.id, input.value.trim());
+      const link = document.getElementById(`manager-yt-link-${part.id}`);
+      if (link) link.href = getPartYouTubeUrl(activeAllYtOrgan, part.id);
     }
   });
 
   sounds.playVictory();
-  alert(`تم حفظ وتحديث روابط يوتيوب لأجزاء ${organ.name} بنجاح!`);
+  alert(`✅ تم حفظ وتحديث روابط يوتيوب لأجزاء (${organ.name}) بنجاح!`);
   renderOrganViewer();
 };
 
@@ -3031,30 +3322,9 @@ window.filterAdminQuestions = function(organKey, btnElem) {
 function getAllAdminQuestionsList() {
   const list = [];
   Object.keys(organsSimulatorData).forEach(key => {
-    const organ = organsSimulatorData[key];
-    const organName = organ.name;
-    const defaults = organ.defaultQuestions || [];
-    defaults.forEach((q, idx) => {
-      list.push({
-        ...q,
-        id: q.id || `default_${key}_${idx}`,
-        isDefault: true,
-        organKey: key,
-        organName: organName
-      });
-    });
+    const organQuestions = getOrganQuestions(key);
+    list.push(...organQuestions);
   });
-
-  const customs = getCustomQuestions();
-  customs.forEach(q => {
-    const organ = organsSimulatorData[q.organKey];
-    list.push({
-      ...q,
-      isDefault: false,
-      organName: organ ? organ.name : q.organKey
-    });
-  });
-
   return list;
 }
 
@@ -3071,7 +3341,7 @@ function renderAdminQuestions(filterOrgan = 'all') {
         <span style="font-size:2rem;display:block;margin-bottom:8px;">📭</span>
         <strong style="font-size:1.05rem;">لا توجد أسئلة مسجلة لهذا العضو</strong>
         <p style="margin:6px 0 14px 0;font-size:0.85rem;">يمكنك إضافة سؤال جديد باستخدام الزر بالأعلى.</p>
-        <button class="btn-primary" onclick="openAddQuestionModal()">➕ إضافة أول سؤال</button>
+        <button class="btn-primary" onclick="openAddQuestionModal('${filterOrgan !== 'all' ? filterOrgan : 'heart'}')">➕ إضافة أول سؤال</button>
       </div>
     `;
     return;
@@ -3100,20 +3370,20 @@ function renderAdminQuestions(filterOrgan = 'all') {
         </div>
 
         <div class="admin-q-text">
-          <span style="color:#6366f1;margin-left:4px;">س${idx + 1}:</span> ${q.question}
+          <span style="color:#6366f1;margin-left:4px;">س${idx + 1}:</span> ${q.q || q.question}
         </div>
 
         <div class="admin-q-choices">
           ${q.options.map((opt, optIdx) => `
-            <div class="admin-q-choice-item ${optIdx === q.correct ? 'correct' : ''}">
-              ${optIdx === q.correct ? '✓ ' : '○ '} ${opt}
+            <div class="admin-q-choice-item ${opt === q.correct || optIdx === q.correctIndex ? 'correct' : ''}">
+              ${opt === q.correct || optIdx === q.correctIndex ? '✓ ' : '○ '} ${opt}
             </div>
           `).join('')}
         </div>
 
         <div style="background:#f8fafc;padding:10px 14px;border-radius:8px;font-size:0.85rem;color:#475569;display:flex;flex-direction:column;gap:4px;border:1px solid #e2e8f0;">
-          <div><strong style="color:#0f172a;">💡 التفسير العلمي:</strong> ${q.explanation || 'لا يوجد'}</div>
-          <div><strong style="color:#16a34a;">🌟 عبارة التحفيز:</strong> ${q.motivation || 'ممتاز!'}</div>
+          <div><strong style="color:#0f172a;">💡 التفسير العلمي:</strong> ${q.explain || q.explanation || 'لا يوجد'}</div>
+          <div><strong style="color:#16a34a;">🌟 عبارة التحفيز:</strong> ${q.motivationSuccess || q.motivation || 'ممتاز!'}</div>
         </div>
       </div>
     `;
@@ -3130,15 +3400,22 @@ window.openAdminEditQuestionModal = function(qId) {
 
   document.getElementById('edit-q-id').value = q.id;
   document.getElementById('edit-q-organ').value = q.organKey;
-  document.getElementById('edit-q-text').value = q.question;
-  document.getElementById('edit-q-opt-0').value = q.options[0] || '';
-  document.getElementById('edit-q-opt-1').value = q.options[1] || '';
-  document.getElementById('edit-q-opt-2').value = q.options[2] || '';
-  document.getElementById('edit-q-opt-3').value = q.options[3] || '';
-  const radio = document.getElementById(`edit-radio-${q.correct}`);
-  if (radio) radio.checked = true;
-  document.getElementById('edit-q-explain').value = q.explanation || '';
-  document.getElementById('edit-q-motivation').value = q.motivation || '';
+  document.getElementById('edit-q-text').value = q.q || q.question || '';
+  document.getElementById('edit-q-opt-0').value = (q.options && q.options[0]) || '';
+  document.getElementById('edit-q-opt-1').value = (q.options && q.options[1]) || '';
+  document.getElementById('edit-q-opt-2').value = (q.options && q.options[2]) || '';
+  document.getElementById('edit-q-opt-3').value = (q.options && q.options[3]) || '';
+  
+  const radio = document.getElementById(`edit-radio-${q.correctIndex}`);
+  if (radio) {
+    radio.checked = true;
+  } else {
+    const fallbackRadio = document.getElementById('edit-radio-0');
+    if (fallbackRadio) fallbackRadio.checked = true;
+  }
+  
+  document.getElementById('edit-q-explain').value = q.explain || q.explanation || '';
+  document.getElementById('edit-q-motivation').value = q.motivationSuccess || q.motivation || '';
 
   const modal = document.getElementById('admin-edit-q-modal');
   if (modal) modal.classList.add('show');
@@ -3152,43 +3429,56 @@ window.saveAdminEditedQuestion = function() {
   const opt1 = document.getElementById('edit-q-opt-1').value.trim();
   const opt2 = document.getElementById('edit-q-opt-2').value.trim();
   const opt3 = document.getElementById('edit-q-opt-3').value.trim();
-  const correct = parseInt(document.querySelector('input[name="edit-q-correct"]:checked').value, 10);
+  const checkedRadio = document.querySelector('input[name="edit-q-correct"]:checked');
+  const correctIdx = checkedRadio ? parseInt(checkedRadio.value, 10) : 0;
+  const options = [opt0, opt1, opt2, opt3];
+  const correctStr = options[correctIdx] || opt0;
   const explanation = document.getElementById('edit-q-explain').value.trim();
   const motivation = document.getElementById('edit-q-motivation').value.trim();
 
-  // If was a custom question:
+  if (!question || options.some(opt => !opt)) {
+    alert('يرجى ملء نص السؤال وجميع الخيارات الأربعة!');
+    return;
+  }
+
   let customs = getCustomQuestions();
   const customIdx = customs.findIndex(c => c.id === qId);
+
+  const updatedQ = {
+    id: qId,
+    organKey,
+    q: question,
+    question: question,
+    options,
+    correct: correctStr,
+    correctIndex: correctIdx,
+    explain: explanation || 'أحسنتِ! فهم علمي سليم.',
+    explanation: explanation || 'أحسنتِ! فهم علمي سليم.',
+    motivationSuccess: motivation || '🌟 رائعة ومتميزة! إجابة ذكية!',
+    motivation: motivation || '🌟 رائعة ومتميزة! إجابة ذكية!',
+    motivationRetry: '💡 محاولة ممتازة! فكري مجدداً وجربي.',
+    isCustom: true
+  };
+
   if (customIdx !== -1) {
-    customs[customIdx] = {
-      ...customs[customIdx],
-      organKey,
-      question,
-      options: [opt0, opt1, opt2, opt3],
-      correct,
-      explanation,
-      motivation
-    };
-    localStorage.setItem('custom_organ_questions', JSON.stringify(customs));
+    customs[customIdx] = updatedQ;
   } else {
-    // If was default, delete old and add as custom
-    customs.push({
-      id: 'custom_' + Date.now(),
-      organKey,
-      question,
-      options: [opt0, opt1, opt2, opt3],
-      correct,
-      explanation,
-      motivation
-    });
-    localStorage.setItem('custom_organ_questions', JSON.stringify(customs));
+    // Override for default question or new question
+    customs.push(updatedQ);
   }
+  localStorage.setItem('custom_organ_questions', JSON.stringify(customs));
+
+  // If it was in deleted defaults list, remove it from deleted
+  const deletedDefaults = getDeletedDefaultQuestions().filter(id => id !== qId);
+  setDeletedDefaultQuestions(deletedDefaults);
 
   document.getElementById('admin-edit-q-modal').classList.remove('show');
   renderAdminQuestions(adminCurrentFilter);
-  if (typeof renderAllQuestionsList === 'function') renderAllQuestionsList();
+  if (typeof renderAllQuizQuestions === 'function') renderAllQuizQuestions();
   if (typeof renderQuizPillsBar === 'function') renderQuizPillsBar();
-  alert('✅ تم حفظ تعديلات السؤال بنجاح!');
+  if (typeof renderOrganQuestions === 'function') renderOrganQuestions();
+  if (typeof renderQuizQuestion === 'function') renderQuizQuestion();
+  alert('✅ تم حفظ تعديلات السؤال بنجاح في الموقع والمحاكي!');
 };
 
 window.deleteAdminQuestion = function(qId, isDefault) {
@@ -3197,21 +3487,33 @@ window.deleteAdminQuestion = function(qId, isDefault) {
   if (!isDefault) {
     deleteCustomQuestionFromStorage(qId);
   } else {
-    alert('السؤال الأساسي مدمج. يمكنك استبداله أو تعديله بحرية.');
+    // Default question: add to deleted_default_questions and remove any custom override
+    const deleted = getDeletedDefaultQuestions();
+    if (!deleted.includes(qId)) {
+      deleted.push(qId);
+      setDeletedDefaultQuestions(deleted);
+    }
+    deleteCustomQuestionFromStorage(qId);
   }
 
   renderAdminQuestions(adminCurrentFilter);
-  if (typeof renderAllQuestionsList === 'function') renderAllQuestionsList();
+  if (typeof renderAllQuizQuestions === 'function') renderAllQuizQuestions();
   if (typeof renderQuizPillsBar === 'function') renderQuizPillsBar();
+  if (typeof renderOrganQuestions === 'function') renderOrganQuestions();
+  if (typeof renderQuizQuestion === 'function') renderQuizQuestion();
+  alert('✅ تم حذف السؤال بنجاح.');
 };
 
 window.resetAllQuestionsToDefault = function() {
-  if (!confirm('هل ترغبين في استعادة بنك الأسئلة الافتراضي (12 سؤالاً) وحذف الأسئلة المضافة؟')) return;
+  if (!confirm('هل ترغبين في استعادة بنك الأسئلة الافتراضي (12 سؤالاً) وحذف كافة التعديلات والإضافات؟')) return;
   try {
     localStorage.removeItem('custom_organ_questions');
+    localStorage.removeItem('deleted_default_questions');
     renderAdminQuestions(adminCurrentFilter);
-    if (typeof renderAllQuestionsList === 'function') renderAllQuestionsList();
+    if (typeof renderAllQuizQuestions === 'function') renderAllQuizQuestions();
     if (typeof renderQuizPillsBar === 'function') renderQuizPillsBar();
+    if (typeof renderOrganQuestions === 'function') renderOrganQuestions();
+    if (typeof renderQuizQuestion === 'function') renderQuizQuestion();
     alert('✅ تم استعادة الأسئلة الافتراضية بنجاح.');
   } catch (e) {
     console.error(e);
@@ -3234,7 +3536,7 @@ window.renderAdminYouTube = function(organKey = null) {
     const org = organsSimulatorData[k];
     const isActive = k === adminCurrentYtOrgan;
     return `
-      <button class="pill-btn ${isActive ? 'active' : ''}" onclick="renderAdminYouTube('${k}')" style="padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.85rem;">
+      <button class="pill-btn ${isActive ? 'active' : ''}" onclick="saveAllAdminYouTubeSilent(); renderAdminYouTube('${k}');" style="padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.85rem;">
         ${org.icon} ${org.name}
       </button>
     `;
@@ -3256,7 +3558,7 @@ window.renderAdminYouTube = function(organKey = null) {
         </thead>
         <tbody>
           ${parts.map(p => {
-            const currentUrl = getPartYouTubeUrl(p.id, p.defaultYt);
+            const currentUrl = getPartYouTubeUrl(adminCurrentYtOrgan, p.id);
             return `
               <tr>
                 <td>
@@ -3264,7 +3566,7 @@ window.renderAdminYouTube = function(organKey = null) {
                   <div style="font-size:0.75rem;color:#64748b;">${p.nameEn || ''}</div>
                 </td>
                 <td>
-                  <input type="text" id="admin-yt-input-${p.id}" value="${currentUrl}" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;font-size:0.85rem;" dir="ltr">
+                  <input type="text" id="admin-yt-input-${p.id}" value="${currentUrl}" onchange="setPartYouTubeUrl('${p.id}', this.value.trim())" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;font-size:0.85rem;" dir="ltr">
                 </td>
                 <td style="text-align:center;">
                   <button class="btn-primary" onclick="saveAdminSingleYt('${p.id}')" style="padding:4px 10px;font-size:0.78rem;">
@@ -3283,11 +3585,21 @@ window.renderAdminYouTube = function(organKey = null) {
   `;
 };
 
+window.saveAllAdminYouTubeSilent = function() {
+  const organ = organsSimulatorData[adminCurrentYtOrgan];
+  if (!organ || !organ.parts) return;
+  organ.parts.forEach(p => {
+    const input = document.getElementById(`admin-yt-input-${p.id}`);
+    if (input) setPartYouTubeUrl(p.id, input.value.trim());
+  });
+};
+
 window.saveAdminSingleYt = function(partId) {
   const input = document.getElementById(`admin-yt-input-${partId}`);
   if (!input) return;
-  savePartYouTubeUrl(partId, input.value.trim());
-  alert('✅ تم حفظ رابط الفيديو لهذا الجزء!');
+  setPartYouTubeUrl(partId, input.value.trim());
+  sounds.playCorrect();
+  alert('✅ تم حفظ وتثبيت رابط الفيديو لهذا الجزء بنجاح!');
 };
 
 window.saveAllAdminYouTube = function() {
@@ -3295,9 +3607,10 @@ window.saveAllAdminYouTube = function() {
   if (!organ || !organ.parts) return;
   organ.parts.forEach(p => {
     const input = document.getElementById(`admin-yt-input-${p.id}`);
-    if (input) savePartYouTubeUrl(p.id, input.value.trim());
+    if (input) setPartYouTubeUrl(p.id, input.value.trim());
   });
-  alert('✅ تم حفظ كافة روابط يوتيوب لهذا العضو بنجاح!');
+  sounds.playVictory();
+  alert(`✅ تم حفظ كافة روابط يوتيوب لأجزاء (${organ.name}) بنجاح!`);
 };
 
 // ------------------------------------------
@@ -3467,11 +3780,13 @@ window.clearStudentResults = function() {
 window.exportPlatformBackupJSON = function() {
   const backup = {
     exportDate: new Date().toISOString(),
-    version: '1.0',
+    version: '1.2',
     adminPin: getAdminPin(),
     customQuestions: getCustomQuestions(),
+    deletedDefaultQuestions: getDeletedDefaultQuestions(),
     customYoutube: getCustomYouTubeLinks(),
     studentResults: getStudentResultsLog(),
+    exploredOrgans: [...state.exploredOrgans],
     firebaseConfig: {
       apiKey: localStorage.getItem('fb_api_key') || '',
       projectId: localStorage.getItem('fb_project_id') || ''
@@ -3497,8 +3812,13 @@ window.importPlatformBackupJSON = function(event) {
       const data = JSON.parse(e.target.result);
       if (data.adminPin) localStorage.setItem('admin_pin', data.adminPin);
       if (data.customQuestions) localStorage.setItem('custom_organ_questions', JSON.stringify(data.customQuestions));
+      if (data.deletedDefaultQuestions) localStorage.setItem('deleted_default_questions', JSON.stringify(data.deletedDefaultQuestions));
       if (data.customYoutube) localStorage.setItem('custom_organ_youtube_links', JSON.stringify(data.customYoutube));
       if (data.studentResults) localStorage.setItem('student_quiz_results', JSON.stringify(data.studentResults));
+      if (data.exploredOrgans && Array.isArray(data.exploredOrgans)) {
+        localStorage.setItem('explored_organs', JSON.stringify(data.exploredOrgans));
+        state.exploredOrgans = new Set(data.exploredOrgans);
+      }
       if (data.firebaseConfig) {
         if (data.firebaseConfig.apiKey) localStorage.setItem('fb_api_key', data.firebaseConfig.apiKey);
         if (data.firebaseConfig.projectId) localStorage.setItem('fb_project_id', data.firebaseConfig.projectId);
@@ -3506,8 +3826,13 @@ window.importPlatformBackupJSON = function(event) {
 
       alert('✅ تم استيراد وتطبيق النسخة الاحتياطية بنجاح!');
       renderAdminDashboard();
-      if (typeof renderAllQuestionsList === 'function') renderAllQuestionsList();
+      renderOrganViewer();
+      renderOrganQuestions();
+      renderQuizQuestion();
+      if (typeof renderAllQuizQuestions === 'function') renderAllQuizQuestions();
       if (typeof renderQuizPillsBar === 'function') renderQuizPillsBar();
+      updateOrganCompletedState();
+      updateProgressTracker();
     } catch (err) {
       alert('❌ فشل استيراد الملف: ' + err);
     }
@@ -3523,3 +3848,6 @@ window.saveFirebaseConfig = function() {
   alert('✅ تم حفظ إعدادات الربط السحابي (Firebase) بنجاح!');
 };
 
+
+// Alias for quiz questions list rendering
+window.renderAllQuestionsList = renderAllQuizQuestions;
