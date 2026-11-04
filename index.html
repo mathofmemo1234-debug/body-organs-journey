@@ -1107,6 +1107,15 @@
             <p style="color:#64748b;font-size:0.88rem;margin:0 0 14px 0;">
               يمكنك تصدير كافة الأسئلة والروابط بملف واحد لمشاركتها أو استيرادها على أي متصفح أو جهاز آخر:
             </p>
+            <div style="background:#ecfdf5;border:1.5px solid #10b981;border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+              <strong style="color:#065f46;">🌍 تثبيت التعديلات للجميع (الطلاب على أجهزتهم)</strong>
+              <p style="margin:6px 0 10px 0;font-size:0.85rem;color:#047857;line-height:1.7;">
+                التعديلات تُحفظ في متصفحكِ فقط. لتظهر لكل الطلاب: حمّلي ملف <code>content.js</code> بالزر أدناه، ضعيه في مجلد الموقع مكان الملف القديم، ثم ارفعي الموقع (git push).
+              </p>
+              <button class="btn-primary" onclick="exportPublishContentJS()" style="padding:10px 18px;font-size:0.9rem;background:#059669;border-color:#047857;">
+                <span>🌍 تحميل ملف التثبيت للجميع (content.js)</span>
+              </button>
+            </div>
             <div style="display:flex;gap:12px;flex-wrap:wrap;">
               <button class="btn-primary" onclick="exportPlatformBackupJSON()" style="padding:10px 18px;font-size:0.9rem;">
                 <span>📥 تحميل ملف النسخة الاحتياطية (JSON)</span>
@@ -1272,6 +1281,7 @@
   <script src="assets/three.min.js"></script>
   <script src="assets/OrbitControls.js"></script>
   <script src="body3d.js?v=20261104_v6"></script>
-  <script src="app.js?v=20261104_v7"></script>
+  <script src="content.js?v=1"></script>
+  <script src="app.js?v=20261104_v8"></script>
 </body>
 </html>

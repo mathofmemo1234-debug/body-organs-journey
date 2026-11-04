@@ -1247,7 +1247,18 @@ function formatYouTubeEmbedUrl(url) {
   return String(url).trim();
 }
 
-function getCustomYouTubeLinks() {
+// المحتوى المنشور للجميع (ملف content.js المرفوع مع الموقع)
+function getPublishedContent() {
+  const p = (typeof window !== 'undefined' && window.PUBLISHED_CONTENT) || {};
+  return {
+    customYoutube: (p.customYoutube && typeof p.customYoutube === 'object') ? p.customYoutube : {},
+    customQuestions: Array.isArray(p.customQuestions) ? p.customQuestions : [],
+    deletedQuestionIds: Array.isArray(p.deletedQuestionIds) ? p.deletedQuestionIds : []
+  };
+}
+
+// تعديلات هذا المتصفح فقط
+function getLocalYouTubeLinks() {
   try {
     const saved = localStorage.getItem('custom_organ_youtube_links');
     if (saved) return JSON.parse(saved);
@@ -1255,6 +1266,11 @@ function getCustomYouTubeLinks() {
     console.error(e);
   }
   return {};
+}
+
+// الروابط الفعلية = المنشورة للجميع + تعديلات هذا المتصفح (الأحدث يغلب)
+function getCustomYouTubeLinks() {
+  return { ...getPublishedContent().customYoutube, ...getLocalYouTubeLinks() };
 }
 
 function getPartYouTubeUrl(organKeyOrPartId, maybePartId) {
@@ -1351,7 +1367,7 @@ function syncPartYouTubeAcrossUI(partId, newUrl) {
 }
 
 function setPartYouTubeUrl(partId, url) {
-  const custom = getCustomYouTubeLinks();
+  const custom = getLocalYouTubeLinks();
   if (url && url.trim()) {
     custom[partId] = url.trim();
   } else {
@@ -1370,7 +1386,7 @@ window.setPartYouTubeUrl = setPartYouTubeUrl;
 window.savePartYouTubeUrl = setPartYouTubeUrl;
 
 function resetPartYouTubeUrl(partId) {
-  const custom = getCustomYouTubeLinks();
+  const custom = getLocalYouTubeLinks();
   delete custom[partId];
   try {
     localStorage.setItem('custom_organ_youtube_links', JSON.stringify(custom));
@@ -1417,7 +1433,8 @@ function saveExploredOrgans() {
 // ==========================================
 // CUSTOM QUESTIONS MANAGER HELPERS & NORMALIZER
 // ==========================================
-function getCustomQuestions() {
+// أسئلة هذا المتصفح فقط
+function getLocalCustomQuestions() {
   try {
     const saved = localStorage.getItem('custom_organ_questions');
     if (saved) return JSON.parse(saved);
@@ -1427,8 +1444,19 @@ function getCustomQuestions() {
   return [];
 }
 
+// الأسئلة الفعلية = المنشورة للجميع + أسئلة/تعديلات هذا المتصفح (بنفس المعرّف يغلب المحلي) دون المحذوفة
+function getCustomQuestions() {
+  const byId = new Map();
+  const noId = [];
+  [...getPublishedContent().customQuestions, ...getLocalCustomQuestions()].forEach(q => {
+    if (q && q.id) byId.set(q.id, q); else if (q) noId.push(q);
+  });
+  const deleted = getDeletedDefaultQuestions();
+  return [...byId.values(), ...noId].filter(q => !q.id || !deleted.includes(q.id));
+}
+
 function saveCustomQuestionToStorage(qData) {
-  const questions = getCustomQuestions();
+  const questions = getLocalCustomQuestions();
   const existingIdx = questions.findIndex(q => q.id === qData.id);
   if (existingIdx !== -1) {
     questions[existingIdx] = qData;
@@ -1443,16 +1471,24 @@ function saveCustomQuestionToStorage(qData) {
 }
 
 function deleteCustomQuestionFromStorage(qId) {
-  let questions = getCustomQuestions();
+  let questions = getLocalCustomQuestions();
   questions = questions.filter(q => q.id !== qId);
   try {
     localStorage.setItem('custom_organ_questions', JSON.stringify(questions));
   } catch (e) {
     console.error(e);
   }
+  // إن كان السؤال منشوراً للجميع نسجّل حذفه محلياً كي لا يعود
+  if (getPublishedContent().customQuestions.some(q => q && q.id === qId)) {
+    const deleted = getLocalDeletedQuestions();
+    if (!deleted.includes(qId)) {
+      deleted.push(qId);
+      setDeletedDefaultQuestions(deleted);
+    }
+  }
 }
 
-function getDeletedDefaultQuestions() {
+function getLocalDeletedQuestions() {
   try {
     const saved = localStorage.getItem('deleted_default_questions');
     if (saved) return JSON.parse(saved);
@@ -1460,6 +1496,11 @@ function getDeletedDefaultQuestions() {
     console.error(e);
   }
   return [];
+}
+
+// المعرّفات المحذوفة = المنشورة للجميع + محذوفات هذا المتصفح
+function getDeletedDefaultQuestions() {
+  return [...new Set([...getPublishedContent().deletedQuestionIds, ...getLocalDeletedQuestions()])];
 }
 
 function setDeletedDefaultQuestions(list) {
@@ -1471,7 +1512,7 @@ function setDeletedDefaultQuestions(list) {
 }
 
 function resetOrganCustomQuestionsInStorage(organKey) {
-  let questions = getCustomQuestions();
+  let questions = getLocalCustomQuestions();
   questions = questions.filter(q => q.organKey !== organKey);
   try {
     localStorage.setItem('custom_organ_questions', JSON.stringify(questions));
@@ -1482,7 +1523,7 @@ function resetOrganCustomQuestionsInStorage(organKey) {
   const organ = organsSimulatorData[organKey];
   if (organ && organ.defaultQuestions) {
     const defIds = organ.defaultQuestions.map((d, i) => d.id || `default_${organKey}_${i}`);
-    let deleted = getDeletedDefaultQuestions();
+    let deleted = getLocalDeletedQuestions();
     deleted = deleted.filter(id => !defIds.includes(id));
     setDeletedDefaultQuestions(deleted);
   }
@@ -3441,7 +3482,7 @@ window.saveAdminEditedQuestion = function() {
     return;
   }
 
-  let customs = getCustomQuestions();
+  let customs = getLocalCustomQuestions();
   const customIdx = customs.findIndex(c => c.id === qId);
 
   const updatedQ = {
@@ -3469,7 +3510,7 @@ window.saveAdminEditedQuestion = function() {
   localStorage.setItem('custom_organ_questions', JSON.stringify(customs));
 
   // If it was in deleted defaults list, remove it from deleted
-  const deletedDefaults = getDeletedDefaultQuestions().filter(id => id !== qId);
+  const deletedDefaults = getLocalDeletedQuestions().filter(id => id !== qId);
   setDeletedDefaultQuestions(deletedDefaults);
 
   document.getElementById('admin-edit-q-modal').classList.remove('show');
@@ -3488,7 +3529,7 @@ window.deleteAdminQuestion = function(qId, isDefault) {
     deleteCustomQuestionFromStorage(qId);
   } else {
     // Default question: add to deleted_default_questions and remove any custom override
-    const deleted = getDeletedDefaultQuestions();
+    const deleted = getLocalDeletedQuestions();
     if (!deleted.includes(qId)) {
       deleted.push(qId);
       setDeletedDefaultQuestions(deleted);
@@ -3505,7 +3546,7 @@ window.deleteAdminQuestion = function(qId, isDefault) {
 };
 
 window.resetAllQuestionsToDefault = function() {
-  if (!confirm('هل ترغبين في استعادة بنك الأسئلة الافتراضي (12 سؤالاً) وحذف كافة التعديلات والإضافات؟')) return;
+  if (!confirm('هل ترغبين في التراجع عن تعديلاتكِ المحلية غير المنشورة والعودة لبنك الأسئلة المنشور (الأسئلة الـ12 الأساسية + ما نُشر سابقاً)؟')) return;
   try {
     localStorage.removeItem('custom_organ_questions');
     localStorage.removeItem('deleted_default_questions');
@@ -3777,6 +3818,30 @@ window.clearStudentResults = function() {
 // ------------------------------------------
 // PANE 4: BACKUP & FIREBASE CLOUD
 // ------------------------------------------
+// تثبيت التعديلات للجميع: يولّد ملف content.js يُوضع في مجلد الموقع ويُرفع مع الموقع
+window.exportPublishContentJS = function() {
+  const content = {
+    version: Date.now(),
+    customYoutube: getCustomYouTubeLinks(),
+    customQuestions: getCustomQuestions(),
+    deletedQuestionIds: getDeletedDefaultQuestions()
+  };
+  const text = '// ملف المحتوى المنشور للجميع - تم توليده من لوحة الإدارة. استبدل به ملف content.js في مجلد الموقع ثم ارفع الموقع.\n' +
+    'window.PUBLISHED_CONTENT = ' + JSON.stringify(content, null, 2) + ';\n';
+  const blob = new Blob([text], { type: 'text/javascript;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'content.js';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+  const nYt = Object.keys(content.customYoutube).length;
+  const nQ = content.customQuestions.length;
+  alert('✅ تم تحميل ملف content.js\n\nيحتوي على ' + nYt + ' رابط فيديو معدّل و' + nQ + ' سؤالاً مضافاً/معدّلاً.\n\nالخطوات: ضعي الملف في مجلد الموقع (استبدلي القديم) ثم ارفعي الموقع بـ git push، وبعد دقائق سيراه كل الطلاب.');
+};
+
 window.exportPlatformBackupJSON = function() {
   const backup = {
     exportDate: new Date().toISOString(),
