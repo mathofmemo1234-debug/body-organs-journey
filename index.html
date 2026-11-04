@@ -975,9 +975,12 @@
               <h3 style="margin:0 0 4px 0;font-size:1.15rem;font-weight:900;color:#0f172a;">أسئلة المنصة الشاملة</h3>
               <p style="margin:0;font-size:0.85rem;color:#64748b;">يمكنك تعديل أي سؤال، حذف، أو إضافة أسئلة جديدة مع التحفيز والتفسير العلمي:</p>
             </div>
-            <div style="display:flex;gap:8px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
               <button class="btn-primary" onclick="openAddQuestionModal()" style="padding:8px 16px;font-size:0.88rem;">
                 <span>➕ إضافة سؤال جديد</span>
+              </button>
+              <button class="btn-primary" onclick="saveDirectToContentFile()" style="padding:8px 16px;font-size:0.88rem;background:#059669;border-color:#047857;" title="يحفظ الأسئلة في ملف content.js لتظل محفوظة بشكل دائم حتى عند مسح سجل التصفح">
+                <span>💾 حفظ دائم ضد مسح السجل (content.js)</span>
               </button>
               <button class="btn-secondary" onclick="resetAllQuestionsToDefault()" style="padding:8px 14px;font-size:0.88rem;">
                 <span>🔄 استعادة الأسئلة الافتراضية</span>
@@ -1007,9 +1010,12 @@
               <h3 style="margin:0 0 4px 0;font-size:1.15rem;font-weight:900;color:#0f172a;">إدارة روابط يوتيوب للأعضاء والأجزاء</h3>
               <p style="margin:0;font-size:0.85rem;color:#64748b;">تحديث وتخصيص فيديوهات الشرح لكل جزء من أجزاء الأعضاء الستة:</p>
             </div>
-            <div style="display:flex;gap:8px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
               <button class="btn-primary" onclick="saveAllAdminYouTube()" style="padding:8px 16px;font-size:0.88rem;">
                 <span>💾 حفظ جميع التعديلات</span>
+              </button>
+              <button class="btn-primary" onclick="saveDirectToContentFile()" style="padding:8px 16px;font-size:0.88rem;background:#059669;border-color:#047857;" title="يحفظ الروابط في ملف content.js لتظل محفوظة بشكل دائم حتى عند مسح سجل التصفح">
+                <span>💾 حفظ دائم ضد مسح السجل</span>
               </button>
               <button class="btn-secondary" onclick="resetAllYouTubeUrls(); renderAdminYouTube();" style="padding:8px 14px;font-size:0.88rem;">
                 <span>🔄 استعادة الروابط الافتراضية</span>
@@ -1280,8 +1286,8 @@
   <!-- Three.js 3D Engine & Orbit Controls -->
   <script src="assets/three.min.js"></script>
   <script src="assets/OrbitControls.js"></script>
-  <script src="body3d.js?v=20261104_v6"></script>
+  <script src="body3d.js?v=20261104_v7"></script>
   <script src="content.js?v=1"></script>
-  <script src="app.js?v=20261104_v8"></script>
+  <script src="app.js?v=20261104_v9"></script>
 </body>
 </html>

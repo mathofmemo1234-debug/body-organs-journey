@@ -85,8 +85,8 @@ header.site-header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  backdrop-filter: blur(18px);
-  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.96);
   border-bottom: 1px solid var(--border);
   box-shadow: 0 4px 20px rgba(2, 132, 199, 0.06);
 }
@@ -3509,4 +3509,22 @@ section.app-tab-content.active {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* Ensure nested modals (Add Question, Edit Question, Part Detail) ALWAYS appear IN FRONT of Admin Dashboard */
+#add-question-modal,
+#admin-edit-q-modal,
+#part-detail-modal {
+  z-index: 6000 !important;
+}
+
+#add-question-modal .modal-card,
+#admin-edit-q-modal .modal-card,
+#part-detail-modal .modal-card {
+  z-index: 6001 !important;
+  box-shadow: 0 30px 70px -10px rgba(0, 0, 0, 0.6) !important;
+}
+
+#admin-dashboard-modal {
+  z-index: 3500 !important;
 }

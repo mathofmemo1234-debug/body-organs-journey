@@ -161,7 +161,7 @@ class Body3DViewer {
 
     this.container.appendChild(canvas);
     this.renderer.setSize(width, height);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
 
     this.scene.add(this.bodyGroup);
     this.scene.add(this.skeletonGroup);
@@ -1547,7 +1547,13 @@ class Body3DViewer {
   }
 
   animate() {
-    requestAnimationFrame(() => this.animate());
+    this.animFrameId = requestAnimationFrame(() => this.animate());
+
+    // 🚀 PERFORMANCE GUARD: Pause heavy 3D WebGL rendering when tab is hidden, or user switched away from Home tab, or Admin modal is open
+    if (document.hidden) return;
+    if (typeof state !== 'undefined' && state.currentTab && state.currentTab !== 'home') return;
+    const adminModal = document.getElementById('admin-dashboard-modal');
+    if (adminModal && adminModal.classList.contains('show')) return;
 
     const delta = this.clock.getDelta();
     const time = this.clock.getElapsedTime();

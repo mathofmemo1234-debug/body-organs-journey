@@ -2508,7 +2508,9 @@ window.openAddQuestionModal = function(defaultOrgan) {
   if (opt2) opt2.value = '';
   if (opt3) opt3.value = '';
   if (explain) explain.value = '';
+  modal.style.zIndex = '6000';
   modal.classList.add('show');
+  if (qText) setTimeout(() => qText.focus(), 80);
 };
 
 window.saveCustomQuestion = function() {
@@ -3819,6 +3821,54 @@ window.clearStudentResults = function() {
 // PANE 4: BACKUP & FIREBASE CLOUD
 // ------------------------------------------
 // تثبيت التعديلات للجميع: يولّد ملف content.js يُوضع في مجلد الموقع ويُرفع مع الموقع
+
+// طلب إذن التخزين الدائم من المتصفح لمنع مسحه مع السجل
+if (typeof navigator !== 'undefined' && navigator.storage && navigator.storage.persist) {
+  navigator.storage.persist().then(granted => {
+    if (granted) console.log('✓ تم تفعيل التخزين الدائم للموقع');
+  }).catch(() => {});
+}
+
+// حفظ فوري في ملف content.js باستخدام File System Access API
+window.saveDirectToContentFile = async function() {
+  const content = {
+    version: Date.now(),
+    customYoutube: getCustomYouTubeLinks(),
+    customQuestions: getCustomQuestions(),
+    deletedQuestionIds: getDeletedDefaultQuestions()
+  };
+  const text = '// ملف المحتوى المنشور للجميع - تم توليده من لوحة الإدارة.\n' +
+    'window.PUBLISHED_CONTENT = ' + JSON.stringify(content, null, 2) + ';\n';
+
+  // 1. تجربة الحفظ المباشر في المتصفحات الحديثة (Chrome / Edge)
+  if (typeof window !== 'undefined' && window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: 'content.js',
+        types: [{
+          description: 'JavaScript File',
+          accept: { 'text/javascript': ['.js'] }
+        }]
+      });
+      const writable = await handle.createWritable();
+      await writable.write(text);
+      await writable.close();
+
+      // تحديث المحتوى في الجلسة الحالية
+      window.PUBLISHED_CONTENT = content;
+      if (typeof sounds !== 'undefined' && sounds.playVictory) sounds.playVictory();
+      alert('✅ تم الحفظ بنجاح داخل ملف (content.js) بالموقع!\n\nالآن أصبحت كافة الأسئلة وروابط الفيديوهات محفوظة بشكل دائم في ملفات الموقع، ولن تُمسح نهائياً حتى لو قمتِ بمسح سجل التصفح بالكامل!');
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return; // إلغاء المستخدم
+      console.warn('showSaveFilePicker failed, fallback to download:', err);
+    }
+  }
+
+  // 2. البديل التلقائي: تحميل الملف
+  exportPublishContentJS();
+};
+
 window.exportPublishContentJS = function() {
   const content = {
     version: Date.now(),
