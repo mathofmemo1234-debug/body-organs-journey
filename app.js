@@ -1375,6 +1375,7 @@ function setPartYouTubeUrl(partId, url) {
   }
   try {
     localStorage.setItem('custom_organ_youtube_links', JSON.stringify(custom));
+    if (typeof idbSave === 'function') idbSave('custom_organ_youtube_links', custom);
   } catch (e) {
     console.error(e);
   }
@@ -1390,6 +1391,7 @@ function resetPartYouTubeUrl(partId) {
   delete custom[partId];
   try {
     localStorage.setItem('custom_organ_youtube_links', JSON.stringify(custom));
+    if (typeof idbSave === 'function') idbSave('custom_organ_youtube_links', custom);
   } catch (e) {
     console.error(e);
   }
@@ -1465,6 +1467,7 @@ function saveCustomQuestionToStorage(qData) {
   }
   try {
     localStorage.setItem('custom_organ_questions', JSON.stringify(questions));
+    if (typeof idbSave === 'function') idbSave('custom_organ_questions', questions);
   } catch (e) {
     console.error(e);
   }
@@ -1475,6 +1478,7 @@ function deleteCustomQuestionFromStorage(qId) {
   questions = questions.filter(q => q.id !== qId);
   try {
     localStorage.setItem('custom_organ_questions', JSON.stringify(questions));
+    if (typeof idbSave === 'function') idbSave('custom_organ_questions', questions);
   } catch (e) {
     console.error(e);
   }
@@ -1516,6 +1520,7 @@ function resetOrganCustomQuestionsInStorage(organKey) {
   questions = questions.filter(q => q.organKey !== organKey);
   try {
     localStorage.setItem('custom_organ_questions', JSON.stringify(questions));
+    if (typeof idbSave === 'function') idbSave('custom_organ_questions', questions);
   } catch (e) {
     console.error(e);
   }
@@ -1831,10 +1836,6 @@ function renderViewerLiveToast(part, organKey) {
           </button>
         </div>
         <div id="v-func-yt-player-box" class="active-yt-player-container" style="display:none;"></div>
-        <div class="active-part-yt-custom-row">
-          <input type="text" id="v-func-yt-input" value="${currentYt}" placeholder="تعديل رابط يوتيوب لهذا الجزء..." style="flex:1;padding:6px 10px;border-radius:6px;border:1.5px solid #cbd5e1;font-size:0.8rem;font-family:monospace;direction:ltr;">
-          <button class="btn-primary" style="padding:6px 12px;font-size:0.8rem;" onclick="saveViewerPartVideo('${part.id}', '${part.name}')">💾 حفظ الرابط</button>
-        </div>
       </div>
     </div>
   `;
@@ -2329,7 +2330,10 @@ window.openPartModal = function(organKey, partId) {
     `;
   }
 
-  if (modal) modal.classList.add('show');
+  if (modal) {
+    modal.style.zIndex = '99999';
+    modal.classList.add('show');
+  }
 };
 
 // ==========================================
@@ -2508,7 +2512,7 @@ window.openAddQuestionModal = function(defaultOrgan) {
   if (opt2) opt2.value = '';
   if (opt3) opt3.value = '';
   if (explain) explain.value = '';
-  modal.style.zIndex = '6000';
+  modal.style.zIndex = '99999';
   modal.classList.add('show');
   if (qText) setTimeout(() => qText.focus(), 80);
 };
@@ -2610,12 +2614,13 @@ function saveCurrentTabManagerInputs() {
 }
 
 window.openAllYoutubeModal = function(initialOrgan = null) {
-  const modal = document.getElementById('all-youtube-modal');
-  if (!modal) return;
-  activeAllYtOrgan = initialOrgan || (typeof state !== 'undefined' && state.currentOrgan) || 'heart';
-  renderAllYouTubeTabs();
-  renderAllYouTubeList(activeAllYtOrgan);
-  modal.classList.add('show');
+  if (sessionStorage.getItem('admin_auth') === 'true') {
+    openAdminDashboard();
+    switchAdminTab('youtube');
+    if (initialOrgan) renderAdminYouTube(initialOrgan);
+  } else {
+    openAdminModal();
+  }
 };
 
 window.switchAllYouTubeOrgan = function(key) {
@@ -3461,7 +3466,10 @@ window.openAdminEditQuestionModal = function(qId) {
   document.getElementById('edit-q-motivation').value = q.motivationSuccess || q.motivation || '';
 
   const modal = document.getElementById('admin-edit-q-modal');
-  if (modal) modal.classList.add('show');
+  if (modal) {
+    modal.style.zIndex = '99999';
+    modal.classList.add('show');
+  }
 };
 
 window.saveAdminEditedQuestion = function() {
@@ -3612,11 +3620,14 @@ window.renderAdminYouTube = function(organKey = null) {
                   <input type="text" id="admin-yt-input-${p.id}" value="${currentUrl}" onchange="setPartYouTubeUrl('${p.id}', this.value.trim())" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;font-size:0.85rem;" dir="ltr">
                 </td>
                 <td style="text-align:center;">
-                  <button class="btn-primary" onclick="saveAdminSingleYt('${p.id}')" style="padding:4px 10px;font-size:0.78rem;">
+                  <button class="btn-primary" onclick="saveAdminSingleYt('${p.id}')" style="padding:4px 9px;font-size:0.78rem;" title="حفظ رابط الفيديو لهذا الجزء">
                     <span>حفظ 💾</span>
                   </button>
-                  <button class="btn-secondary" onclick="openPartModal('${adminCurrentYtOrgan}', '${p.id}')" style="padding:4px 10px;font-size:0.78rem;">
+                  <button class="btn-secondary" onclick="openPartModal('${adminCurrentYtOrgan}', '${p.id}')" style="padding:4px 9px;font-size:0.78rem;" title="معاينة وتشغيل الفيديو مباشرة">
                     <span>معاينة ▶️</span>
+                  </button>
+                  <button class="btn-secondary" onclick="resetAdminSingleYt('${p.id}')" style="padding:4px 8px;font-size:0.75rem;" title="استعادة رابط الشرح الافتراضي الأصلي لهذا الجزء">
+                    <span>استعادة 🔄</span>
                   </button>
                 </td>
               </tr>
@@ -3641,8 +3652,15 @@ window.saveAdminSingleYt = function(partId) {
   const input = document.getElementById(`admin-yt-input-${partId}`);
   if (!input) return;
   setPartYouTubeUrl(partId, input.value.trim());
-  sounds.playCorrect();
+  if (typeof sounds !== 'undefined' && sounds.playCorrect) sounds.playCorrect();
   alert('✅ تم حفظ وتثبيت رابط الفيديو لهذا الجزء بنجاح!');
+};
+
+window.resetAdminSingleYt = function(partId) {
+  resetPartYouTubeUrl(partId);
+  if (typeof sounds !== 'undefined' && sounds.playCorrect) sounds.playCorrect();
+  renderAdminYouTube(adminCurrentYtOrgan);
+  alert('🔄 تمت استعادة رابط يوتيوب الافتراضي الأصلي لهذا الجزء بنجاح.');
 };
 
 window.saveAllAdminYouTube = function() {
@@ -3966,3 +3984,96 @@ window.saveFirebaseConfig = function() {
 
 // Alias for quiz questions list rendering
 window.renderAllQuestionsList = renderAllQuizQuestions;
+
+
+// ==========================================
+// INDEXEDDB MULTI-LAYER PERSISTENCE ENGINE
+// ==========================================
+const DB_NAME = 'BodyOrgansPlatformDB';
+const DB_VERSION = 1;
+
+function openOrgansDB() {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined' || !window.indexedDB) {
+      resolve(null);
+      return;
+    }
+    try {
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('settings')) {
+          db.createObjectStore('settings', { keyPath: 'key' });
+        }
+      };
+      req.onsuccess = (e) => resolve(e.target.result);
+      req.onerror = () => resolve(null);
+    } catch (e) {
+      resolve(null);
+    }
+  });
+}
+
+async function idbSave(key, val) {
+  try {
+    const db = await openOrgansDB();
+    if (!db) return;
+    const tx = db.transaction('settings', 'readwrite');
+    tx.objectStore('settings').put({ key, val, updatedAt: Date.now() });
+  } catch (e) {
+    console.warn('idbSave error:', e);
+  }
+}
+
+async function idbGet(key) {
+  try {
+    const db = await openOrgansDB();
+    if (!db) return null;
+    return new Promise((resolve) => {
+      const tx = db.transaction('settings', 'readonly');
+      const req = tx.objectStore('settings').get(key);
+      req.onsuccess = () => resolve(req.result ? req.result.val : null);
+      req.onerror = () => resolve(null);
+    });
+  } catch (e) {
+    return null;
+  }
+}
+
+async function syncFromIndexedDBToLocal() {
+  try {
+    const savedYt = localStorage.getItem('custom_organ_youtube_links');
+    if (!savedYt || savedYt === '{}') {
+      const idbYt = await idbGet('custom_organ_youtube_links');
+      if (idbYt && typeof idbYt === 'object' && Object.keys(idbYt).length > 0) {
+        localStorage.setItem('custom_organ_youtube_links', JSON.stringify(idbYt));
+        console.log('Restored custom YouTube links from IndexedDB');
+      }
+    }
+    const savedQ = localStorage.getItem('custom_organ_questions');
+    if (!savedQ || savedQ === '[]') {
+      const idbQ = await idbGet('custom_organ_questions');
+      if (Array.isArray(idbQ) && idbQ.length > 0) {
+        localStorage.setItem('custom_organ_questions', JSON.stringify(idbQ));
+        console.log('Restored custom questions from IndexedDB');
+      }
+    }
+    const savedDel = localStorage.getItem('deleted_default_questions');
+    if (!savedDel || savedDel === '[]') {
+      const idbDel = await idbGet('deleted_default_questions');
+      if (Array.isArray(idbDel) && idbDel.length > 0) {
+        localStorage.setItem('deleted_default_questions', JSON.stringify(idbDel));
+      }
+    }
+  } catch (e) {
+    console.warn('syncFromIndexedDBToLocal error:', e);
+  }
+}
+
+// Auto-sync on startup
+if (typeof window !== 'undefined') {
+  syncFromIndexedDBToLocal();
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().catch(() => {});
+  }
+}

@@ -16,7 +16,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <link rel="stylesheet" href="style.css?v=20261103_v5">
+  <link rel="stylesheet" href="style.css?v=20261104_v10">
 </head>
 <body dir="rtl">
 
@@ -46,10 +46,7 @@
       </nav>
 
       <div class="header-controls">
-        <button id="open-youtube-manager-btn" class="link-settings-btn" style="background:rgba(239, 68, 68, 0.1);color:#dc2626;border:1.5px solid rgba(239, 68, 68, 0.3);font-weight:800;" title="إدارة وتخصيص روابط يوتيوب لجميع أجزاء الأعضاء">
-          <span>🎥 فيديوهات يوتيوب للأجزاء</span>
-        </button>
-                <button id="open-admin-btn" class="admin-nav-btn" onclick="openAdminModal()" title="لوحة تحكم المعلم / الأدمن">
+        <button id="open-admin-btn" class="admin-nav-btn" onclick="openAdminModal()" title="لوحة تحكم المعلم / الأدمن">
           <span>🔐 لوحة الأدمن</span>
         </button>
         <button id="sound-toggle-btn" class="sound-toggle-btn" title="تشغيل / كتم الصوت">
@@ -117,9 +114,6 @@
           </button>
           <button class="btn-secondary" onclick="switchTab('quiz')">
             <span>بنك الأسئلة الشامل (12 سؤالاً - سؤالين لكل عضو)</span>
-          </button>
-          <button class="btn-accent" onclick="openAllYoutubeModal()" style="background:#ef4444;border-color:#dc2626;">
-            <span>🎥 إدارة فيديوهات يوتيوب للأجزاء</span>
           </button>
           <button class="btn-primary" onclick="document.getElementById('body-3d-section').scrollIntoView({behavior: 'smooth'})" style="background:linear-gradient(135deg, #0284c7, #8b5cf6);box-shadow:0 8px 20px rgba(139, 92, 246, 0.25);">
             <span>🔬 استكشفي المجسم ثلاثي الأبعاد 360°</span>
@@ -329,9 +323,6 @@
           <h2 style="font-size:1.85rem;font-weight:900;color:var(--text-main);">مستكشف ومحاكي الأعضاء التفاعلي</h2>
           <p style="color:var(--text-muted);">انقري على أي جزء في المخطط أو المجسم للتعرف على عمله وشرحه الوافي وفيديو الشرح التعليمي:</p>
         </div>
-        <button class="btn-accent" style="padding:10px 18px;font-size:0.95rem;background:#ef4444;border-color:#dc2626;" onclick="openAllYoutubeModal()">
-          <span>🎥 تخصيص فيديوهات يوتيوب للأجزاء</span>
-        </button>
       </div>
 
       <!-- Organ Tabs -->
@@ -415,10 +406,6 @@
                   <button id="toggle-part-yt-btn" class="btn-yt-toggle">▶️ تشغيل الفيديو</button>
                 </div>
                 <div id="active-part-yt-player" class="active-yt-player-container" style="display:none;"></div>
-                <div class="active-part-yt-custom-row">
-                  <input type="text" id="active-part-yt-input" placeholder="تعديل رابط يوتيوب لهذا الجزء..." style="flex:1;padding:6px 10px;border-radius:6px;border:1.5px solid #cbd5e1;font-size:0.8rem;font-family:monospace;direction:ltr;">
-                  <button id="active-part-yt-save-btn" class="btn-primary" style="padding:6px 12px;font-size:0.8rem;">💾 حفظ</button>
-                </div>
               </div>
             </div>
 
@@ -774,101 +761,8 @@
             <!-- Dynamic YouTube Embed / Player -->
           </div>
 
-          <!-- YouTube Link Customizer Slot -->
-          <div class="part-yt-customizer-box">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-              <span style="font-weight:800;font-size:0.9rem;color:var(--text-main);">✏️ هل تودين وضع رابط فيديو يوتيوب آخر لهذا الجزء؟</span>
-              <span style="font-size:0.75rem;color:#059669;font-weight:700;">يُحفظ تلقائياً في متصفحك</span>
-            </div>
-            <div class="yt-input-group">
-              <input type="text" id="part-yt-input" placeholder="ألصقي رابط يوتيوب هنا (مثال: https://www.youtube.com/watch?v=...)">
-              <button id="save-part-yt-btn" class="btn-primary" style="padding:8px 16px;font-size:0.85rem;white-space:nowrap;">
-                <span>💾 حفظ الرابط</span>
-              </button>
-              <button id="reset-part-yt-btn" class="btn-secondary" style="padding:8px 12px;font-size:0.85rem;white-space:nowrap;" title="استعادة رابط الشرح الافتراضي">
-                <span>🔄 استعادة</span>
-              </button>
-            </div>
-            <div id="yt-save-feedback" class="yt-save-feedback" style="display:none;">✓ تم حفظ رابط الفيديو لهذا الجزء بنجاح!</div>
-          </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- 2. ADD CUSTOM QUESTION MODAL (Strict RTL) -->
-  <div class="modal-overlay" id="add-question-modal" dir="rtl">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div class="modal-title">
-          <span>➕ إضافة سؤال جديد لبنك الأسئلة والمحاكي</span>
-        </div>
-        <button class="modal-close-btn" id="close-add-q-modal-btn">✕</button>
-      </div>
-
-      <p style="color:var(--text-muted);font-size:0.95rem;margin-bottom:18px;line-height:1.6;">
-        يمكن للمعلمة أو الطالبة إضافة أسئلة تفاعلية جديدة لأي عضو من الأعضاء الستة، وستظهر فوراً في المحاكي وبنك الأسئلة مع التصحيح والتحفيز الذكي:
-      </p>
-
-      <form id="add-question-form" onsubmit="event.preventDefault(); saveCustomQuestion();">
-        <div class="form-group" style="margin-bottom:14px;">
-          <label style="font-weight:800;display:block;margin-bottom:6px;">العضو المستهدف:</label>
-          <select id="new-q-organ" class="form-control" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;font-weight:700;">
-            <option value="heart">القلب</option>
-            <option value="lungs">الرئتان</option>
-            <option value="brain">الدماغ</option>
-            <option value="stomach">المعدة</option>
-            <option value="esophagus">المريء والمعدة</option>
-            <option value="eye">العين</option>
-          </select>
-        </div>
-
-        <div class="form-group" style="margin-bottom:14px;">
-          <label style="font-weight:800;display:block;margin-bottom:6px;">نص السؤال:</label>
-          <input type="text" id="new-q-text" placeholder="اكتبي صيغة السؤال هنا..." required style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
-        </div>
-
-        <div style="margin-bottom:14px;">
-          <label style="font-weight:800;display:block;margin-bottom:8px;">خيارات الإجابة (حددي الإجابة الصحيحة بالدائرة):</label>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div class="q-opt-input-row">
-              <input type="radio" name="new-q-correct" value="0" checked id="q-radio-0">
-              <input type="text" id="new-q-opt-0" placeholder="الخيار الأول (الإجابة الصحيحة)" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
-            </div>
-            <div class="q-opt-input-row">
-              <input type="radio" name="new-q-correct" value="1" id="q-radio-1">
-              <input type="text" id="new-q-opt-1" placeholder="الخيار الثاني" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
-            </div>
-            <div class="q-opt-input-row">
-              <input type="radio" name="new-q-correct" value="2" id="q-radio-2">
-              <input type="text" id="new-q-opt-2" placeholder="الخيار الثالث" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
-            </div>
-            <div class="q-opt-input-row">
-              <input type="radio" name="new-q-correct" value="3" id="q-radio-3">
-              <input type="text" id="new-q-opt-3" placeholder="الخيار الرابع" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-bottom:14px;">
-          <label style="font-weight:800;display:block;margin-bottom:6px;">التفسير والشرح العلمي عند الإجابة:</label>
-          <textarea id="new-q-explain" rows="2" placeholder="وضحي السبب العلمي وراء صحة هذه الإجابة لتعزيز الفهم..." required style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;"></textarea>
-        </div>
-
-        <div class="form-group" style="margin-bottom:20px;">
-          <label style="font-weight:800;display:block;margin-bottom:6px;">رسالة التحفيز والتشجيع الإيجابي للطالبة:</label>
-          <input type="text" id="new-q-motivation" placeholder="مثال: 🌟 رائعة ومتميزة! إجابة ذكية تدل على فهمك العميق!" value="🌟 رائعة ومتميزة! إجابة ذكية تدل على فهمك العميق!" style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
-        </div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-          <button type="submit" class="btn-primary" style="padding:10px 24px;">
-            <span>💾 حفظ السؤال وإضافته الآن</span>
-          </button>
-          <button type="button" class="btn-secondary" onclick="document.getElementById('add-question-modal').classList.remove('show');">
-            <span>إلغاء</span>
-          </button>
-        </div>
-      </form>
     </div>
   </div>
 
@@ -1159,7 +1053,83 @@
     </div>
   </div>
 
-  <!-- 6. ADMIN EDIT QUESTION MODAL -->
+<!-- 2. ADD CUSTOM QUESTION MODAL (Strict RTL) -->
+  <div class="modal-overlay" id="add-question-modal" dir="rtl">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>➕ إضافة سؤال جديد لبنك الأسئلة والمحاكي</span>
+        </div>
+        <button class="modal-close-btn" id="close-add-q-modal-btn">✕</button>
+      </div>
+
+      <p style="color:var(--text-muted);font-size:0.95rem;margin-bottom:18px;line-height:1.6;">
+        يمكن للمعلمة أو الطالبة إضافة أسئلة تفاعلية جديدة لأي عضو من الأعضاء الستة، وستظهر فوراً في المحاكي وبنك الأسئلة مع التصحيح والتحفيز الذكي:
+      </p>
+
+      <form id="add-question-form" onsubmit="event.preventDefault(); saveCustomQuestion();">
+        <div class="form-group" style="margin-bottom:14px;">
+          <label style="font-weight:800;display:block;margin-bottom:6px;">العضو المستهدف:</label>
+          <select id="new-q-organ" class="form-control" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;font-weight:700;">
+            <option value="heart">القلب</option>
+            <option value="lungs">الرئتان</option>
+            <option value="brain">الدماغ</option>
+            <option value="stomach">المعدة</option>
+            <option value="esophagus">المريء والمعدة</option>
+            <option value="eye">العين</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label style="font-weight:800;display:block;margin-bottom:6px;">نص السؤال:</label>
+          <input type="text" id="new-q-text" placeholder="اكتبي صيغة السؤال هنا..." required style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label style="font-weight:800;display:block;margin-bottom:8px;">خيارات الإجابة (حددي الإجابة الصحيحة بالدائرة):</label>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="q-opt-input-row">
+              <input type="radio" name="new-q-correct" value="0" checked id="q-radio-0">
+              <input type="text" id="new-q-opt-0" placeholder="الخيار الأول (الإجابة الصحيحة)" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
+            <div class="q-opt-input-row">
+              <input type="radio" name="new-q-correct" value="1" id="q-radio-1">
+              <input type="text" id="new-q-opt-1" placeholder="الخيار الثاني" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
+            <div class="q-opt-input-row">
+              <input type="radio" name="new-q-correct" value="2" id="q-radio-2">
+              <input type="text" id="new-q-opt-2" placeholder="الخيار الثالث" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
+            <div class="q-opt-input-row">
+              <input type="radio" name="new-q-correct" value="3" id="q-radio-3">
+              <input type="text" id="new-q-opt-3" placeholder="الخيار الرابع" required style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label style="font-weight:800;display:block;margin-bottom:6px;">التفسير والشرح العلمي عند الإجابة:</label>
+          <textarea id="new-q-explain" rows="2" placeholder="وضحي السبب العلمي وراء صحة هذه الإجابة لتعزيز الفهم..." required style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;"></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom:20px;">
+          <label style="font-weight:800;display:block;margin-bottom:6px;">رسالة التحفيز والتشجيع الإيجابي للطالبة:</label>
+          <input type="text" id="new-q-motivation" placeholder="مثال: 🌟 رائعة ومتميزة! إجابة ذكية تدل على فهمك العميق!" value="🌟 رائعة ومتميزة! إجابة ذكية تدل على فهمك العميق!" style="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+          <button type="submit" class="btn-primary" style="padding:10px 24px;">
+            <span>💾 حفظ السؤال وإضافته الآن</span>
+          </button>
+          <button type="button" class="btn-secondary" onclick="document.getElementById('add-question-modal').classList.remove('show');">
+            <span>إلغاء</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+    <!-- 6. ADMIN EDIT QUESTION MODAL -->
   <div class="modal-overlay" id="admin-edit-q-modal" dir="rtl">
     <div class="modal-card" style="max-width:620px;">
       <div class="modal-header">
@@ -1286,8 +1256,8 @@
   <!-- Three.js 3D Engine & Orbit Controls -->
   <script src="assets/three.min.js"></script>
   <script src="assets/OrbitControls.js"></script>
-  <script src="body3d.js?v=20261104_v7"></script>
-  <script src="content.js?v=1"></script>
-  <script src="app.js?v=20261104_v9"></script>
+  <script src="body3d.js?v=20261104_v10"></script>
+  <script src="content.js?v=20261104_v10"></script>
+  <script src="app.js?v=20261104_v10"></script>
 </body>
 </html>

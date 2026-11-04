@@ -2428,8 +2428,8 @@ section.app-tab-content.active {
     right: 0;
     height: 64px;
     background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border-top: 1.5px solid var(--border);
     box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
     z-index: 2500;
@@ -3512,19 +3512,23 @@ section.app-tab-content.active {
 }
 
 /* Ensure nested modals (Add Question, Edit Question, Part Detail) ALWAYS appear IN FRONT of Admin Dashboard */
+#admin-dashboard-modal {
+  z-index: 5000 !important;
+}
+#admin-dashboard-modal .modal-card {
+  z-index: 5001 !important;
+}
+
 #add-question-modal,
 #admin-edit-q-modal,
 #part-detail-modal {
-  z-index: 6000 !important;
+  z-index: 99999 !important;
 }
 
 #add-question-modal .modal-card,
 #admin-edit-q-modal .modal-card,
 #part-detail-modal .modal-card {
-  z-index: 6001 !important;
-  box-shadow: 0 30px 70px -10px rgba(0, 0, 0, 0.6) !important;
-}
-
-#admin-dashboard-modal {
-  z-index: 3500 !important;
+  z-index: 100000 !important;
+  position: relative !important;
+  box-shadow: 0 35px 80px -10px rgba(0, 0, 0, 0.75) !important;
 }
