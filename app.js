@@ -2816,6 +2816,7 @@ function showCertificate() {
   document.getElementById('cert-student-display').textContent = student;
   document.getElementById('cert-date-display').textContent = new Date().toLocaleDateString('ar-SA');
   document.getElementById('cert-score-display').textContent = `${state.quizScore} / ${quizData.length}`;
+  logStudentResult(student, state.quizScore, quizData.length);
   document.getElementById('cert-overlay').classList.add('show');
   sounds.playVictory();
 }
@@ -2900,3 +2901,625 @@ function updateProgressTracker(surveySubmitted = false) {
   if (progressBar) progressBar.style.width = `${completedSteps}%`;
   if (progressText) progressText.textContent = `${completedSteps}%`;
 }
+
+
+// ==========================================
+// 🔐 TEACHER & ADMIN CONTROL PANEL SYSTEM
+// ==========================================
+
+function getAdminPin() {
+  try {
+    return localStorage.getItem('admin_pin') || '1234';
+  } catch (e) {
+    return '1234';
+  }
+}
+
+function saveAdminNewPin() {
+  const input = document.getElementById('admin-new-pin-input');
+  if (!input || !input.value.trim()) {
+    alert('يرجى إدخال رمز سري صالح.');
+    return;
+  }
+  try {
+    localStorage.setItem('admin_pin', input.value.trim());
+    alert('✅ تم تغيير الرمز السري للأدمن بنجاح!');
+    input.value = '';
+  } catch (e) {
+    alert('تعذر حفظ الرمز: ' + e);
+  }
+}
+
+window.openAdminModal = function() {
+  if (sessionStorage.getItem('admin_auth') === 'true') {
+    window.openAdminDashboard();
+  } else {
+    const modal = document.getElementById('admin-login-modal');
+    if (modal) {
+      modal.classList.add('show');
+      const err = document.getElementById('admin-login-error');
+      if (err) err.style.display = 'none';
+      const input = document.getElementById('admin-pin-input');
+      if (input) {
+        input.value = '';
+        setTimeout(() => input.focus(), 200);
+      }
+    }
+  }
+};
+
+window.closeAdminLoginModal = function() {
+  const modal = document.getElementById('admin-login-modal');
+  if (modal) modal.classList.remove('show');
+};
+
+window.submitAdminLogin = function() {
+  const input = document.getElementById('admin-pin-input');
+  const err = document.getElementById('admin-login-error');
+  if (!input) return;
+  const pin = input.value.trim();
+  if (pin === getAdminPin()) {
+    sessionStorage.setItem('admin_auth', 'true');
+    closeAdminLoginModal();
+    window.openAdminDashboard();
+  } else {
+    if (err) {
+      err.textContent = '❌ الرمز السري غير صحيح، يرجى المحاولة مرة أخرى.';
+      err.style.display = 'block';
+    }
+    input.value = '';
+    input.focus();
+  }
+};
+
+window.openAdminDashboard = function() {
+  const modal = document.getElementById('admin-dashboard-modal');
+  if (modal) {
+    modal.classList.add('show');
+    renderAdminDashboard();
+  }
+};
+
+window.closeAdminDashboardModal = function() {
+  const modal = document.getElementById('admin-dashboard-modal');
+  if (modal) modal.classList.remove('show');
+};
+
+window.logoutAdmin = function() {
+  sessionStorage.removeItem('admin_auth');
+  closeAdminDashboardModal();
+  alert('🔒 تم تسجيل الخروج من لوحة التحكم بنجاح.');
+};
+
+window.switchAdminTab = function(tabName) {
+  document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-pane') === tabName);
+  });
+  document.querySelectorAll('.admin-pane').forEach(pane => {
+    pane.classList.toggle('active', pane.id === `admin-pane-${tabName}`);
+  });
+
+  if (tabName === 'questions') {
+    renderAdminQuestions('all');
+  } else if (tabName === 'youtube') {
+    renderAdminYouTube('heart');
+  } else if (tabName === 'students') {
+    renderAdminStudentResults();
+  }
+};
+
+function renderAdminDashboard() {
+  const activeBtn = document.querySelector('.admin-tab-btn.active');
+  const currentPane = activeBtn ? activeBtn.getAttribute('data-pane') : 'questions';
+  switchAdminTab(currentPane);
+}
+
+// ------------------------------------------
+// PANE 1: QUESTIONS MANAGEMENT (CRUD)
+// ------------------------------------------
+let adminCurrentFilter = 'all';
+
+window.filterAdminQuestions = function(organKey, btnElem) {
+  adminCurrentFilter = organKey;
+  if (btnElem && btnElem.parentElement) {
+    btnElem.parentElement.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+    btnElem.classList.add('active');
+  }
+  renderAdminQuestions(organKey);
+};
+
+function getAllAdminQuestionsList() {
+  const list = [];
+  Object.keys(organsSimulatorData).forEach(key => {
+    const organ = organsSimulatorData[key];
+    const organName = organ.name;
+    const defaults = organ.defaultQuestions || [];
+    defaults.forEach((q, idx) => {
+      list.push({
+        ...q,
+        id: q.id || `default_${key}_${idx}`,
+        isDefault: true,
+        organKey: key,
+        organName: organName
+      });
+    });
+  });
+
+  const customs = getCustomQuestions();
+  customs.forEach(q => {
+    const organ = organsSimulatorData[q.organKey];
+    list.push({
+      ...q,
+      isDefault: false,
+      organName: organ ? organ.name : q.organKey
+    });
+  });
+
+  return list;
+}
+
+function renderAdminQuestions(filterOrgan = 'all') {
+  const container = document.getElementById('admin-questions-list-container');
+  if (!container) return;
+
+  const all = getAllAdminQuestionsList();
+  const filtered = filterOrgan === 'all' ? all : all.filter(q => q.organKey === filterOrgan);
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:40px;background:#fff;border-radius:12px;border:1.5px dashed #cbd5e1;color:#64748b;">
+        <span style="font-size:2rem;display:block;margin-bottom:8px;">📭</span>
+        <strong style="font-size:1.05rem;">لا توجد أسئلة مسجلة لهذا العضو</strong>
+        <p style="margin:6px 0 14px 0;font-size:0.85rem;">يمكنك إضافة سؤال جديد باستخدام الزر بالأعلى.</p>
+        <button class="btn-primary" onclick="openAddQuestionModal()">➕ إضافة أول سؤال</button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map((q, idx) => {
+    return `
+      <div class="admin-q-item" id="admin-q-card-${q.id}">
+        <div class="admin-q-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="background:#e0f2fe;color:#0369a1;font-weight:800;font-size:0.78rem;padding:3px 10px;border-radius:20px;">
+              ${q.organName}
+            </span>
+            <span style="background:${q.isDefault ? '#f1f5f9' : '#fef3c7'};color:${q.isDefault ? '#475569' : '#b45309'};font-weight:700;font-size:0.75rem;padding:2px 8px;border-radius:20px;">
+              ${q.isDefault ? '📌 سؤال أساسي' : '✍️ سؤال مضاف يدوياً'}
+            </span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-secondary" onclick="openAdminEditQuestionModal('${q.id}')" style="padding:4px 10px;font-size:0.8rem;">
+              <span>✏️ تعديل</span>
+            </button>
+            <button class="btn-secondary" onclick="deleteAdminQuestion('${q.id}', ${q.isDefault})" style="padding:4px 10px;font-size:0.8rem;color:#dc2626;border-color:#fca5a5;">
+              <span>🗑️ حذف</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-q-text">
+          <span style="color:#6366f1;margin-left:4px;">س${idx + 1}:</span> ${q.question}
+        </div>
+
+        <div class="admin-q-choices">
+          ${q.options.map((opt, optIdx) => `
+            <div class="admin-q-choice-item ${optIdx === q.correct ? 'correct' : ''}">
+              ${optIdx === q.correct ? '✓ ' : '○ '} ${opt}
+            </div>
+          `).join('')}
+        </div>
+
+        <div style="background:#f8fafc;padding:10px 14px;border-radius:8px;font-size:0.85rem;color:#475569;display:flex;flex-direction:column;gap:4px;border:1px solid #e2e8f0;">
+          <div><strong style="color:#0f172a;">💡 التفسير العلمي:</strong> ${q.explanation || 'لا يوجد'}</div>
+          <div><strong style="color:#16a34a;">🌟 عبارة التحفيز:</strong> ${q.motivation || 'ممتاز!'}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.openAdminEditQuestionModal = function(qId) {
+  const all = getAllAdminQuestionsList();
+  const q = all.find(item => item.id === qId);
+  if (!q) {
+    alert('لم يتم العثور على السؤال!');
+    return;
+  }
+
+  document.getElementById('edit-q-id').value = q.id;
+  document.getElementById('edit-q-organ').value = q.organKey;
+  document.getElementById('edit-q-text').value = q.question;
+  document.getElementById('edit-q-opt-0').value = q.options[0] || '';
+  document.getElementById('edit-q-opt-1').value = q.options[1] || '';
+  document.getElementById('edit-q-opt-2').value = q.options[2] || '';
+  document.getElementById('edit-q-opt-3').value = q.options[3] || '';
+  const radio = document.getElementById(`edit-radio-${q.correct}`);
+  if (radio) radio.checked = true;
+  document.getElementById('edit-q-explain').value = q.explanation || '';
+  document.getElementById('edit-q-motivation').value = q.motivation || '';
+
+  const modal = document.getElementById('admin-edit-q-modal');
+  if (modal) modal.classList.add('show');
+};
+
+window.saveAdminEditedQuestion = function() {
+  const qId = document.getElementById('edit-q-id').value;
+  const organKey = document.getElementById('edit-q-organ').value;
+  const question = document.getElementById('edit-q-text').value.trim();
+  const opt0 = document.getElementById('edit-q-opt-0').value.trim();
+  const opt1 = document.getElementById('edit-q-opt-1').value.trim();
+  const opt2 = document.getElementById('edit-q-opt-2').value.trim();
+  const opt3 = document.getElementById('edit-q-opt-3').value.trim();
+  const correct = parseInt(document.querySelector('input[name="edit-q-correct"]:checked').value, 10);
+  const explanation = document.getElementById('edit-q-explain').value.trim();
+  const motivation = document.getElementById('edit-q-motivation').value.trim();
+
+  // If was a custom question:
+  let customs = getCustomQuestions();
+  const customIdx = customs.findIndex(c => c.id === qId);
+  if (customIdx !== -1) {
+    customs[customIdx] = {
+      ...customs[customIdx],
+      organKey,
+      question,
+      options: [opt0, opt1, opt2, opt3],
+      correct,
+      explanation,
+      motivation
+    };
+    localStorage.setItem('custom_organ_questions', JSON.stringify(customs));
+  } else {
+    // If was default, delete old and add as custom
+    customs.push({
+      id: 'custom_' + Date.now(),
+      organKey,
+      question,
+      options: [opt0, opt1, opt2, opt3],
+      correct,
+      explanation,
+      motivation
+    });
+    localStorage.setItem('custom_organ_questions', JSON.stringify(customs));
+  }
+
+  document.getElementById('admin-edit-q-modal').classList.remove('show');
+  renderAdminQuestions(adminCurrentFilter);
+  if (typeof renderAllQuestionsList === 'function') renderAllQuestionsList();
+  if (typeof renderQuizPillsBar === 'function') renderQuizPillsBar();
+  alert('✅ تم حفظ تعديلات السؤال بنجاح!');
+};
+
+window.deleteAdminQuestion = function(qId, isDefault) {
+  if (!confirm('هل أنتِ متأكدة من رغبتكِ في حذف هذا السؤال؟')) return;
+
+  if (!isDefault) {
+    deleteCustomQuestionFromStorage(qId);
+  } else {
+    alert('السؤال الأساسي مدمج. يمكنك استبداله أو تعديله بحرية.');
+  }
+
+  renderAdminQuestions(adminCurrentFilter);
+  if (typeof renderAllQuestionsList === 'function') renderAllQuestionsList();
+  if (typeof renderQuizPillsBar === 'function') renderQuizPillsBar();
+};
+
+window.resetAllQuestionsToDefault = function() {
+  if (!confirm('هل ترغبين في استعادة بنك الأسئلة الافتراضي (12 سؤالاً) وحذف الأسئلة المضافة؟')) return;
+  try {
+    localStorage.removeItem('custom_organ_questions');
+    renderAdminQuestions(adminCurrentFilter);
+    if (typeof renderAllQuestionsList === 'function') renderAllQuestionsList();
+    if (typeof renderQuizPillsBar === 'function') renderQuizPillsBar();
+    alert('✅ تم استعادة الأسئلة الافتراضية بنجاح.');
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+// ------------------------------------------
+// PANE 2: YOUTUBE MANAGER
+// ------------------------------------------
+let adminCurrentYtOrgan = 'heart';
+
+window.renderAdminYouTube = function(organKey = null) {
+  if (organKey) adminCurrentYtOrgan = organKey;
+  const tabsContainer = document.getElementById('admin-yt-tabs');
+  const tableContainer = document.getElementById('admin-yt-parts-table-container');
+  if (!tabsContainer || !tableContainer) return;
+
+  // Render organ pills
+  tabsContainer.innerHTML = Object.keys(organsSimulatorData).map(k => {
+    const org = organsSimulatorData[k];
+    const isActive = k === adminCurrentYtOrgan;
+    return `
+      <button class="pill-btn ${isActive ? 'active' : ''}" onclick="renderAdminYouTube('${k}')" style="padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.85rem;">
+        ${org.icon} ${org.name}
+      </button>
+    `;
+  }).join('');
+
+  const organ = organsSimulatorData[adminCurrentYtOrgan];
+  if (!organ) return;
+
+  const parts = organ.parts || [];
+  tableContainer.innerHTML = `
+    <div class="admin-table-container">
+      <table class="admin-data-table">
+        <thead>
+          <tr>
+            <th style="width:180px;">الجزء التشريحي</th>
+            <th>رابط يوتيوب (أو المعرّف ID)</th>
+            <th style="width:170px;text-align:center;">إجراءات</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${parts.map(p => {
+            const currentUrl = getPartYouTubeUrl(p.id, p.defaultYt);
+            return `
+              <tr>
+                <td>
+                  <strong>${p.name}</strong>
+                  <div style="font-size:0.75rem;color:#64748b;">${p.nameEn || ''}</div>
+                </td>
+                <td>
+                  <input type="text" id="admin-yt-input-${p.id}" value="${currentUrl}" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;font-size:0.85rem;" dir="ltr">
+                </td>
+                <td style="text-align:center;">
+                  <button class="btn-primary" onclick="saveAdminSingleYt('${p.id}')" style="padding:4px 10px;font-size:0.78rem;">
+                    <span>حفظ 💾</span>
+                  </button>
+                  <button class="btn-secondary" onclick="openPartModal('${adminCurrentYtOrgan}', '${p.id}')" style="padding:4px 10px;font-size:0.78rem;">
+                    <span>معاينة ▶️</span>
+                  </button>
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+};
+
+window.saveAdminSingleYt = function(partId) {
+  const input = document.getElementById(`admin-yt-input-${partId}`);
+  if (!input) return;
+  savePartYouTubeUrl(partId, input.value.trim());
+  alert('✅ تم حفظ رابط الفيديو لهذا الجزء!');
+};
+
+window.saveAllAdminYouTube = function() {
+  const organ = organsSimulatorData[adminCurrentYtOrgan];
+  if (!organ || !organ.parts) return;
+  organ.parts.forEach(p => {
+    const input = document.getElementById(`admin-yt-input-${p.id}`);
+    if (input) savePartYouTubeUrl(p.id, input.value.trim());
+  });
+  alert('✅ تم حفظ كافة روابط يوتيوب لهذا العضو بنجاح!');
+};
+
+// ------------------------------------------
+// PANE 3: STUDENT RESULTS LOG
+// ------------------------------------------
+function getStudentResultsLog() {
+  try {
+    const raw = localStorage.getItem('student_quiz_results');
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.error(e);
+  }
+  return [];
+}
+
+window.logStudentResult = function(name, score, total) {
+  if (!name || name === 'الطالب/ـة المتميز/ـة' || name === 'الطالب/ـة') return;
+  try {
+    const results = getStudentResultsLog();
+    const pct = Math.round((score / total) * 100);
+    let grade = 'ممتاز 🌟';
+    if (pct < 60) grade = 'مشارك 👍';
+    else if (pct < 80) grade = 'جيد جداً 🎯';
+
+    // Avoid duplicate entry in same minute
+    const now = new Date();
+    const timeStr = now.toLocaleDateString('ar-SA') + ' ' + now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+    
+    results.unshift({
+      id: Date.now(),
+      name,
+      score,
+      total,
+      pct,
+      grade,
+      timestamp: timeStr
+    });
+
+    localStorage.setItem('student_quiz_results', JSON.stringify(results.slice(0, 100)));
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+window.renderAdminStudentResults = function() {
+  const results = getStudentResultsLog();
+  const totalStudentsElem = document.getElementById('admin-stat-total-students');
+  const avgScoreElem = document.getElementById('admin-stat-avg-score');
+  const maxScoreElem = document.getElementById('admin-stat-max-score');
+  const tbody = document.getElementById('admin-students-table-body');
+  if (!tbody) return;
+
+  if (totalStudentsElem) totalStudentsElem.textContent = results.length;
+
+  if (results.length === 0) {
+    if (avgScoreElem) avgScoreElem.textContent = '0%';
+    if (maxScoreElem) maxScoreElem.textContent = '0 / 12';
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align:center;padding:30px;color:#64748b;">
+          لم يسجل أي طالب نتيجة حتى الآن. تظهر النتائج هنا تلقائياً عند حل الاختبار وطباعة الشهادة.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  const avg = Math.round(results.reduce((acc, cur) => acc + cur.pct, 0) / results.length);
+  const maxScore = Math.max(...results.map(r => r.score));
+  if (avgScoreElem) avgScoreElem.textContent = `${avg}%`;
+  if (maxScoreElem) maxScoreElem.textContent = `${maxScore} / 12`;
+
+  tbody.innerHTML = results.map((r, idx) => `
+    <tr>
+      <td><strong>${idx + 1}</strong></td>
+      <td><strong style="color:#0f172a;">${r.name}</strong></td>
+      <td><span style="font-weight:800;color:#0284c7;">${r.score}</span> / ${r.total}</td>
+      <td><strong>${r.pct}%</strong></td>
+      <td><span style="background:${r.pct >= 80 ? '#dcfce7' : '#f1f5f9'};color:${r.pct >= 80 ? '#15803d' : '#334155'};padding:3px 10px;border-radius:20px;font-size:0.8rem;font-weight:700;">${r.grade}</span></td>
+      <td style="font-size:0.8rem;color:#64748b;">${r.timestamp}</td>
+    </tr>
+  `).join('');
+};
+
+window.exportStudentResultsCSV = function() {
+  const results = getStudentResultsLog();
+  if (results.length === 0) {
+    alert('لا توجد بيانات طلاب لتصديرها.');
+    return;
+  }
+
+  let csv = '\uFEFFم,اسم الطالب/ـة,الدرجة,إجمالي الأسئلة,النسبة المئوية,التقدير,التاريخ والوقت\n';
+  results.forEach((r, idx) => {
+    csv += `"${idx + 1}","${r.name}","${r.score}","${r.total}","${r.pct}%","${r.grade}","${r.timestamp}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `نتائج_طلاب_أعضاء_الجسم_${new Date().toLocaleDateString('ar-SA').replace(/\//g, '-')}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+window.printStudentResults = function() {
+  const results = getStudentResultsLog();
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html dir="rtl">
+      <head>
+        <title>كشف نتائج طلاب منصة أعضاء الجسم</title>
+        <style>
+          body { font-family: system-ui, -apple-system, sans-serif; padding: 24px; direction: rtl; }
+          h2 { text-align: center; color: #1e1b4b; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid #cbd5e1; padding: 10px 14px; text-align: right; }
+          th { background: #f8fafc; font-weight: bold; }
+        </style>
+      </head>
+      <body>
+        <h2>📊 كشف نتائج وتقييمات طلاب منصة «أعضاء الجسم»</h2>
+        <p style="text-align:center;color:#64748b;">تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}</p>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>اسم الطالبـ/ـة</th>
+              <th>الدرجة</th>
+              <th>النسبة</th>
+              <th>التقدير</th>
+              <th>الوقت والتاريخ</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${results.map((r, i) => `
+              <tr>
+                <td>${i + 1}</td>
+                <td><strong>${r.name}</strong></td>
+                <td>${r.score} / ${r.total}</td>
+                <td>${r.pct}%</td>
+                <td>${r.grade}</td>
+                <td>${r.timestamp}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <script>window.onload = function() { window.print(); };</script>
+      </body>
+    </html>
+  `);
+  win.document.close();
+};
+
+window.clearStudentResults = function() {
+  if (!confirm('هل أنتِ متأكدة من مسح سجل درجات الطلاب بالكامل؟')) return;
+  localStorage.removeItem('student_quiz_results');
+  renderAdminStudentResults();
+  alert('🗑️ تم مسح السجل بنجاح.');
+};
+
+// ------------------------------------------
+// PANE 4: BACKUP & FIREBASE CLOUD
+// ------------------------------------------
+window.exportPlatformBackupJSON = function() {
+  const backup = {
+    exportDate: new Date().toISOString(),
+    version: '1.0',
+    adminPin: getAdminPin(),
+    customQuestions: getCustomQuestions(),
+    customYoutube: getCustomYouTubeLinks(),
+    studentResults: getStudentResultsLog(),
+    firebaseConfig: {
+      apiKey: localStorage.getItem('fb_api_key') || '',
+      projectId: localStorage.getItem('fb_project_id') || ''
+    }
+  };
+
+  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backup, null, 2));
+  const a = document.createElement('a');
+  a.href = dataStr;
+  a.download = `نسخة_احتياطية_منصة_أعضاء_الجسم_${new Date().toLocaleDateString('ar-SA').replace(/\//g, '-')}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+window.importPlatformBackupJSON = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.adminPin) localStorage.setItem('admin_pin', data.adminPin);
+      if (data.customQuestions) localStorage.setItem('custom_organ_questions', JSON.stringify(data.customQuestions));
+      if (data.customYoutube) localStorage.setItem('custom_organ_youtube_links', JSON.stringify(data.customYoutube));
+      if (data.studentResults) localStorage.setItem('student_quiz_results', JSON.stringify(data.studentResults));
+      if (data.firebaseConfig) {
+        if (data.firebaseConfig.apiKey) localStorage.setItem('fb_api_key', data.firebaseConfig.apiKey);
+        if (data.firebaseConfig.projectId) localStorage.setItem('fb_project_id', data.firebaseConfig.projectId);
+      }
+
+      alert('✅ تم استيراد وتطبيق النسخة الاحتياطية بنجاح!');
+      renderAdminDashboard();
+      if (typeof renderAllQuestionsList === 'function') renderAllQuestionsList();
+      if (typeof renderQuizPillsBar === 'function') renderQuizPillsBar();
+    } catch (err) {
+      alert('❌ فشل استيراد الملف: ' + err);
+    }
+  };
+  reader.readAsText(file);
+};
+
+window.saveFirebaseConfig = function() {
+  const apiKey = document.getElementById('fb-api-key').value.trim();
+  const projectId = document.getElementById('fb-project-id').value.trim();
+  if (apiKey) localStorage.setItem('fb_api_key', apiKey);
+  if (projectId) localStorage.setItem('fb_project_id', projectId);
+  alert('✅ تم حفظ إعدادات الربط السحابي (Firebase) بنجاح!');
+};
+

@@ -16,7 +16,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <link rel="stylesheet" href="style.css?v=20261103_v4">
+  <link rel="stylesheet" href="style.css?v=20261103_v5">
 </head>
 <body dir="rtl">
 
@@ -48,6 +48,9 @@
       <div class="header-controls">
         <button id="open-youtube-manager-btn" class="link-settings-btn" style="background:rgba(239, 68, 68, 0.1);color:#dc2626;border:1.5px solid rgba(239, 68, 68, 0.3);font-weight:800;" title="إدارة وتخصيص روابط يوتيوب لجميع أجزاء الأعضاء">
           <span>🎥 فيديوهات يوتيوب للأجزاء</span>
+        </button>
+                <button id="open-admin-btn" class="admin-nav-btn" onclick="openAdminModal()" title="لوحة تحكم المعلم / الأدمن">
+          <span>🔐 لوحة الأدمن</span>
         </button>
         <button id="sound-toggle-btn" class="sound-toggle-btn" title="تشغيل / كتم الصوت">
           <span>الصوت مفعّل</span>
@@ -902,6 +905,308 @@
     </div>
   </div>
 
+  <!-- 4. ADMIN PIN LOGIN MODAL -->
+  <div class="modal-overlay" id="admin-login-modal" dir="rtl">
+    <div class="modal-card" style="max-width:440px;text-align:center;">
+      <div class="modal-header" style="justify-content:center;position:relative;">
+        <div class="modal-title" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:52px;height:52px;border-radius:50%;background:rgba(99,102,241,0.15);color:#4f46e5;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">🔐</div>
+          <span style="font-size:1.25rem;">لوحة تحكم المعلم / الأدمن</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeAdminLoginModal()" style="position:absolute;left:0;top:0;">✕</button>
+      </div>
+      <p style="color:#64748b;font-size:0.95rem;margin:14px 0 20px 0;line-height:1.6;">
+        أدخلي الرمز السري الخاص بالمعلم للوصول إلى إدارة بنك الأسئلة وروابط يوتيوب ودرجات الطلاب (الرمز الافتراضي: <strong>1234</strong>)
+      </p>
+      <form onsubmit="event.preventDefault(); submitAdminLogin();">
+        <input type="password" id="admin-pin-input" placeholder="الرمز السري (PIN)..." maxlength="12" style="width:100%;text-align:center;font-size:1.4rem;letter-spacing:6px;padding:12px;border-radius:12px;border:2px solid #cbd5e1;outline:none;font-weight:800;font-family:inherit;margin-bottom:12px;" required>
+        <div id="admin-login-error" style="color:#dc2626;font-size:0.88rem;font-weight:700;display:none;margin-bottom:14px;"></div>
+        <div style="display:flex;gap:10px;">
+          <button type="submit" class="btn-primary" style="flex:1;padding:12px;font-size:1rem;background:linear-gradient(135deg, #4f46e5, #7c3aed);border:none;">
+            <span>دخول لوحة التحكم ➔</span>
+          </button>
+          <button type="button" class="btn-secondary" onclick="closeAdminLoginModal()" style="padding:12px 18px;">
+            <span>إلغاء</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. ADMIN DASHBOARD MODAL -->
+  <div class="modal-overlay" id="admin-dashboard-modal" dir="rtl">
+    <div class="modal-card admin-dashboard-card">
+      <div class="admin-header-bar">
+        <div class="admin-header-title">
+          <span>⚙️</span>
+          <span>لوحة تحكم المعلم وإدارة المنصة</span>
+          <span class="admin-header-badge">الأدمن الرئيسي</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button onclick="logoutAdmin()" class="btn-secondary" style="padding:6px 14px;font-size:0.82rem;background:rgba(255,255,255,0.15);color:#fff;border-color:transparent;">
+            <span>خروج 🔒</span>
+          </button>
+          <button class="modal-close-btn" onclick="closeAdminDashboardModal()" style="color:#fff;">✕</button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="admin-tabs-nav">
+        <button class="admin-tab-btn active" data-pane="questions" onclick="switchAdminTab('questions')">
+          <span>📝</span> <span>إدارة بنك الأسئلة</span>
+        </button>
+        <button class="admin-tab-btn" data-pane="youtube" onclick="switchAdminTab('youtube')">
+          <span>🎥</span> <span>فيديوهات يوتيوب للأجزاء</span>
+        </button>
+        <button class="admin-tab-btn" data-pane="students" onclick="switchAdminTab('students')">
+          <span>📊</span> <span>سجل نتائج الطلاب</span>
+        </button>
+        <button class="admin-tab-btn" data-pane="settings" onclick="switchAdminTab('settings')">
+          <span>⚙️</span> <span>النسخ الاحتياطي والسحابة</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="admin-body-content">
+        <!-- Pane 1: Questions Management -->
+        <div class="admin-pane active" id="admin-pane-questions">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+            <div>
+              <h3 style="margin:0 0 4px 0;font-size:1.15rem;font-weight:900;color:#0f172a;">أسئلة المنصة الشاملة</h3>
+              <p style="margin:0;font-size:0.85rem;color:#64748b;">يمكنك تعديل أي سؤال، حذف، أو إضافة أسئلة جديدة مع التحفيز والتفسير العلمي:</p>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-primary" onclick="openAddQuestionModal()" style="padding:8px 16px;font-size:0.88rem;">
+                <span>➕ إضافة سؤال جديد</span>
+              </button>
+              <button class="btn-secondary" onclick="resetAllQuestionsToDefault()" style="padding:8px 14px;font-size:0.88rem;">
+                <span>🔄 استعادة الأسئلة الافتراضية</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Organ Filter Pills -->
+          <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin-bottom:12px;" id="admin-q-filter-pills">
+            <button class="pill-btn active" onclick="filterAdminQuestions('all', this)" style="padding:5px 12px;border-radius:18px;font-size:0.82rem;font-weight:700;">الكل</button>
+            <button class="pill-btn" onclick="filterAdminQuestions('heart', this)" style="padding:5px 12px;border-radius:18px;font-size:0.82rem;font-weight:700;">🫀 القلب</button>
+            <button class="pill-btn" onclick="filterAdminQuestions('lungs', this)" style="padding:5px 12px;border-radius:18px;font-size:0.82rem;font-weight:700;">🫁 الرئتان</button>
+            <button class="pill-btn" onclick="filterAdminQuestions('brain', this)" style="padding:5px 12px;border-radius:18px;font-size:0.82rem;font-weight:700;">🧠 الدماغ</button>
+            <button class="pill-btn" onclick="filterAdminQuestions('stomach', this)" style="padding:5px 12px;border-radius:18px;font-size:0.82rem;font-weight:700;">🥗 المعدة</button>
+            <button class="pill-btn" onclick="filterAdminQuestions('esophagus', this)" style="padding:5px 12px;border-radius:18px;font-size:0.82rem;font-weight:700;">🥢 المريء</button>
+            <button class="pill-btn" onclick="filterAdminQuestions('eye', this)" style="padding:5px 12px;border-radius:18px;font-size:0.82rem;font-weight:700;">👁️ العين</button>
+          </div>
+
+          <!-- Questions List -->
+          <div id="admin-questions-list-container"></div>
+        </div>
+
+        <!-- Pane 2: YouTube Videos -->
+        <div class="admin-pane" id="admin-pane-youtube">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+            <div>
+              <h3 style="margin:0 0 4px 0;font-size:1.15rem;font-weight:900;color:#0f172a;">إدارة روابط يوتيوب للأعضاء والأجزاء</h3>
+              <p style="margin:0;font-size:0.85rem;color:#64748b;">تحديث وتخصيص فيديوهات الشرح لكل جزء من أجزاء الأعضاء الستة:</p>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-primary" onclick="saveAllAdminYouTube()" style="padding:8px 16px;font-size:0.88rem;">
+                <span>💾 حفظ جميع التعديلات</span>
+              </button>
+              <button class="btn-secondary" onclick="resetAllYouTubeUrls(); renderAdminYouTube();" style="padding:8px 14px;font-size:0.88rem;">
+                <span>🔄 استعادة الروابط الافتراضية</span>
+              </button>
+            </div>
+          </div>
+          <div id="admin-yt-tabs" style="display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;"></div>
+          <div id="admin-yt-parts-table-container"></div>
+        </div>
+
+        <!-- Pane 3: Student Results Log -->
+        <div class="admin-pane" id="admin-pane-students">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+            <div>
+              <h3 style="margin:0 0 4px 0;font-size:1.15rem;font-weight:900;color:#0f172a;">سجل درجات ومشاركات الطلاب</h3>
+              <p style="margin:0;font-size:0.85rem;color:#64748b;">قائمة بالطلاب الذين حلوا الاختبارات وحصلوا على شهادات التميز:</p>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-primary" onclick="exportStudentResultsCSV()" style="padding:8px 16px;font-size:0.88rem;background:#059669;border-color:#047857;">
+                <span>📥 تصدير كملف Excel (CSV)</span>
+              </button>
+              <button class="btn-secondary" onclick="printStudentResults()" style="padding:8px 14px;font-size:0.88rem;">
+                <span>🖨️ طباعة الكشف</span>
+              </button>
+              <button class="btn-secondary" onclick="clearStudentResults()" style="padding:8px 14px;font-size:0.88rem;color:#dc2626;border-color:#fca5a5;">
+                <span>🗑️ مسح السجل</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="admin-stats-grid">
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon" style="background:#eff6ff;color:#2563eb;">👥</div>
+              <div>
+                <div class="admin-stat-val" id="admin-stat-total-students">0</div>
+                <div class="admin-stat-label">إجمالي الطلاب المشاركين</div>
+              </div>
+            </div>
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon" style="background:#ecfdf5;color:#059669;">🎯</div>
+              <div>
+                <div class="admin-stat-val" id="admin-stat-avg-score">0%</div>
+                <div class="admin-stat-label">متوسط درجات الطلاب</div>
+              </div>
+            </div>
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon" style="background:#fef3c7;color:#d97706;">🏆</div>
+              <div>
+                <div class="admin-stat-val" id="admin-stat-max-score">0 / 12</div>
+                <div class="admin-stat-label">أعلى درجة مسجلة</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="admin-table-container">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>اسم الطالبـ/ـة</th>
+                  <th>الدرجة</th>
+                  <th>النسبة</th>
+                  <th>التقدير</th>
+                  <th>التاريخ والوقت</th>
+                </tr>
+              </thead>
+              <tbody id="admin-students-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pane 4: Settings & Cloud Backup -->
+        <div class="admin-pane" id="admin-pane-settings">
+          <div class="admin-settings-card">
+            <div class="admin-settings-title">
+              <span>🔐</span> <span>تغيير الرمز السري للأدمن (PIN)</span>
+            </div>
+            <p style="color:#64748b;font-size:0.88rem;margin:0 0 12px 0;">
+              يمكنكِ تغيير رمز الدخول السري لحماية لوحة التحكم (الرمز الحالي الافتراضي: 1234):
+            </p>
+            <div style="display:flex;gap:10px;max-width:380px;">
+              <input type="password" id="admin-new-pin-input" placeholder="الرمز الجديد..." maxlength="12" style="flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;font-weight:700;">
+              <button class="btn-primary" onclick="saveAdminNewPin()" style="padding:8px 16px;">
+                <span>💾 حفظ الرمز</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-settings-card">
+            <div class="admin-settings-title">
+              <span>💾</span> <span>النسخ الاحتياطي ونقل البيانات (Backup & Restore)</span>
+            </div>
+            <p style="color:#64748b;font-size:0.88rem;margin:0 0 14px 0;">
+              يمكنك تصدير كافة الأسئلة والروابط بملف واحد لمشاركتها أو استيرادها على أي متصفح أو جهاز آخر:
+            </p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <button class="btn-primary" onclick="exportPlatformBackupJSON()" style="padding:10px 18px;font-size:0.9rem;">
+                <span>📥 تحميل ملف النسخة الاحتياطية (JSON)</span>
+              </button>
+              <label class="btn-secondary" style="padding:10px 18px;font-size:0.9rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+                <span>📂 استيراد نسخة احتياطية</span>
+                <input type="file" id="admin-import-file" accept=".json" style="display:none;" onchange="importPlatformBackupJSON(event)">
+              </label>
+            </div>
+          </div>
+
+          <div class="admin-settings-card">
+            <div class="admin-settings-title">
+              <span>☁️</span> <span>الربط السحابي الاختياري (Google Firebase Firestore)</span>
+            </div>
+            <p style="color:#64748b;font-size:0.88rem;margin:0 0 12px 0;line-height:1.6;">
+              المنصة الآن تعمل بصورة ذاتية وسريعة بنسبة 100% دون حاجة لأي قاعدة بيانات. إذا أردتِ مستقبلاً تفعيل المزامنة التلقائية اللحظية بين جميع هواتف وحواسيب الطلاب وحفظ النتائج في السحابة، يمكنكِ وضع بيانات مشروع Firebase الخاص بكِ هنا:
+            </p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:12px;margin-bottom:14px;">
+              <div>
+                <label style="font-size:0.82rem;font-weight:700;color:#475569;display:block;margin-bottom:4px;">API Key:</label>
+                <input type="text" id="fb-api-key" placeholder="AIzaSy..." style="width:100%;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:monospace;font-size:0.85rem;">
+              </div>
+              <div>
+                <label style="font-size:0.82rem;font-weight:700;color:#475569;display:block;margin-bottom:4px;">Project ID:</label>
+                <input type="text" id="fb-project-id" placeholder="my-body-organs-app" style="width:100%;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:monospace;font-size:0.85rem;">
+              </div>
+            </div>
+            <button class="btn-primary" onclick="saveFirebaseConfig()" style="padding:8px 18px;font-size:0.88rem;">
+              <span>💾 حفظ إعدادات السحابة</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. ADMIN EDIT QUESTION MODAL -->
+  <div class="modal-overlay" id="admin-edit-q-modal" dir="rtl">
+    <div class="modal-card" style="max-width:620px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>✏️ تعديل السؤال</span>
+        </div>
+        <button class="modal-close-btn" onclick="document.getElementById('admin-edit-q-modal').classList.remove('show');">✕</button>
+      </div>
+      <form onsubmit="event.preventDefault(); saveAdminEditedQuestion();">
+        <input type="hidden" id="edit-q-id">
+        <div class="form-group" style="margin-bottom:12px;">
+          <label style="font-weight:800;display:block;margin-bottom:4px;">العضو:</label>
+          <select id="edit-q-organ" style="width:100%;padding:8px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;font-weight:700;">
+            <option value="heart">القلب</option>
+            <option value="lungs">الرئتان</option>
+            <option value="brain">الدماغ</option>
+            <option value="stomach">المعدة</option>
+            <option value="esophagus">المريء</option>
+            <option value="eye">العين</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label style="font-weight:800;display:block;margin-bottom:4px;">نص السؤال:</label>
+          <input type="text" id="edit-q-text" required style="width:100%;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-weight:800;display:block;margin-bottom:6px;">الخيارات (حددي الإجابة الصحيحة بالدائرة):</label>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="q-opt-input-row">
+              <input type="radio" name="edit-q-correct" value="0" id="edit-radio-0">
+              <input type="text" id="edit-q-opt-0" required style="flex:1;padding:6px 10px;border-radius:6px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
+            <div class="q-opt-input-row">
+              <input type="radio" name="edit-q-correct" value="1" id="edit-radio-1">
+              <input type="text" id="edit-q-opt-1" required style="flex:1;padding:6px 10px;border-radius:6px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
+            <div class="q-opt-input-row">
+              <input type="radio" name="edit-q-correct" value="2" id="edit-radio-2">
+              <input type="text" id="edit-q-opt-2" required style="flex:1;padding:6px 10px;border-radius:6px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
+            <div class="q-opt-input-row">
+              <input type="radio" name="edit-q-correct" value="3" id="edit-radio-3">
+              <input type="text" id="edit-q-opt-3" required style="flex:1;padding:6px 10px;border-radius:6px;border:1.5px solid #cbd5e1;font-family:inherit;">
+            </div>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label style="font-weight:800;display:block;margin-bottom:4px;">التفسير والشرح العلمي:</label>
+          <textarea id="edit-q-explain" rows="2" required style="width:100%;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;"></textarea>
+        </div>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label style="font-weight:800;display:block;margin-bottom:4px;">عبارة التحفيز والتشجيع:</label>
+          <input type="text" id="edit-q-motivation" required style="width:100%;padding:8px 12px;border-radius:8px;border:1.5px solid #cbd5e1;font-family:inherit;">
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:10px;">
+          <button type="submit" class="btn-primary" style="padding:8px 22px;"><span>💾 حفظ التعديلات</span></button>
+          <button type="button" class="btn-secondary" onclick="document.getElementById('admin-edit-q-modal').classList.remove('show');"><span>إلغاء</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- CERTIFICATE OVERLAY MODAL (Strict RTL) -->
   <div class="certificate-preview-overlay" id="cert-overlay" dir="rtl">
     <div class="cert-overlay-actions">
@@ -966,7 +1271,7 @@
   <!-- Three.js 3D Engine & Orbit Controls -->
   <script src="assets/three.min.js"></script>
   <script src="assets/OrbitControls.js"></script>
-  <script src="body3d.js?v=20261103_v4"></script>
-  <script src="app.js?v=20261103_v4"></script>
+  <script src="body3d.js?v=20261104_v6"></script>
+  <script src="app.js?v=20261103_v5"></script>
 </body>
 </html>
