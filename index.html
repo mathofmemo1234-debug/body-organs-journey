@@ -49,19 +49,12 @@
       <div class="header-controls">
         <!-- 🌟 Flashy Participants Dropdown Menu (قائمة المشاركات) -->
         <div class="participants-dropdown-wrap" id="participants-dropdown-wrap">
-          <button class="participants-trigger-btn" type="button" aria-haspopup="true" aria-expanded="false" title="قائمة المشاركات">
+          <button class="participants-trigger-btn" type="button" aria-haspopup="true" aria-expanded="false" title="فريق العمل">
             <span class="flash-star">✨</span>
-            <span class="flash-title">المشاركات</span>
+            <span class="flash-title">فريق العمل</span>
             <span class="flash-arrow">▼</span>
           </button>
           <div class="participants-dropdown-menu" role="menu">
-            <div class="participants-menu-header">
-              <span class="p-header-icon">🌸</span>
-              <div>
-                <div class="p-header-title">فريق العمل والمشاركات</div>
-                <div class="p-header-sub">نخبة الطالبات المتميزات</div>
-              </div>
-            </div>
             <ul class="participants-list">
               <li class="participant-item"><span class="p-dot">⭐</span><span class="p-name">عبير الزهراني</span></li>
               <li class="participant-item"><span class="p-dot">⭐</span><span class="p-name">بتول الغامدي</span></li>
@@ -74,11 +67,6 @@
             </ul>
           </div>
         </div>
-
-
-        <a href="guide.html" target="_blank" class="admin-nav-btn" style="text-decoration:none;background:linear-gradient(135deg, #0ea5e9, #4f46e5);color:white;box-shadow:0 3px 10px rgba(79,70,229,0.25);display:inline-flex;align-items:center;gap:6px;" title="دليل الاستخدام الشامل ومصفوفة جودة المخرجات">
-          <span>📖 دليل الاستخدام والجودة</span>
-        </a>
         <button id="open-admin-btn" class="admin-nav-btn" onclick="openAdminModal()" title="لوحة تحكم المعلم / الأدمن">
           <span>🔐 لوحة الأدمن</span>
         </button>
@@ -211,6 +199,7 @@
               <div>
                 <strong id="b3d-tooltip-name">القلب</strong>
                 <small id="b3d-tooltip-desc">انقر لاستكشاف الوظيفة والاستماع للصوت</small>
+                <div class="tooltip-flash-badge" id="b3d-tooltip-flash-tag">⚡ وميض فلاشي نشط • انقر للتكبير 3D</div>
               </div>
             </div>
 
@@ -870,6 +859,9 @@
           <span class="admin-header-badge">الأدمن الرئيسي</span>
         </div>
         <div style="display:flex;align-items:center;gap:12px;">
+          <a href="guide.html" target="_blank" class="admin-guide-btn" style="text-decoration:none;background:linear-gradient(135deg, #0ea5e9, #4f46e5);color:#ffffff;padding:7px 15px;border-radius:10px;font-size:0.84rem;font-weight:700;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(14,165,233,0.35);transition:all 0.2s ease;" title="فتح دليل الاستخدام الشامل للمنصة ومصفوفة الجودة">
+            <span>📖 دليل الاستخدام والجودة</span>
+          </a>
           <button onclick="logoutAdmin()" class="btn-secondary" style="padding:6px 14px;font-size:0.82rem;background:rgba(255,255,255,0.15);color:#fff;border-color:transparent;">
             <span>خروج 🔒</span>
           </button>
@@ -891,6 +883,9 @@
         <button class="admin-tab-btn" data-pane="settings" onclick="switchAdminTab('settings')">
           <span>⚙️</span> <span>النسخ الاحتياطي والسحابة</span>
         </button>
+        <a href="guide.html" target="_blank" class="admin-tab-btn" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;color:#0284c7;font-weight:800;border:1.5px dashed rgba(14,165,233,0.5);border-radius:10px;padding:8px 14px;background:#f0f9ff;" title="فتح دليل الاستخدام ومصفوفة الجودة">
+          <span>📖</span> <span>دليل الاستخدام والجودة</span>
+        </a>
       </div>
 
       <!-- Tab Content Area -->
