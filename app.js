@@ -1257,7 +1257,7 @@ function formatYouTubeEmbedUrl(url) {
   if (videoId) {
     const isFileProto = (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:');
     if (isFileProto) {
-      return `https://mathofmemo1234-debug.github.io/body-organs-journey/player.html?v=${videoId}`;
+      return `player.html?v=${videoId}`;
     }
     return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`;
   }
