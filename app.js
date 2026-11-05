@@ -483,8 +483,8 @@ const organsSimulatorData = {
         function: 'يعد الشريان الأورطي الأنبوب الشرياني الرئيسي والناقل الأكبر للدم في الجسم البشري؛ يتصل مباشرة بالبطين الأيسر عبر الصمام الأورطي، ويستقبل الدم عالي الضغط المشبع بالأكسجين ليوزعه عبر فروعه الشريانية المعقدة إلى الدماغ، الأطراف، الأحشاء الداخلية، وسائر خلايا الجسم.',
         anatomy: 'يمتلك جداراً ثلاثي الطبقات فائق المرونة والقوة (الغلالة الباطنة، الوسطى، والخارجية) مدعوماً بألياف الإيلاستين التي تتمدد مع كل نبضة قلبية لتتحمل الضغط العالي، وتتفرع من قوسه الشرايين التاجية وشرايين الرأس والأطراف.',
         clinical: 'تحافظ مرونة الشريان الأورطي الفائقة على استمرار تدفق الدم في الشعيرات الدموية حتى أثناء مرحلة انبساط القلب (بين النبضات)، وأي تصلب فيه يرفع ضغط الدم ويرهق عضلة القلب.',
-        defaultYt: 'https://www.youtube.com/watch?v=e37rJqP6-aM',
-        ytTitle: 'شرح الشريان الأورطي والدورة الدموية الكبرى'
+        defaultYt: 'https://www.youtube.com/watch?v=Mrxkz5KQl40',
+        ytTitle: 'ما هو تمدد الشريان الأورطي؟ | دكتور اسامة عباس'
       },
       {
         id: 'heart-svc',
@@ -497,8 +497,8 @@ const organsSimulatorData = {
         function: 'يعمل الوريد الأجوف العلوي كمصب رئيسي يجمع الدم الوريدي الخالي من الأكسجين والمحمّل بثاني أكسيد الكربون من الرأس، الرقبة، الذراعين، وأعلى الصدر، ويفرغه مباشرة وبانسيابية في تجويف الأذين الأيمن للقلب.',
         anatomy: 'وريد ضخم وقصير ذو قطر كبير يبلغ حوالي 2 سم، يمر في الجهة اليمنى من المنصف العلوي بجوار القصبة الهوائية، ولا يحتوي على صمامات لأن الجاذبية تساعد على نزول الدم نحو القلب.',
         clinical: 'أي ضغط خارجي أو ورم في أعلى الصدر قد يعيق تدفق الدم فيه مسبباً انتفاخ أوردة الرقبة والوجه فيما يُعرف طبياً بمتلازمة الوريد الأجوف العلوي.',
-        defaultYt: 'https://www.youtube.com/watch?v=7XaftdE_h60',
-        ytTitle: 'مسار الوريد الأجوف وتدفق الدم للقلب'
+        defaultYt: 'https://www.youtube.com/watch?v=VaKQFL9G7lE',
+        ytTitle: 'الوريد الأجوف العلوي والسفلي - طب في ثوان - غسيل مخ'
       },
       {
         id: 'heart-pa',
@@ -511,8 +511,8 @@ const organsSimulatorData = {
         function: 'ينقل الدم غير المؤكسج المندفع من البطين الأيمن عبر الصمام الرئوي باتجاه الرئتين، ليتم ترشيحه وأكسجته والتخلص من غاز ثاني أكسيد الكربون عبر الحويصلات الهوائية.',
         anatomy: 'ينطلق كجذع رئوي رئيسي ثم ينقسم إلى فرعين أساسيين: شريان رئوي أيمن يتجه للرئة اليمنى، وشريان رئوي أيسر يتجه للرئة اليسرى، وهو الشريان الوحيد في الجسم البالغ الذي يحمل دماً وريدياً فقيراً بالأكسجين.',
         clinical: 'ضغط الدم داخل الشريان الرئوي يكون منخفضاً مقارنة بالأورطي لحماية الأوعية الدموية الهشة والدقيقة داخل أنسجة الرئتين.',
-        defaultYt: 'https://www.youtube.com/watch?v=OuLDiRdhh1k',
-        ytTitle: 'الشريان الرئوي والدورة الدموية الصغرى'
+        defaultYt: 'https://www.youtube.com/watch?v=tBwqRBPbK1I',
+        ytTitle: '2- القلب و الدورة الدموية'
       },
       {
         id: 'heart-ra',
@@ -525,8 +525,8 @@ const organsSimulatorData = {
         function: 'الحجرة العلوية اليمنى في القلب التي تستقبل الدم الوريدي الراجع من سائر الجسم عبر الوريدين الأجوفين العلوي والسفلي، وتجمعه ثم تدفعه عبر الصمام ثلاثي الشرفات إلى البطين الأيمن.',
         anatomy: 'حجرة ذات جدار عضلي رقيق نسبياً، وتكمن أهميتها الفائقة في احتوائها على "العقدة الجيبية الأذينية" (SA Node) المسؤولة عن توليد وتنظيم الإشارات الكهربائية للقلب.',
         clinical: 'تعتبر العقدة الجيبية في الأذين الأيمن بمثابة بطارية القلب الطبيعية (Pacemaker)؛ حيث تعطي إشارة الانقباض التلقائي بمعدل 60-100 مرة في الدقيقة.',
-        defaultYt: 'https://www.youtube.com/watch?v=M5agXgyN1ng',
-        ytTitle: 'الأذين الأيمن وعقدة تنظيم النبضات'
+        defaultYt: 'https://www.youtube.com/watch?v=LmtYTNhrZCA',
+        ytTitle: 'ما هو الاذين الأيمن و علاقته بغرف القلب الاخرى و الاوعية الدموية الكبرى؟ ما دوره في الدورة الدموية ؟'
       },
       {
         id: 'heart-rv',
@@ -539,8 +539,8 @@ const organsSimulatorData = {
         function: 'ينقبض البطين الأيمن بانتظام ليدفع الدم الوريدي القادم من الأذين الأيمن عبر الصمام الرئوي إلى الشريان الرئوي متجهاً للرئتين لأكسجته واستعادة نقائه.',
         anatomy: 'حجرة عضلية مثلثة الشكل تقع في الجزء الأمامي السفلي للقلب، وجدارها العضلي أقل سماكة من البطين الأيسر بنحو الثلث لأن مسافة الضخ للرئتين قريبة والمقاومة منخفضة.',
         clinical: 'وجود الصمام ثلاثي الشرفات عند مدخله والصمام الرئوي عند مخرجه يضمن سير الدم باتجاه واحد فقط دون أي ارتداد عكسي.',
-        defaultYt: 'https://www.youtube.com/watch?v=8n_DeE0DBXA',
-        ytTitle: 'عمل البطين الأيمن وضخ الدم للرئتين'
+        defaultYt: 'https://www.youtube.com/watch?v=wriBWma6tUk',
+        ytTitle: 'ما هو البطين الأيمن و علاقته بغرف القلب الاخرى و الاوعية الدموية الكبرى؟ ما دوره في الدورة الدموية ؟'
       },
       {
         id: 'heart-la',
@@ -553,8 +553,8 @@ const organsSimulatorData = {
         function: 'يستقبل الدم الوريدي النقي الغني بالأكسجين القادم مباشرة من الرئتين عبر الأوردة الرئوية الأربعة، ويخزنه للحظات ثم يدفعه عبر الصمام التاجي (المترالي) إلى تجويف البطين الأيسر.',
         anatomy: 'يقع في الجزء الخلفي العلوي لقاعدة القلب، ويمتاز بسطح داخلي أملس يسمح بانسياب سريع للدم المؤكسج تحت ضغط هادئ.',
         clinical: 'سلامة الأذين الأيسر وصمامه التاجي تمنع احتقان السوائل في الرئتين وتضمن تدفقاً سلساً للدورة الدموية الجهازية.',
-        defaultYt: 'https://www.youtube.com/watch?v=OuLDiRdhh1k',
-        ytTitle: 'الأذين الأيسر واستقبال الدم المؤكسج'
+        defaultYt: 'https://www.youtube.com/watch?v=wTNaXw57CNc',
+        ytTitle: 'ما هو الاذين الأيسر و علاقته بغرف القلب الاخرى و الاوعية الدموية الكبرى؟ ما دوره في الدورة الدموية ؟'
       },
       {
         id: 'heart-coronary',
@@ -567,8 +567,8 @@ const organsSimulatorData = {
         function: 'تتفرع مباشرة من قاعدة الشريان الأورطي لتروي عضلة القلب الحيوية بالدم المشبع بالأكسجين والجلوكوز، لتتمكن خلايا القلب من الانقباض والانبساط المستمر دون إرهاق.',
         anatomy: 'شبكة شريانية تلتف حول القلب كـ "التاج" ومن هنا جاءت تسميتها، وتنقسم إلى شريان تاجي أيمن وشريان تاجي أيسر بفروعهما الدقيقة المتغلغلة بين ألياف العضلة.',
         clinical: 'انسداد أي فرع من الشرايين التاجية بسبب ترسبات الدهون يؤدي إلى نقص تروية عضلة القلب وحدوث الذبحة الصدرية أو الجلطة القلبية.',
-        defaultYt: 'https://www.youtube.com/watch?v=cWY3h3QybMg',
-        ytTitle: 'الشرايين التاجية وتغذية عضلة القلب 3D'
+        defaultYt: 'https://www.youtube.com/watch?v=Qcx3ERhvj-I',
+        ytTitle: 'الشرايين التاجيه (شرايين القلب) | coronary arteries'
       },
       {
         id: 'heart-lv',
@@ -581,8 +581,8 @@ const organsSimulatorData = {
         function: 'المضخة الهيدروليكية المركزية في جسم الإنسان؛ يمتلك أسمك وأقوى جدار عضلي في القلب ليولد ضغطاً انقباضياً جباراً يقذف الدم المؤكسج عبر الصمام الأورطي إلى سائر أنحاء الجسم.',
         anatomy: 'يبلغ سمك جداره العضلي ثلاثة أضعاف سمك جدار البطين الأيمن تقريباً، لأنه يحتاج للتغلب على المقاومة المحيطية العالية في الشرايين والشعيرات من الرأس حتى أطراف القدمين.',
         clinical: 'تعد كفاءة البطين الأيسر (الكسر القذفي Ejection Fraction) المقياس الذهبي الأهم لتقييم صحة وقوة عضلة القلب وسعتها الوظيفية.',
-        defaultYt: 'https://www.youtube.com/watch?v=q0s-1MC1hcE',
-        ytTitle: 'البطين الأيسر وقوة الضخ الهيدروليكية'
+        defaultYt: 'https://www.youtube.com/watch?v=C9AkgiXprgU',
+        ytTitle: 'ما هو البطين الأيسر و علاقته بغرف القلب الاخرى و الاوعية الدموية الكبرى؟ ما دوره في الدورة الدموية ؟'
       },
       {
         id: 'heart-apex',
@@ -595,8 +595,8 @@ const organsSimulatorData = {
         function: 'تمثل قمة القلب الطرف السفلي المخروطي للبطين الأيسر؛ حيث تلتف ألياف عضلة القلب بحركة لولبية تعصر الدم نحو الأعلى باتجاه الصمام الأورطي كعصر المنشفة لطرد أقصى كمية دم ممكنة.',
         anatomy: 'تقع تشريحياً عند مستوى الفضاء الوربي الخامس الأيسر على خط منتصف الترقوة، وهي النقطة التي يضع عليها الطبيب سماعته لسماع نبض قمة القلب بدقة.',
         clinical: 'تسمى الصدمة التي تحدثها قمة القلب على جدار الصدر مع كل انقباض بـ "الصدمة القمية" (Apex Beat) وتدل على الحجم الطبيعي للقلب.',
-        defaultYt: 'https://www.youtube.com/watch?v=PgC_cTssGQk',
-        ytTitle: 'تشريح قمة القلب وميكانيكا النبض'
+        defaultYt: 'https://www.youtube.com/watch?v=MYx_0R-i4w4',
+        ytTitle: 'الشرايين التاجيه | تشريح شرايين القلب الشرايين المغذية للقلب | Anatomy of the coronary arteries'
       }
     ],
     defaultQuestions: [
@@ -653,8 +653,8 @@ const organsSimulatorData = {
         function: 'الأنبوب التنفسي الرئيسي الذي يمرر الهواء المستنشق من الحنجرة نزولاً نحو الصدر ليتفرع إلى الشعبتين الهوائيتين، ومبطن بغشاء مخاطي وأهداب دقيقة تلتقط الأتربة والشوائب وتدفعها للأعلى لتنقية الهواء.',
         anatomy: 'أنبوب مرن بطول 10-12 سم يتكون من 16 إلى 20 حلقة غضروفية غير مكتملة على شكل حرف C، مفتوحة من الخلف لتسمح للمريء الواقع خلفها بالتمدد أثناء بلع الطعام.',
         clinical: 'تضمن الحلقات الغضروفية بقاء مجرى الهواء مفتوحاً باستمرار وتمنع انطباق القصبة تحت تأثير الضغط السلبي أثناء الشهيق العميق.',
-        defaultYt: 'https://www.youtube.com/watch?v=mOKmjYwfDGU',
-        ytTitle: 'القصبة الهوائية وتنقية الهواء المستنشق'
+        defaultYt: 'https://www.youtube.com/watch?v=Vptccx4TrF8',
+        ytTitle: 'حالات منظار القصبات الهوائية ...د. حاتم علي إستشاري الأمراض الصدرية'
       },
       {
         id: 'lungs-right',
@@ -667,8 +667,8 @@ const organsSimulatorData = {
         function: 'العضو الأكبر حجماً في الجهاز التنفسي؛ تستوعب كمية هائلة من الهواء المستنشق لتزويد الدم بالأكسجين الحيوي وتفريغ ثاني أكسيد الكربون عبر فصوصها الثلاثة.',
         anatomy: 'تنقسم إلى ثلاثة فصوص تشريحية مستقلة (فص علوي، متوسط، سفلي) يفصل بينها شقان (مائل وأفقي)، وتتسع لنحو 55% من إجمالي سعة الرئتين.',
         clinical: 'تعتبر الرئة اليمنى أوسع وأقصر قليلاً من اليسرى بسبب ارتفاع الكبد الواقع تحت الحجاب الحاجز في الجهة اليمنى.',
-        defaultYt: 'https://www.youtube.com/watch?v=66PR3IYWb0A',
-        ytTitle: 'تشريح الرئة اليمنى وفصوصها الثلاثة'
+        defaultYt: 'https://www.youtube.com/watch?v=Sb6DXhKpZqo',
+        ytTitle: 'أعراض أمراض الرئتين'
       },
       {
         id: 'lungs-left',
@@ -681,8 +681,8 @@ const organsSimulatorData = {
         function: 'تقوم بتبادل الغازات والتنفس بالتكامل مع الرئة اليمنى، مع تصميم تشريحي خاص يتلاءم مع مجاورة القلب المائل نحو اليسار.',
         anatomy: 'تتكون من فصين فقط (فص علوي وفص سفلي) يفصل بينهما شق مائل، وتتميز بوجود "الثلمة القلبية" (Cardiac Notch) وهي تجويف مقعر يستقر فيه جانب القلب.',
         clinical: 'رغم صغر حجمها مقارنة باليمنى، إلا أن شبكتها الشعرية الرئوية فائقة الكفاءة وتتمتع بمرونة عالية أثناء التمدد والتقلص.',
-        defaultYt: 'https://www.youtube.com/watch?v=hc1YtXc_84A',
-        ytTitle: 'الرئة اليسرى وعلاقتها التشريحية بالقلب'
+        defaultYt: 'https://www.youtube.com/watch?v=eP355IHjbBU',
+        ytTitle: 'عملية التنفس و الرئتين في الانسان'
       },
       {
         id: 'lungs-bronchi',
@@ -695,8 +695,8 @@ const organsSimulatorData = {
         function: 'المقر الفعلي للمعجزة التنفسية؛ تتفرع الشجرة القصبية إلى قصيبات دقيقة تنتهي بعناقيد من الحويصلات الهوائية حيث ينفذ الأكسجين عبر جدارها الرقيق إلى كريات الدم ويخرج ثاني أكسيد الكربون.',
         anatomy: 'أكياس هوائية كروية مجهرية جدارها بسماكة خلية واحدة محاطة بشبكة كثيفة من الشعيرات الدموية، ومغطاة بمادة (Surfactant) الخافضة للتوتر السطحي لمنع التصاقها.',
         clinical: 'نقص المادة الخافضة للتوتر السطحي يسبب صعوبة بالغة في التنفس وانهيار الحويصلات، كما يحدث عند بعض الأطفال الخدج.',
-        defaultYt: 'https://www.youtube.com/watch?v=HEX6vQktuWU',
-        ytTitle: 'الحويصلات الهوائية وتبادل الغازات المجهري'
+        defaultYt: 'https://www.youtube.com/watch?v=Ha_9l6heORQ',
+        ytTitle: 'تبادل الغازات (التنفس الخارجي) - علم الاحياء'
       },
       {
         id: 'lungs-diaphragm',
@@ -709,8 +709,8 @@ const organsSimulatorData = {
         function: 'المحرك الميكانيكي الرئيسي لعملية التنفس؛ ينقبض الحجاب الحاجز ويهبط لأسفل لتوسيع التجويف الصدري فيدخل الهواء (الشهيق)، ويرتفع للأعلى أثناء الزفير لطرد الهواء المحمل بالفضلات.',
         anatomy: 'صفيحة عضلية وترية مقببة الشكل تفصل بين التجويف الصدري العلوي وتجويف البطن السفلي، وترتكز عليها قواعد الرئتين المقعرة بدقة.',
         clinical: 'التقلص المفاجئ وغير المنتظم لعضلة الحجاب الحاجز مع انغلاق الأوتار الصوتية هو السبب المباشر لظاهرة "الفواق" أو الحازوقة (Hiccups).',
-        defaultYt: 'https://www.youtube.com/watch?v=hp-gCvW8PRY',
-        ytTitle: 'عضلة الحجاب الحاجز وميكانيكا التنفس'
+        defaultYt: 'https://www.youtube.com/watch?v=e6Vb0-xKXL8',
+        ytTitle: 'فتق الحجاب الحاجز.. الاعراض.. الأسباب... والعلاج #فتق-الحجاب-الحاجز #ارتجاع_المريء #حموضة_المعدة'
       }
     ],
     defaultQuestions: [
@@ -767,8 +767,8 @@ const organsSimulatorData = {
         function: 'المقر الأعلى للذكاء البشري؛ يتحكم في التفكير المجرد، التخطيط للمستقبل، حل المشكلات المعقدة، اتخاذ القرارات، ضبط السلوك والشخصية، وإصدار أوامر حركة العضلات الإرادية.',
         anatomy: 'يشغل الجزء الأمامي من القشرة المخية خلف عظم الجبهة مباشرة، وهو الأكبر حجماً والأحدث تطوراً بين فصوص الدماغ.',
         clinical: "يحتوي الفص الجبهي الأيسر على 'منطقة بروكا' (Broca's Area) المسؤولة عن القدرة على التعبير اللغوي والتحدث بطلاقة.",
-        defaultYt: 'https://www.youtube.com/watch?v=qB6hKMgxpNM',
-        ytTitle: 'الفص الجبهي ووظائف التفكير والشخصية'
+        defaultYt: 'https://www.youtube.com/watch?v=ys26pWp8Y04',
+        ytTitle: 'أجزاء الدماغ و وظيفة كل جزء'
       },
       {
         id: 'brain-parietal',
@@ -781,8 +781,8 @@ const organsSimulatorData = {
         function: 'المركز الحسي الرئيسي لمعالجة الإشارات القادمة من الجلد؛ مثل اللمس، الضغط، درجات الحرارة، والألم، بالإضافة إلى إدراك موضع الجسم وأعضائه في الفضاء ثلاثي الأبعاد.',
         anatomy: 'يقع خلف الفص الجبهي في الجزء العلوي الأوسط من الدماغ، ويفصله عن الفص الجبهي "الثلم المركزي" الشهير.',
         clinical: 'يمكن للإنسان بفضل هذا الفص معرفة موقع أطرافه وحركتها بدقة متناهية حتى وعيناه مغلقتان تماماً (الإحساس بالحركة والمكان).',
-        defaultYt: 'https://www.youtube.com/watch?v=qB6hKMgxpNM',
-        ytTitle: 'الفص الجداري وحاسة اللمس والإدراك المكاني'
+        defaultYt: 'https://www.youtube.com/watch?v=MB0-YkJGTVw',
+        ytTitle: 'مواقع أورام الدماغ | أمراض الفص الجداري | د أحمد الشريف #40'
       },
       {
         id: 'brain-occipital',
@@ -795,8 +795,8 @@ const organsSimulatorData = {
         function: 'محطة الرؤية والمعالجة البصرية في الدماغ؛ يستقبل الإشارات الكهروضوئية القادمة من العين عبر العصب البصري ويفك تشفيرها ليحولها إلى صور، ألوان، أشكال، مسافات، وحركات مرئية.',
         anatomy: 'يقع في أقصى الجزء الخلفي من الدماغ فوق المخيخ مباشرة، محمي بعظم الجمجمة القفوي المتين.',
         clinical: 'أي ضربة أو صدمة قوية على مؤخرة الرأس قد تسبب رؤية ومضات ضوئية أو نجوم لامعة نتيجة تحفيز خلايا القشرة البصرية في الفص القفوي.',
-        defaultYt: 'https://www.youtube.com/watch?v=qB6hKMgxpNM',
-        ytTitle: 'الفص القفوي ومعالجة الإشارات البصرية'
+        defaultYt: 'https://www.youtube.com/watch?v=esPAlfi9cYY',
+        ytTitle: 'مواقع أورام الدماغ | أمراض الفص الخلفي | د أحمد الشريف #43'
       },
       {
         id: 'brain-temporal',
@@ -809,8 +809,8 @@ const organsSimulatorData = {
         function: 'يعالج الإشارات الصوتية والسمعية، ويختص بفهم وتفسير الكلام واللغات المسموعة، كما يلعب دوراً جوهرياً في تكوين وتخزين الذكريات طويلة الأمد والتعرف على ملامح الوجوه.',
         anatomy: 'يقع على جانبي الدماغ بمحاذاة الأذنين، ويحتضن في عمقه تراكيب بالغة الأهمية مثل "الحصين" (Hippocampus) مقر الذاكرة ومنطقة فيرنيكه اللغوية.',
         clinical: 'بفضل الفص الصدغي، تستطيعين التعرف على صوت والدتك بمجرد سماع نبرتها، وتذكر الألحان والمواقف الجميلة من طفولتك.',
-        defaultYt: 'https://www.youtube.com/watch?v=h1_yuMAww94',
-        ytTitle: 'الفص الصدغي والذاكرة واللغة والسمع'
+        defaultYt: 'https://www.youtube.com/watch?v=YiNdKd4mEuk',
+        ytTitle: 'رحلة الى الدماغ مع الدكتور عاصم '
       },
       {
         id: 'brain-cerebellum',
@@ -823,8 +823,8 @@ const organsSimulatorData = {
         function: 'مهندس التوازن والحركة الدقيقة في الجسم؛ ينسق انقباض العضلات المختلفة لتصبح الحركات سلسة ومنتظمة أثناء المشي، الجري، ركوب الدراجة، الكتابة، أو العزف.',
         anatomy: 'يُلقب بـ "المخ الصغير" ويقع في أسفل الدماغ من الخلف، ورغم صغر حجمه إلا أنه يحتوي على أكثر من نصف مجموع الخلايا العصبية في الدماغ بأكمله!',
         clinical: 'لا يصدر المخيخ أوامر الحركة الأولية، بل يضبط توقيتها ودرجتها، وأي خلل فيه يؤدي لترنح المشية وفقدان التوازن الحركي.',
-        defaultYt: 'https://www.youtube.com/watch?v=Vms9LzxiH7o',
-        ytTitle: 'المخيخ ووظيفة التوازن وتناسق الحركة'
+        defaultYt: 'https://www.youtube.com/watch?v=Nbp-xWiWMQo',
+        ytTitle: 'ما هو المخيخ ! و ما هي وظائفه في الجسم ؟'
       },
       {
         id: 'brain-brainstem',
@@ -837,8 +837,8 @@ const organsSimulatorData = {
         function: 'برج التحكم الآلي بالحياة؛ ينظم الوظائف الفسيولوجية اللاإرادية التي تبقيكِ حية دون تفكير؛ مثل نبض القلب، وتيرة التنفس، ضغط الدم، البلع، السعال، ومنعكسات القيء.',
         anatomy: 'يربط الدماغ بالحبل الشوكي ويتكون من ثلاثة أجزاء رئيسية: الدماغ المتوسط، الجسر (Pons)، والنخاع المستطيل (Medulla Oblongata).',
         clinical: 'يعد جذع الدماغ من أخطر وأهم مناطق الجهاز العصبي، كما ينظم دورات النوم واليقظة ومستوى الوعي عبر التشكيل الشبكي.',
-        defaultYt: 'https://www.youtube.com/watch?v=wuXH1b3WjvQ',
-        ytTitle: 'جذع الدماغ والتحكم في نبض القلب والتنفس'
+        defaultYt: 'https://www.youtube.com/watch?v=L98OTGLUk8w',
+        ytTitle: 'الجهاز العصبي: جذع الدماغ'
       }
     ],
     defaultQuestions: [
@@ -895,8 +895,8 @@ const organsSimulatorData = {
         function: 'المدخل العلوي الترحيبي للمعدة؛ يستقبل اللقمة الغذائية القادمة من المريء ويمنع ارتداد حمض المعدة الكاوي للأعلى بالتنسيق مع المصرة المريئية السفلية.',
         anatomy: 'منطقة حلقية ضيقة تحيط بفتحة الاتصال بين المريء والمعدة وتقع أسفل الحجاب الحاجز مباشرة.',
         clinical: 'سُميت "فوهة الفؤاد" لقربها الشديد تشريحياً من القلب، لذا يُشعر ألم حموضة المعدة كأنه حرقة في منطقة الصدر والفؤاد.',
-        defaultYt: 'https://www.youtube.com/watch?v=Og5xAdC8EUI',
-        ytTitle: 'فوهة الفؤاد ومدخل الطعام إلى المعدة'
+        defaultYt: 'https://www.youtube.com/watch?v=Fciiee6ajyU',
+        ytTitle: 'ما هي المعدة - علم الاحياء'
       },
       {
         id: 'stomach-fundus',
@@ -909,8 +909,8 @@ const organsSimulatorData = {
         function: 'المستودع العلوي للمعدة؛ يتمدد بمرونة فائقة ليستوعب كميات الطعام المتناولة قبل هضمها، وتتجمع فيه غازات الهضم الطبيعية.',
         anatomy: 'جزء مقبب كالقبة يقع أعلى مستوى فوهة الفؤاد في الجزء الأيسر من المعدة تحت الحجاب الحاجز مباشرة.',
         clinical: 'تستطيع المعدة التمدد بفضل هذا القاع لتتسع لأكثر من لتر ونصف من الطعام والشراب، وتعود لحجم قبضة اليد عندما تفرغ.',
-        defaultYt: 'https://www.youtube.com/watch?v=CD9wQurjgEY',
-        ytTitle: 'قاع المعدة وتخزين الطعام وتمدده'
+        defaultYt: 'https://www.youtube.com/watch?v=VuT68L7qLaQ',
+        ytTitle: 'المختصر المفيد|| ما هي أقسام المعده ؟'
       },
       {
         id: 'stomach-body',
@@ -923,8 +923,8 @@ const organsSimulatorData = {
         function: 'المعمل الكيميائي والميكانيكي الرئيسي؛ تطحن ثلاث طبقات عضلية قوية الطعام وتحوله إلى سائل متجانس كثيف يُسمى "الكيموس" (Chyme)، وتفرز خلايا الجدار حمض HCl وإنزيم البيبسين لهضم البروتينات.',
         anatomy: 'يشغل المساحة الأكبر في المعدة، ويمتد بين الانحناء الصغير يميناً والانحناء الكبير المحدب يساراً.',
         clinical: 'الحركات التمعجية القوية لجسم المعدة تحدث كل 20 ثانية تقريباً أثناء الهضم لضمان امتزاج كامل للغذاء بالعصارات.',
-        defaultYt: 'https://www.youtube.com/watch?v=ADWy6T_rNuI',
-        ytTitle: 'هضم الطعام كيميائياً داخل جسم المعدة'
+        defaultYt: 'https://www.youtube.com/watch?v=dPISiKA5z1Q',
+        ytTitle: 'أعضاء الجهاز الهضمي المختلفة - الأطباء السبعة - الموسم 9'
       },
       {
         id: 'stomach-mucosa',
@@ -937,8 +937,8 @@ const organsSimulatorData = {
         function: 'الدرع الواقي للمعدة؛ يفرز طبقة هلامية سميكة غنية بالبيكربونات القلوية تعزل حمض الهيدروكلوريك الحارق عن خلايا الجدار العضلي لتحمي المعدة من هضم نفسها.',
         anatomy: 'بطانة داخلية سميكة ذات ثنايا وطيات متعددة (Rugae) تسمح للمعدة بالتمدد عند الامتلاء، وتحتوي على ملايين الغدد المعدية المجهرية.',
         clinical: 'تتجدد خلايا بطانة المعدة باستمرار كل بضعة أيام، وتلف هذه الطبقة بسبب التوتر أو الأدوية قد يؤدي إلى قرحة المعدة.',
-        defaultYt: 'https://www.youtube.com/watch?v=eKaBQrFdNtw',
-        ytTitle: 'طبقة المخاط الواقية وحماية جدار المعدة'
+        defaultYt: 'https://www.youtube.com/watch?v=mlmdrLN1Sf8',
+        ytTitle: 'التهاب جدار المعدة'
       },
       {
         id: 'stomach-pylorus',
@@ -951,8 +951,8 @@ const organsSimulatorData = {
         function: 'البوابة الحارسة لمخرج المعدة؛ تفتح وتغلق بإحكام لتمرير الطعام المطحون (الكيموس) بجرعات صغيرة مدروسة إلى الأمعاء الدقيقة (الاثني عشر) وتمنع ارتجاعه للمعدة.',
         anatomy: 'حلقة عضلية سميكة وقوية تشكل صماماً فاصلاً بين نهاية تجويف المعدة وبداية الأمعاء الدقيقة.',
         clinical: 'يضمن هذا الصمام عدم انتقال الطعام غير المهضوم جيداً للأمعاء، ويحمي الأمعاء من تدفق كميات كبيرة من الحمض دفعة واحدة.',
-        defaultYt: 'https://www.youtube.com/watch?v=TOPIVZZwiIg',
-        ytTitle: 'عضلة البواب وتنظيم مرور الطعام للأمعاء'
+        defaultYt: 'https://www.youtube.com/watch?v=8aBq2Dyjjy8',
+        ytTitle: 'عمليات علاج ارتجاع المريء بمنظار الجهاز الهضمي باستخدام تقنية GERDX'
       }
     ],
     defaultQuestions: [
@@ -1009,8 +1009,8 @@ const organsSimulatorData = {
         function: 'المفترق الذكي للبلع؛ يوجه اللقمة من الفم للمريء ويغلق لسان المزمار القصبة الهوائية فوراً لمنع دخول الطعام لمجرى التنفس والرئتين.',
         anatomy: 'ممر عضلي قمعي يربط الحلق بأعلى المريء، وتتحكم به عضلات عاصرة إرادية ولاإرادية بتنسيق عصبي فائق.',
         clinical: 'التنسيق العصبي الدقيق هنا يمنع ظاهرة "التشردق" أو استنشاق الطعام في مجرى الهواء.',
-        defaultYt: 'https://www.youtube.com/watch?v=Qkh4oyczEB4',
-        ytTitle: 'آلية البلع ودور لسان المزمار'
+        defaultYt: 'https://www.youtube.com/watch?v=_JNOPKTZ-N0',
+        ytTitle: 'عملية بلع الطعام - علم الاحياء'
       },
       {
         id: 'esophagus-tube',
@@ -1023,8 +1023,8 @@ const organsSimulatorData = {
         function: 'ينقبض جدار المريء في موجات عضلية تمعجية لاإرادية متتابعة تدفع اللقمة الغذائية نحو الأسفل في غضون 4 إلى 8 ثوانٍ فقط.',
         anatomy: 'أنبوب مرن بطول 25 سم يتكون من طبقتين عضليتين: دائرية داخلية وطولية خارجية، ومبطن بغشاء مخاطي أملس يسهل الانزلاق.',
         clinical: 'هذه الحركة عضلية دافعة مستقلة تماماً عن الجاذبية الأرضية، مما يتيح التغذية في جميع وضعيات الجسم.',
-        defaultYt: 'https://www.youtube.com/watch?v=AvuHsrdb83Y',
-        ytTitle: 'الحركة الدودية في المريء 3D Animation'
+        defaultYt: 'https://www.youtube.com/watch?v=zWZHusUgmXw',
+        ytTitle: 'الحركة الدودية في الأمعاء - الصف الثاني الثانوي'
       },
       {
         id: 'esophagus-les',
@@ -1037,8 +1037,8 @@ const organsSimulatorData = {
         function: 'صمام أمان أحادي الاتجاه عند نهاية المريء؛ يسترخي لثوانٍ معدودة ليسمح للقمة بدخول المعدة، ثم ينغلق بقوة محكمة ليمنع ارتداد حمض المعدة الحارق.',
         anatomy: 'حلقة عضلية تقع عند مستوى فتحة الحجاب الحاجز تعمل كحاجز ضغط طبيعي بين بيئة المريء المعتدلة وبيئة المعدة الحامضية.',
         clinical: 'ضعف أو ارتخاء هذا الصمام العضلي هو السبب المباشر لمرض الارتجاع المعدي المريئي والشعور بحرقة الصدر والحلق (GERD).',
-        defaultYt: 'https://www.youtube.com/watch?v=p6yZd3tQL8g',
-        ytTitle: 'المصرة المريئية السفلية وحرقة المعدة'
+        defaultYt: 'https://www.youtube.com/watch?v=4Ru9nYH6t4s',
+        ytTitle: 'أعراض إرتجاع المريء وأسباب الإصابة بالمرض'
       },
       {
         id: 'esophagus-junction',
@@ -1051,8 +1051,8 @@ const organsSimulatorData = {
         function: 'المنطقة الانتقالية التشريحية (الخط Z) التي تسلم الطعام لتجويف المعدة وتتحول فيها الخلايا الطلائية الحرشفية للمريء إلى خلايا غدية عمادية معدية.',
         anatomy: 'منطقة الالتقاء الدقيقة بين نهاية المريء وفوهة فؤاد المعدة داخل التجويف البطني.',
         clinical: 'تمثل هذه المنطقة فاصلاً نسيجياً هاماً يراقبه الأطباء بالمنظار للتأكد من عدم وجود التهابات أو تغيرات نسيجية ناتجة عن الحموضة.',
-        defaultYt: 'https://www.youtube.com/watch?v=bFczvJp0bpU',
-        ytTitle: 'نقطة التقاء المريء بالمعدة وتشريحها'
+        defaultYt: 'https://www.youtube.com/watch?v=1BGv2_httQg',
+        ytTitle: '🍎 رحلة الطعام داخل جسم الإنسان!| الهضم عند الإنسان بطريقة ممتعة |علوم السنة الرابعة والخامسة ابتدائي'
       }
     ],
     defaultQuestions: [
@@ -1109,8 +1109,8 @@ const organsSimulatorData = {
         function: 'الفتحة الضوئية المركزية في العين؛ تتسع في الظلام للسماح بمرور أقصى قدر من الضوء لتحسين الرؤية، وتضيق تلقائياً في الضوء الساطع لحماية الشبكية من التلف.',
         anatomy: 'فتحة دائرية سوداء في وسط القزحية يبدو لونها أسود لأن الضوء الداخل إليها يمتصه قاع العين المظلم تماماً.',
         clinical: 'فحص منعكس البؤبؤ بالضوء (Pupillary Light Reflex) هو أحد أهم الفحوصات الطارئة لتقييم سلامة جذع الدماغ ووظائف الأعصاب.',
-        defaultYt: 'https://www.youtube.com/watch?v=NwTIqmRYPQw',
-        ytTitle: 'منعكس بؤبؤ العين والتكيف مع الضوء'
+        defaultYt: 'https://www.youtube.com/watch?v=k4aUCeSTRzY',
+        ytTitle: 'كيف تعمل العين؟ شرح مبسط لأجزاء العين وآلية الرؤية'
       },
       {
         id: 'eye-iris',
@@ -1123,8 +1123,8 @@ const organsSimulatorData = {
         function: 'القرص العضلي الدائري الملون الذي يضبط حجم البؤبؤ بدقة عبر عضلات مضيقة وموسعة، ويحدد لون عين الإنسان بحسب تركيز صبغة الميلانين.',
         anatomy: 'غشاء رقيق يقع بين القرنية الشفافة والعدسة، وتتداخل فيه ألياف عضلية دائرية وشعاعية تتحكم باتساع الحدقة.',
         clinical: 'نمط الخطوط والتجاعيد في قزحية كل شخص فريد تماماً كبصمة الإصبع ولا يتطابق بين شخصين، ولذلك تُستخدم في تقنية "بصمة العين" الأمنية.',
-        defaultYt: 'https://www.youtube.com/watch?v=gvozcv8pS3c',
-        ytTitle: 'عضلة القزحية وبصمة العين وألوانها'
+        defaultYt: 'https://www.youtube.com/watch?v=AWBCu1xJnG8',
+        ytTitle: 'الحقائق المخفية وراء لون العين 🔵🟢🟤🟠'
       },
       {
         id: 'eye-cornea',
@@ -1137,8 +1137,8 @@ const organsSimulatorData = {
         function: 'العدسة الأمامية الثابتة للعين؛ تكسر أشعة الضوء الداخلة وتركّزها بنسبة 70% من إجمالي القوة البصرية للعين لتقع بدقة ووضوح على الشبكية.',
         anatomy: 'قبة نسيجية فائقة الشفافية تتكون من خمس طبقات دقيقة، وتتميز بعدم احتوائها على أي أوعية دموية لتحافظ على نقائها، وتتغذى من الدموع وأكسجين الهواء مباشرة.',
         clinical: 'القرنية هي النسيج الذي يُعاد تشكيل انحنائه في عمليات الليزك وعلاج قصر وطول النظر للاستغناء عن النظارات الطبية.',
-        defaultYt: 'https://www.youtube.com/watch?v=Vz9ZTa11LTo',
-        ytTitle: 'القرنية الشفافة وانكسار الضوء وعمليات الليزك'
+        defaultYt: 'https://www.youtube.com/watch?v=Ke2S0YthIc0',
+        ytTitle: 'ما هي قرنية العين'
       },
       {
         id: 'eye-sclera',
@@ -1151,8 +1151,8 @@ const organsSimulatorData = {
         function: 'الهيكل الخارجي الواقي لمقلة العين؛ يحافظ على كروية العين وضغطها الداخلي، ويوفر نقاط تثبيت قوية للعضلات الست المحركة للعين.',
         anatomy: 'نسيج ضام ليفي كثيف وأبيض اللون يغطي خمسة أسداس السطح الخارجي للعين من الخلف حتى محاذاة القرنية.',
         clinical: 'تغير لون الصلبة للأصفر يعد علامة طبية واضحة على الإصابة باليرقان وأمراض الكبد (ارتفاع البيليروبين).',
-        defaultYt: 'https://www.youtube.com/watch?v=r_iQeERSE7U',
-        ytTitle: 'صلبة العين وعضلات حركة مقلة العين'
+        defaultYt: 'https://www.youtube.com/watch?v=AECcBborKp0',
+        ytTitle: 'مقطع يوضح أجزاء العين بشكل مبسط .   د. حافظ الفالح'
       },
       {
         id: 'eye-optic',
@@ -1165,8 +1165,8 @@ const organsSimulatorData = {
         function: 'كابل الألياف الضوئية الفائق في جسم الإنسان؛ يجمع النبضات العصبية التي كونتها مستقبلات الشبكية وينقلها بسرعة الضوء إلى الفص القفوي في الدماغ لنرى الصورة.',
         anatomy: 'يحتوي على أكثر من 1.2 مليون ليف عصبي دقيق ينطلق من مؤخرة مقلة العين ماراً بالقناة البصرية إلى قاعدة الدماغ.',
         clinical: 'ارتفاع ضغط السائل داخل العين (الجلوكوما أو الماء الأزرق) يضغط على ألياف العصب البصري وقد يهدد الرؤية إذا لم يُعالج مبكراً.',
-        defaultYt: 'https://www.youtube.com/watch?v=Vz9ZTa11LTo',
-        ytTitle: 'الشبكية والعصب البصري ونقل الإشارات للدماغ'
+        defaultYt: 'https://www.youtube.com/watch?v=n4xwLDs8yqA',
+        ytTitle: 'ما دور شبكية العين في عملية الإبصار وهل يمكن تعويضها؟ | د. خالد الغنيمي | برنامج لابأس'
       }
     ],
     defaultQuestions: [
@@ -1239,17 +1239,6 @@ function extractYouTubeVideoId(url) {
 }
 
 function buildYouTubeIframeHtml(embedUrl, title = 'فيديو تعليمي') {
-  const isFileProto = (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:');
-  const fileWarning = isFileProto ? `
-    <div style="background:#fffbeb;border:1.5px solid #f59e0b;color:#92400e;padding:10px 14px;border-radius:10px;font-size:0.85rem;margin-top:10px;line-height:1.6;display:flex;align-items:flex-start;gap:10px;">
-      <span style="font-size:1.3rem;line-height:1;">💡</span>
-      <div style="flex:1;">
-        <strong style="display:block;margin-bottom:2px;">لتشغيل الفيديو داخل الموقع دون مغادرته:</strong>
-        أنتِ تفتحين الموقع كملف محلي (file://). لتشغيل الفيديوهات داخل الصفحة بدون أي أخطاء من يوتيوب، يُرجى تشغيل الموقع عبر النقر المزدوج على ملف <strong>«تشغيل_الموقع.bat»</strong> المرفق مع المشروع!
-      </div>
-    </div>
-  ` : '';
-
   return `<div class="video-responsive-wrap" style="position:relative;">
     <iframe 
       src="${embedUrl}" 
@@ -1257,10 +1246,8 @@ function buildYouTubeIframeHtml(embedUrl, title = 'فيديو تعليمي') {
       frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
       referrerpolicy="strict-origin-when-cross-origin" 
-      loading="lazy"
       allowfullscreen>
     </iframe>
-    ${fileWarning}
   </div>`;
 }
 
@@ -1268,9 +1255,11 @@ function formatYouTubeEmbedUrl(url) {
   if (!url) return '';
   const videoId = extractYouTubeVideoId(url);
   if (videoId) {
-    const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null') ? window.location.origin : '';
-    const originParam = origin ? `&origin=${encodeURIComponent(origin)}` : '';
-    return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1&enablejsapi=1${originParam}`;
+    const isFileProto = (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:');
+    if (isFileProto) {
+      return `https://mathofmemo1234-debug.github.io/body-organs-journey/player.html?v=${videoId}`;
+    }
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`;
   }
   return String(url).trim();
 }
@@ -1332,7 +1321,17 @@ function getPublishedContent() {
   };
 }
 
-// تعديلات هذا المتصفح فقط
+// تعديلات هذا المتصفح فقط (مع تحديث تلقائي لنسخة الفيديوهات التعليمية المعتمدة)
+const YT_CURATED_SCHEMA_VERSION = '20261106_v17';
+(function migrateCuratedYouTubeLinksOnce() {
+  try {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('yt_curated_schema_ver') !== YT_CURATED_SCHEMA_VERSION) {
+      localStorage.removeItem('custom_organ_youtube_links');
+      localStorage.setItem('yt_curated_schema_ver', YT_CURATED_SCHEMA_VERSION);
+    }
+  } catch (e) {}
+})();
+
 function getLocalYouTubeLinks() {
   try {
     const saved = localStorage.getItem('custom_organ_youtube_links');
@@ -4115,12 +4114,18 @@ async function idbGet(key) {
 
 async function syncFromIndexedDBToLocal() {
   try {
-    const savedYt = localStorage.getItem('custom_organ_youtube_links');
-    if (!savedYt || savedYt === '{}') {
-      const idbYt = await idbGet('custom_organ_youtube_links');
-      if (idbYt && typeof idbYt === 'object' && Object.keys(idbYt).length > 0) {
-        localStorage.setItem('custom_organ_youtube_links', JSON.stringify(idbYt));
-        console.log('Restored custom YouTube links from IndexedDB');
+    const idbVer = await idbGet('yt_curated_schema_ver');
+    if (idbVer !== YT_CURATED_SCHEMA_VERSION) {
+      await idbSave('custom_organ_youtube_links', {});
+      await idbSave('yt_curated_schema_ver', YT_CURATED_SCHEMA_VERSION);
+    } else {
+      const savedYt = localStorage.getItem('custom_organ_youtube_links');
+      if (!savedYt || savedYt === '{}') {
+        const idbYt = await idbGet('custom_organ_youtube_links');
+        if (idbYt && typeof idbYt === 'object' && Object.keys(idbYt).length > 0) {
+          localStorage.setItem('custom_organ_youtube_links', JSON.stringify(idbYt));
+          console.log('Restored custom YouTube links from IndexedDB');
+        }
       }
     }
     const savedQ = localStorage.getItem('custom_organ_questions');

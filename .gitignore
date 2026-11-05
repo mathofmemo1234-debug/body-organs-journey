@@ -6,3 +6,5 @@ __pycache__/
 *.json
 raw_site.html
 assets/audio/*_raw.*
+scratch/
+*.png

@@ -2625,8 +2625,8 @@ section.app-tab-content.active {
 /* 3D Canvas Stage */
 .body-3d-stage-container {
   position: relative;
-  background: radial-gradient(circle at 50% 45%, #f0f9ff 0%, #e0f2fe 45%, #f8fafc 100%);
-  border: 2px solid rgba(2, 132, 199, 0.15);
+  background: radial-gradient(circle at 50% 42%, #2b4a73 0%, #14233f 55%, #0a1224 100%);
+  border: 2px solid rgba(2, 132, 199, 0.35);
   border-radius: var(--radius-md);
   min-height: 560px;
   height: 560px;
@@ -2710,6 +2710,23 @@ section.app-tab-content.active {
 
 .body-3d-tooltip .tooltip-icon {
   font-size: 1.4rem;
+}
+
+.body-3d-tooltip .tooltip-organ-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  padding: 3px;
+  flex-shrink: 0;
+}
+
+/* When the pulse toggle is OFF: no flashing/animation at all */
+.body-3d-tooltip.pulse-off,
+.body-3d-tooltip.pulse-off .tooltip-flash-badge {
+  animation: none;
 }
 
 /* Stage Overlay Controls */
