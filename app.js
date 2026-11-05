@@ -4150,3 +4150,30 @@ if (typeof window !== 'undefined') {
     navigator.storage.persist().catch(() => {});
   }
 }
+
+
+// ==========================================
+// ✨ SETUP PARTICIPANTS DROPDOWN INTERACTION
+// ==========================================
+function setupParticipantsDropdown() {
+  const wrap = document.getElementById('participants-dropdown-wrap');
+  if (!wrap) return;
+  const btn = wrap.querySelector('.participants-trigger-btn');
+  if (btn) {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      wrap.classList.toggle('active');
+    });
+  }
+  document.addEventListener('click', (e) => {
+    if (!wrap.contains(e.target)) {
+      wrap.classList.remove('active');
+    }
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupParticipantsDropdown);
+} else {
+  setupParticipantsDropdown();
+}

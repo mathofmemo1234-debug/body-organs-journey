@@ -3532,3 +3532,202 @@ section.app-tab-content.active {
   position: relative !important;
   box-shadow: 0 35px 80px -10px rgba(0, 0, 0, 0.75) !important;
 }
+
+
+/* ==========================================
+   ✨ FLASHY PARTICIPANTS DROPDOWN (قائمة المشاركات الفلاشية)
+   ========================================== */
+.participants-dropdown-wrap {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.participants-trigger-btn {
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%);
+  background-size: 200% 200%;
+  color: #ffffff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm, 10px);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 0 14px rgba(236, 72, 153, 0.7), 0 0 26px rgba(139, 92, 246, 0.45);
+  animation: flashGlowPulse 2.4s infinite ease-in-out;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  user-select: none;
+}
+
+@keyframes flashGlowPulse {
+  0%, 100% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 12px rgba(236, 72, 153, 0.7), 0 0 25px rgba(139, 92, 246, 0.5);
+    transform: scale(1);
+  }
+  50% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 22px rgba(236, 72, 153, 0.95), 0 0 38px rgba(6, 182, 212, 0.75);
+    transform: scale(1.03);
+  }
+}
+
+.participants-dropdown-wrap:hover .participants-trigger-btn,
+.participants-dropdown-wrap.active .participants-trigger-btn {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 25px rgba(236, 72, 153, 1), 0 0 45px rgba(139, 92, 246, 0.85);
+  border-color: #ffffff;
+}
+
+.flash-star {
+  font-size: 1.15rem;
+  display: inline-block;
+  animation: spinSparkle 3s infinite linear;
+}
+
+@keyframes spinSparkle {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(25deg) scale(1.2); }
+  100% { transform: rotate(0deg); }
+}
+
+.flash-title {
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.flash-arrow {
+  font-size: 0.72rem;
+  transition: transform 0.25s ease;
+  opacity: 0.9;
+}
+
+.participants-dropdown-wrap:hover .flash-arrow,
+.participants-dropdown-wrap.active .flash-arrow {
+  transform: rotate(180deg);
+}
+
+/* القائمة المنسدلة: مخفية تماماً ولا تظهر إلا عند المرور بالفأرة */
+.participants-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 250px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(236, 72, 153, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25), 0 0 25px rgba(236, 72, 153, 0.25);
+  padding: 12px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(12px) scale(0.95);
+  transform-origin: top right;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10000;
+  direction: rtl;
+  text-align: right;
+}
+
+/* إظهار القائمة فورياً عند المرور على المشاركات */
+.participants-dropdown-wrap:hover .participants-dropdown-menu,
+.participants-dropdown-wrap.active .participants-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.participants-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: 22px;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border-top: 2px solid rgba(236, 72, 153, 0.4);
+  border-right: 2px solid rgba(236, 72, 153, 0.4);
+  transform: rotate(-45deg);
+}
+
+.participants-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px 12px;
+  border-bottom: 1.5px dashed rgba(236, 72, 153, 0.3);
+  margin-bottom: 8px;
+}
+
+.p-header-icon {
+  font-size: 1.4rem;
+  background: #fdf2f8;
+  padding: 6px;
+  border-radius: 10px;
+  border: 1px solid #fbcfe8;
+}
+
+.p-header-title {
+  font-size: 0.98rem;
+  font-weight: 900;
+  color: #9d174d;
+}
+
+.p-header-sub {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #db2777;
+}
+
+.participants-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.participant-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.94rem;
+  font-weight: 800;
+  color: #1e293b;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+.participant-item:hover {
+  background: linear-gradient(135deg, #fdf2f8, #f5f3ff);
+  color: #be185d;
+  transform: translateX(-4px);
+}
+
+.p-dot {
+  font-size: 0.85rem;
+  color: #f59e0b;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.participant-item:hover .p-dot {
+  transform: scale(1.3) rotate(20deg);
+  color: #ec4899;
+}
+
+.p-name {
+  flex: 1;
+  white-space: nowrap;
+}
