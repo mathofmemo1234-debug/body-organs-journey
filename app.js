@@ -483,7 +483,7 @@ const organsSimulatorData = {
         function: 'يعد الشريان الأورطي الأنبوب الشرياني الرئيسي والناقل الأكبر للدم في الجسم البشري؛ يتصل مباشرة بالبطين الأيسر عبر الصمام الأورطي، ويستقبل الدم عالي الضغط المشبع بالأكسجين ليوزعه عبر فروعه الشريانية المعقدة إلى الدماغ، الأطراف، الأحشاء الداخلية، وسائر خلايا الجسم.',
         anatomy: 'يمتلك جداراً ثلاثي الطبقات فائق المرونة والقوة (الغلالة الباطنة، الوسطى، والخارجية) مدعوماً بألياف الإيلاستين التي تتمدد مع كل نبضة قلبية لتتحمل الضغط العالي، وتتفرع من قوسه الشرايين التاجية وشرايين الرأس والأطراف.',
         clinical: 'تحافظ مرونة الشريان الأورطي الفائقة على استمرار تدفق الدم في الشعيرات الدموية حتى أثناء مرحلة انبساط القلب (بين النبضات)، وأي تصلب فيه يرفع ضغط الدم ويرهق عضلة القلب.',
-        defaultYt: 'https://www.youtube.com/watch?v=k_9Y_tN8V9c',
+        defaultYt: 'https://www.youtube.com/watch?v=e37rJqP6-aM',
         ytTitle: 'شرح الشريان الأورطي والدورة الدموية الكبرى'
       },
       {
@@ -511,7 +511,7 @@ const organsSimulatorData = {
         function: 'ينقل الدم غير المؤكسج المندفع من البطين الأيمن عبر الصمام الرئوي باتجاه الرئتين، ليتم ترشيحه وأكسجته والتخلص من غاز ثاني أكسيد الكربون عبر الحويصلات الهوائية.',
         anatomy: 'ينطلق كجذع رئوي رئيسي ثم ينقسم إلى فرعين أساسيين: شريان رئوي أيمن يتجه للرئة اليمنى، وشريان رئوي أيسر يتجه للرئة اليسرى، وهو الشريان الوحيد في الجسم البالغ الذي يحمل دماً وريدياً فقيراً بالأكسجين.',
         clinical: 'ضغط الدم داخل الشريان الرئوي يكون منخفضاً مقارنة بالأورطي لحماية الأوعية الدموية الهشة والدقيقة داخل أنسجة الرئتين.',
-        defaultYt: 'https://www.youtube.com/watch?v=ruM4Xuhx3yA',
+        defaultYt: 'https://www.youtube.com/watch?v=OuLDiRdhh1k',
         ytTitle: 'الشريان الرئوي والدورة الدموية الصغرى'
       },
       {
@@ -525,7 +525,7 @@ const organsSimulatorData = {
         function: 'الحجرة العلوية اليمنى في القلب التي تستقبل الدم الوريدي الراجع من سائر الجسم عبر الوريدين الأجوفين العلوي والسفلي، وتجمعه ثم تدفعه عبر الصمام ثلاثي الشرفات إلى البطين الأيمن.',
         anatomy: 'حجرة ذات جدار عضلي رقيق نسبياً، وتكمن أهميتها الفائقة في احتوائها على "العقدة الجيبية الأذينية" (SA Node) المسؤولة عن توليد وتنظيم الإشارات الكهربائية للقلب.',
         clinical: 'تعتبر العقدة الجيبية في الأذين الأيمن بمثابة بطارية القلب الطبيعية (Pacemaker)؛ حيث تعطي إشارة الانقباض التلقائي بمعدل 60-100 مرة في الدقيقة.',
-        defaultYt: 'https://www.youtube.com/watch?v=tg_iZk_OQd4',
+        defaultYt: 'https://www.youtube.com/watch?v=M5agXgyN1ng',
         ytTitle: 'الأذين الأيمن وعقدة تنظيم النبضات'
       },
       {
@@ -539,7 +539,7 @@ const organsSimulatorData = {
         function: 'ينقبض البطين الأيمن بانتظام ليدفع الدم الوريدي القادم من الأذين الأيمن عبر الصمام الرئوي إلى الشريان الرئوي متجهاً للرئتين لأكسجته واستعادة نقائه.',
         anatomy: 'حجرة عضلية مثلثة الشكل تقع في الجزء الأمامي السفلي للقلب، وجدارها العضلي أقل سماكة من البطين الأيسر بنحو الثلث لأن مسافة الضخ للرئتين قريبة والمقاومة منخفضة.',
         clinical: 'وجود الصمام ثلاثي الشرفات عند مدخله والصمام الرئوي عند مخرجه يضمن سير الدم باتجاه واحد فقط دون أي ارتداد عكسي.',
-        defaultYt: 'https://www.youtube.com/watch?v=0k5aJd01p74',
+        defaultYt: 'https://www.youtube.com/watch?v=8n_DeE0DBXA',
         ytTitle: 'عمل البطين الأيمن وضخ الدم للرئتين'
       },
       {
@@ -553,7 +553,7 @@ const organsSimulatorData = {
         function: 'يستقبل الدم الوريدي النقي الغني بالأكسجين القادم مباشرة من الرئتين عبر الأوردة الرئوية الأربعة، ويخزنه للحظات ثم يدفعه عبر الصمام التاجي (المترالي) إلى تجويف البطين الأيسر.',
         anatomy: 'يقع في الجزء الخلفي العلوي لقاعدة القلب، ويمتاز بسطح داخلي أملس يسمح بانسياب سريع للدم المؤكسج تحت ضغط هادئ.',
         clinical: 'سلامة الأذين الأيسر وصمامه التاجي تمنع احتقان السوائل في الرئتين وتضمن تدفقاً سلساً للدورة الدموية الجهازية.',
-        defaultYt: 'https://www.youtube.com/watch?v=BEWjOCVEN7E',
+        defaultYt: 'https://www.youtube.com/watch?v=OuLDiRdhh1k',
         ytTitle: 'الأذين الأيسر واستقبال الدم المؤكسج'
       },
       {
@@ -567,7 +567,7 @@ const organsSimulatorData = {
         function: 'تتفرع مباشرة من قاعدة الشريان الأورطي لتروي عضلة القلب الحيوية بالدم المشبع بالأكسجين والجلوكوز، لتتمكن خلايا القلب من الانقباض والانبساط المستمر دون إرهاق.',
         anatomy: 'شبكة شريانية تلتف حول القلب كـ "التاج" ومن هنا جاءت تسميتها، وتنقسم إلى شريان تاجي أيمن وشريان تاجي أيسر بفروعهما الدقيقة المتغلغلة بين ألياف العضلة.',
         clinical: 'انسداد أي فرع من الشرايين التاجية بسبب ترسبات الدهون يؤدي إلى نقص تروية عضلة القلب وحدوث الذبحة الصدرية أو الجلطة القلبية.',
-        defaultYt: 'https://www.youtube.com/watch?v=GMBSU_6x0W8',
+        defaultYt: 'https://www.youtube.com/watch?v=cWY3h3QybMg',
         ytTitle: 'الشرايين التاجية وتغذية عضلة القلب 3D'
       },
       {
@@ -595,7 +595,7 @@ const organsSimulatorData = {
         function: 'تمثل قمة القلب الطرف السفلي المخروطي للبطين الأيسر؛ حيث تلتف ألياف عضلة القلب بحركة لولبية تعصر الدم نحو الأعلى باتجاه الصمام الأورطي كعصر المنشفة لطرد أقصى كمية دم ممكنة.',
         anatomy: 'تقع تشريحياً عند مستوى الفضاء الوربي الخامس الأيسر على خط منتصف الترقوة، وهي النقطة التي يضع عليها الطبيب سماعته لسماع نبض قمة القلب بدقة.',
         clinical: 'تسمى الصدمة التي تحدثها قمة القلب على جدار الصدر مع كل انقباض بـ "الصدمة القمية" (Apex Beat) وتدل على الحجم الطبيعي للقلب.',
-        defaultYt: 'https://www.youtube.com/watch?v=oHMmtqKgs50',
+        defaultYt: 'https://www.youtube.com/watch?v=PgC_cTssGQk',
         ytTitle: 'تشريح قمة القلب وميكانيكا النبض'
       }
     ],
@@ -667,7 +667,7 @@ const organsSimulatorData = {
         function: 'العضو الأكبر حجماً في الجهاز التنفسي؛ تستوعب كمية هائلة من الهواء المستنشق لتزويد الدم بالأكسجين الحيوي وتفريغ ثاني أكسيد الكربون عبر فصوصها الثلاثة.',
         anatomy: 'تنقسم إلى ثلاثة فصوص تشريحية مستقلة (فص علوي، متوسط، سفلي) يفصل بينها شقان (مائل وأفقي)، وتتسع لنحو 55% من إجمالي سعة الرئتين.',
         clinical: 'تعتبر الرئة اليمنى أوسع وأقصر قليلاً من اليسرى بسبب ارتفاع الكبد الواقع تحت الحجاب الحاجز في الجهة اليمنى.',
-        defaultYt: 'https://www.youtube.com/watch?v=qGiP48fLQGo',
+        defaultYt: 'https://www.youtube.com/watch?v=66PR3IYWb0A',
         ytTitle: 'تشريح الرئة اليمنى وفصوصها الثلاثة'
       },
       {
@@ -695,7 +695,7 @@ const organsSimulatorData = {
         function: 'المقر الفعلي للمعجزة التنفسية؛ تتفرع الشجرة القصبية إلى قصيبات دقيقة تنتهي بعناقيد من الحويصلات الهوائية حيث ينفذ الأكسجين عبر جدارها الرقيق إلى كريات الدم ويخرج ثاني أكسيد الكربون.',
         anatomy: 'أكياس هوائية كروية مجهرية جدارها بسماكة خلية واحدة محاطة بشبكة كثيفة من الشعيرات الدموية، ومغطاة بمادة (Surfactant) الخافضة للتوتر السطحي لمنع التصاقها.',
         clinical: 'نقص المادة الخافضة للتوتر السطحي يسبب صعوبة بالغة في التنفس وانهيار الحويصلات، كما يحدث عند بعض الأطفال الخدج.',
-        defaultYt: 'https://www.youtube.com/watch?v=zRv5tNCMWQE',
+        defaultYt: 'https://www.youtube.com/watch?v=HEX6vQktuWU',
         ytTitle: 'الحويصلات الهوائية وتبادل الغازات المجهري'
       },
       {
@@ -767,7 +767,7 @@ const organsSimulatorData = {
         function: 'المقر الأعلى للذكاء البشري؛ يتحكم في التفكير المجرد، التخطيط للمستقبل، حل المشكلات المعقدة، اتخاذ القرارات، ضبط السلوك والشخصية، وإصدار أوامر حركة العضلات الإرادية.',
         anatomy: 'يشغل الجزء الأمامي من القشرة المخية خلف عظم الجبهة مباشرة، وهو الأكبر حجماً والأحدث تطوراً بين فصوص الدماغ.',
         clinical: "يحتوي الفص الجبهي الأيسر على 'منطقة بروكا' (Broca's Area) المسؤولة عن القدرة على التعبير اللغوي والتحدث بطلاقة.",
-        defaultYt: 'https://www.youtube.com/watch?v=mD0kZ_2BknQ',
+        defaultYt: 'https://www.youtube.com/watch?v=qB6hKMgxpNM',
         ytTitle: 'الفص الجبهي ووظائف التفكير والشخصية'
       },
       {
@@ -781,7 +781,7 @@ const organsSimulatorData = {
         function: 'المركز الحسي الرئيسي لمعالجة الإشارات القادمة من الجلد؛ مثل اللمس، الضغط، درجات الحرارة، والألم، بالإضافة إلى إدراك موضع الجسم وأعضائه في الفضاء ثلاثي الأبعاد.',
         anatomy: 'يقع خلف الفص الجبهي في الجزء العلوي الأوسط من الدماغ، ويفصله عن الفص الجبهي "الثلم المركزي" الشهير.',
         clinical: 'يمكن للإنسان بفضل هذا الفص معرفة موقع أطرافه وحركتها بدقة متناهية حتى وعيناه مغلقتان تماماً (الإحساس بالحركة والمكان).',
-        defaultYt: 'https://www.youtube.com/watch?v=7XnE8N9j16Y',
+        defaultYt: 'https://www.youtube.com/watch?v=qB6hKMgxpNM',
         ytTitle: 'الفص الجداري وحاسة اللمس والإدراك المكاني'
       },
       {
@@ -795,7 +795,7 @@ const organsSimulatorData = {
         function: 'محطة الرؤية والمعالجة البصرية في الدماغ؛ يستقبل الإشارات الكهروضوئية القادمة من العين عبر العصب البصري ويفك تشفيرها ليحولها إلى صور، ألوان، أشكال، مسافات، وحركات مرئية.',
         anatomy: 'يقع في أقصى الجزء الخلفي من الدماغ فوق المخيخ مباشرة، محمي بعظم الجمجمة القفوي المتين.',
         clinical: 'أي ضربة أو صدمة قوية على مؤخرة الرأس قد تسبب رؤية ومضات ضوئية أو نجوم لامعة نتيجة تحفيز خلايا القشرة البصرية في الفص القفوي.',
-        defaultYt: 'https://www.youtube.com/watch?v=9UukcdU2584',
+        defaultYt: 'https://www.youtube.com/watch?v=qB6hKMgxpNM',
         ytTitle: 'الفص القفوي ومعالجة الإشارات البصرية'
       },
       {
@@ -809,7 +809,7 @@ const organsSimulatorData = {
         function: 'يعالج الإشارات الصوتية والسمعية، ويختص بفهم وتفسير الكلام واللغات المسموعة، كما يلعب دوراً جوهرياً في تكوين وتخزين الذكريات طويلة الأمد والتعرف على ملامح الوجوه.',
         anatomy: 'يقع على جانبي الدماغ بمحاذاة الأذنين، ويحتضن في عمقه تراكيب بالغة الأهمية مثل "الحصين" (Hippocampus) مقر الذاكرة ومنطقة فيرنيكه اللغوية.',
         clinical: 'بفضل الفص الصدغي، تستطيعين التعرف على صوت والدتك بمجرد سماع نبرتها، وتذكر الألحان والمواقف الجميلة من طفولتك.',
-        defaultYt: 'https://www.youtube.com/watch?v=EazbXp3g7E0',
+        defaultYt: 'https://www.youtube.com/watch?v=h1_yuMAww94',
         ytTitle: 'الفص الصدغي والذاكرة واللغة والسمع'
       },
       {
@@ -823,7 +823,7 @@ const organsSimulatorData = {
         function: 'مهندس التوازن والحركة الدقيقة في الجسم؛ ينسق انقباض العضلات المختلفة لتصبح الحركات سلسة ومنتظمة أثناء المشي، الجري، ركوب الدراجة، الكتابة، أو العزف.',
         anatomy: 'يُلقب بـ "المخ الصغير" ويقع في أسفل الدماغ من الخلف، ورغم صغر حجمه إلا أنه يحتوي على أكثر من نصف مجموع الخلايا العصبية في الدماغ بأكمله!',
         clinical: 'لا يصدر المخيخ أوامر الحركة الأولية، بل يضبط توقيتها ودرجتها، وأي خلل فيه يؤدي لترنح المشية وفقدان التوازن الحركي.',
-        defaultYt: 'https://www.youtube.com/watch?v=DF04q9xwn48',
+        defaultYt: 'https://www.youtube.com/watch?v=Vms9LzxiH7o',
         ytTitle: 'المخيخ ووظيفة التوازن وتناسق الحركة'
       },
       {
@@ -837,7 +837,7 @@ const organsSimulatorData = {
         function: 'برج التحكم الآلي بالحياة؛ ينظم الوظائف الفسيولوجية اللاإرادية التي تبقيكِ حية دون تفكير؛ مثل نبض القلب، وتيرة التنفس، ضغط الدم، البلع، السعال، ومنعكسات القيء.',
         anatomy: 'يربط الدماغ بالحبل الشوكي ويتكون من ثلاثة أجزاء رئيسية: الدماغ المتوسط، الجسر (Pons)، والنخاع المستطيل (Medulla Oblongata).',
         clinical: 'يعد جذع الدماغ من أخطر وأهم مناطق الجهاز العصبي، كما ينظم دورات النوم واليقظة ومستوى الوعي عبر التشكيل الشبكي.',
-        defaultYt: 'https://www.youtube.com/watch?v=1F_sN0zQZ5c',
+        defaultYt: 'https://www.youtube.com/watch?v=wuXH1b3WjvQ',
         ytTitle: 'جذع الدماغ والتحكم في نبض القلب والتنفس'
       }
     ],
@@ -909,7 +909,7 @@ const organsSimulatorData = {
         function: 'المستودع العلوي للمعدة؛ يتمدد بمرونة فائقة ليستوعب كميات الطعام المتناولة قبل هضمها، وتتجمع فيه غازات الهضم الطبيعية.',
         anatomy: 'جزء مقبب كالقبة يقع أعلى مستوى فوهة الفؤاد في الجزء الأيسر من المعدة تحت الحجاب الحاجز مباشرة.',
         clinical: 'تستطيع المعدة التمدد بفضل هذا القاع لتتسع لأكثر من لتر ونصف من الطعام والشراب، وتعود لحجم قبضة اليد عندما تفرغ.',
-        defaultYt: 'https://www.youtube.com/watch?v=7v2mE9570w8',
+        defaultYt: 'https://www.youtube.com/watch?v=CD9wQurjgEY',
         ytTitle: 'قاع المعدة وتخزين الطعام وتمدده'
       },
       {
@@ -923,7 +923,7 @@ const organsSimulatorData = {
         function: 'المعمل الكيميائي والميكانيكي الرئيسي؛ تطحن ثلاث طبقات عضلية قوية الطعام وتحوله إلى سائل متجانس كثيف يُسمى "الكيموس" (Chyme)، وتفرز خلايا الجدار حمض HCl وإنزيم البيبسين لهضم البروتينات.',
         anatomy: 'يشغل المساحة الأكبر في المعدة، ويمتد بين الانحناء الصغير يميناً والانحناء الكبير المحدب يساراً.',
         clinical: 'الحركات التمعجية القوية لجسم المعدة تحدث كل 20 ثانية تقريباً أثناء الهضم لضمان امتزاج كامل للغذاء بالعصارات.',
-        defaultYt: 'https://www.youtube.com/watch?v=yIoTRGfcRqM',
+        defaultYt: 'https://www.youtube.com/watch?v=ADWy6T_rNuI',
         ytTitle: 'هضم الطعام كيميائياً داخل جسم المعدة'
       },
       {
@@ -951,7 +951,7 @@ const organsSimulatorData = {
         function: 'البوابة الحارسة لمخرج المعدة؛ تفتح وتغلق بإحكام لتمرير الطعام المطحون (الكيموس) بجرعات صغيرة مدروسة إلى الأمعاء الدقيقة (الاثني عشر) وتمنع ارتجاعه للمعدة.',
         anatomy: 'حلقة عضلية سميكة وقوية تشكل صماماً فاصلاً بين نهاية تجويف المعدة وبداية الأمعاء الدقيقة.',
         clinical: 'يضمن هذا الصمام عدم انتقال الطعام غير المهضوم جيداً للأمعاء، ويحمي الأمعاء من تدفق كميات كبيرة من الحمض دفعة واحدة.',
-        defaultYt: 'https://www.youtube.com/watch?v=b20VRR9C37Q',
+        defaultYt: 'https://www.youtube.com/watch?v=TOPIVZZwiIg',
         ytTitle: 'عضلة البواب وتنظيم مرور الطعام للأمعاء'
       }
     ],
@@ -1009,7 +1009,7 @@ const organsSimulatorData = {
         function: 'المفترق الذكي للبلع؛ يوجه اللقمة من الفم للمريء ويغلق لسان المزمار القصبة الهوائية فوراً لمنع دخول الطعام لمجرى التنفس والرئتين.',
         anatomy: 'ممر عضلي قمعي يربط الحلق بأعلى المريء، وتتحكم به عضلات عاصرة إرادية ولاإرادية بتنسيق عصبي فائق.',
         clinical: 'التنسيق العصبي الدقيق هنا يمنع ظاهرة "التشردق" أو استنشاق الطعام في مجرى الهواء.',
-        defaultYt: 'https://www.youtube.com/watch?v=5rT8s8jMupI',
+        defaultYt: 'https://www.youtube.com/watch?v=Qkh4oyczEB4',
         ytTitle: 'آلية البلع ودور لسان المزمار'
       },
       {
@@ -1023,7 +1023,7 @@ const organsSimulatorData = {
         function: 'ينقبض جدار المريء في موجات عضلية تمعجية لاإرادية متتابعة تدفع اللقمة الغذائية نحو الأسفل في غضون 4 إلى 8 ثوانٍ فقط.',
         anatomy: 'أنبوب مرن بطول 25 سم يتكون من طبقتين عضليتين: دائرية داخلية وطولية خارجية، ومبطن بغشاء مخاطي أملس يسهل الانزلاق.',
         clinical: 'هذه الحركة عضلية دافعة مستقلة تماماً عن الجاذبية الأرضية، مما يتيح التغذية في جميع وضعيات الجسم.',
-        defaultYt: 'https://www.youtube.com/watch?v=UlsCYFqL86g',
+        defaultYt: 'https://www.youtube.com/watch?v=AvuHsrdb83Y',
         ytTitle: 'الحركة الدودية في المريء 3D Animation'
       },
       {
@@ -1037,7 +1037,7 @@ const organsSimulatorData = {
         function: 'صمام أمان أحادي الاتجاه عند نهاية المريء؛ يسترخي لثوانٍ معدودة ليسمح للقمة بدخول المعدة، ثم ينغلق بقوة محكمة ليمنع ارتداد حمض المعدة الحارق.',
         anatomy: 'حلقة عضلية تقع عند مستوى فتحة الحجاب الحاجز تعمل كحاجز ضغط طبيعي بين بيئة المريء المعتدلة وبيئة المعدة الحامضية.',
         clinical: 'ضعف أو ارتخاء هذا الصمام العضلي هو السبب المباشر لمرض الارتجاع المعدي المريئي والشعور بحرقة الصدر والحلق (GERD).',
-        defaultYt: 'https://www.youtube.com/watch?v=tI8eXjS_o2w',
+        defaultYt: 'https://www.youtube.com/watch?v=p6yZd3tQL8g',
         ytTitle: 'المصرة المريئية السفلية وحرقة المعدة'
       },
       {
@@ -1109,7 +1109,7 @@ const organsSimulatorData = {
         function: 'الفتحة الضوئية المركزية في العين؛ تتسع في الظلام للسماح بمرور أقصى قدر من الضوء لتحسين الرؤية، وتضيق تلقائياً في الضوء الساطع لحماية الشبكية من التلف.',
         anatomy: 'فتحة دائرية سوداء في وسط القزحية يبدو لونها أسود لأن الضوء الداخل إليها يمتصه قاع العين المظلم تماماً.',
         clinical: 'فحص منعكس البؤبؤ بالضوء (Pupillary Light Reflex) هو أحد أهم الفحوصات الطارئة لتقييم سلامة جذع الدماغ ووظائف الأعصاب.',
-        defaultYt: 'https://www.youtube.com/watch?v=syaQgmKw53w',
+        defaultYt: 'https://www.youtube.com/watch?v=NwTIqmRYPQw',
         ytTitle: 'منعكس بؤبؤ العين والتكيف مع الضوء'
       },
       {
@@ -1137,7 +1137,7 @@ const organsSimulatorData = {
         function: 'العدسة الأمامية الثابتة للعين؛ تكسر أشعة الضوء الداخلة وتركّزها بنسبة 70% من إجمالي القوة البصرية للعين لتقع بدقة ووضوح على الشبكية.',
         anatomy: 'قبة نسيجية فائقة الشفافية تتكون من خمس طبقات دقيقة، وتتميز بعدم احتوائها على أي أوعية دموية لتحافظ على نقائها، وتتغذى من الدموع وأكسجين الهواء مباشرة.',
         clinical: 'القرنية هي النسيج الذي يُعاد تشكيل انحنائه في عمليات الليزك وعلاج قصر وطول النظر للاستغناء عن النظارات الطبية.',
-        defaultYt: 'https://www.youtube.com/watch?v=fn6v3Z82U_I',
+        defaultYt: 'https://www.youtube.com/watch?v=Vz9ZTa11LTo',
         ytTitle: 'القرنية الشفافة وانكسار الضوء وعمليات الليزك'
       },
       {
@@ -1151,7 +1151,7 @@ const organsSimulatorData = {
         function: 'الهيكل الخارجي الواقي لمقلة العين؛ يحافظ على كروية العين وضغطها الداخلي، ويوفر نقاط تثبيت قوية للعضلات الست المحركة للعين.',
         anatomy: 'نسيج ضام ليفي كثيف وأبيض اللون يغطي خمسة أسداس السطح الخارجي للعين من الخلف حتى محاذاة القرنية.',
         clinical: 'تغير لون الصلبة للأصفر يعد علامة طبية واضحة على الإصابة باليرقان وأمراض الكبد (ارتفاع البيليروبين).',
-        defaultYt: 'https://www.youtube.com/watch?v=7B3z_Gq8s7Q',
+        defaultYt: 'https://www.youtube.com/watch?v=r_iQeERSE7U',
         ytTitle: 'صلبة العين وعضلات حركة مقلة العين'
       },
       {
@@ -1165,7 +1165,7 @@ const organsSimulatorData = {
         function: 'كابل الألياف الضوئية الفائق في جسم الإنسان؛ يجمع النبضات العصبية التي كونتها مستقبلات الشبكية وينقلها بسرعة الضوء إلى الفص القفوي في الدماغ لنرى الصورة.',
         anatomy: 'يحتوي على أكثر من 1.2 مليون ليف عصبي دقيق ينطلق من مؤخرة مقلة العين ماراً بالقناة البصرية إلى قاعدة الدماغ.',
         clinical: 'ارتفاع ضغط السائل داخل العين (الجلوكوما أو الماء الأزرق) يضغط على ألياف العصب البصري وقد يهدد الرؤية إذا لم يُعالج مبكراً.',
-        defaultYt: 'https://www.youtube.com/watch?v=cFVbLN4cWWA',
+        defaultYt: 'https://www.youtube.com/watch?v=Vz9ZTa11LTo',
         ytTitle: 'الشبكية والعصب البصري ونقل الإشارات للدماغ'
       }
     ],
@@ -1238,14 +1238,62 @@ function extractYouTubeVideoId(url) {
   return '';
 }
 
+function buildYouTubeIframeHtml(embedUrl, title = 'فيديو تعليمي') {
+  return `<iframe 
+    src="${embedUrl}" 
+    title="${title}" 
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+    referrerpolicy="strict-origin-when-cross-origin" 
+    loading="lazy"
+    allowfullscreen>
+  </iframe>`;
+}
+
 function formatYouTubeEmbedUrl(url) {
   if (!url) return '';
   const videoId = extractYouTubeVideoId(url);
   if (videoId) {
-    return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=0&rel=0`;
+    const origin = (typeof window !== 'undefined' && window.location && window.location.origin && window.location.origin !== 'null') ? window.location.origin : '';
+    const originParam = origin ? `&origin=${encodeURIComponent(origin)}` : '';
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1&enablejsapi=1${originParam}`;
   }
   return String(url).trim();
 }
+
+// تنظيف الروابط القديمة التالفة تلقائياً من ذاكرة المتصفح
+function cleanupStaleYouTubeLinks() {
+  const staleIds = [
+    'k_9Y_tN8V9c', '7v2mE9570w8', 'tg_iZk_OQd4', 'fn6v3Z82U_I', '9UukcdU2584',
+    'qGiP48fLQGo', 'mD0kZ_2BknQ', 'DF04q9xwn48', 'b20VRR9C37Q', 'ruM4Xuhx3yA',
+    '7B3z_Gq8s7Q', 'UlsCYFqL86g', 'BEWjOCVEN7E', 'EazbXp3g7E0', 'yIoTRGfcRqM',
+    'zRv5tNCMWQE', 'cFVbLN4cWWA', '7XnE8N9j16Y', 'oHMmtqKgs50', '1F_sN0zQZ5c',
+    'tI8eXjS_o2w', '0k5aJd01p74', 'GMBSU_6x0W8', '5rT8s8jMupI', 'syaQgmKw53w'
+  ];
+  try {
+    const saved = localStorage.getItem('custom_organ_youtube_links');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      let changed = false;
+      for (const [k, v] of Object.entries(parsed)) {
+        for (const bId of staleIds) {
+          if (v && v.includes(bId)) {
+            delete parsed[k];
+            changed = true;
+            break;
+          }
+        }
+      }
+      if (changed) {
+        localStorage.setItem('custom_organ_youtube_links', JSON.stringify(parsed));
+        if (typeof idbSave === 'function') idbSave('custom_organ_youtube_links', parsed);
+      }
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+try { cleanupStaleYouTubeLinks(); } catch (e) {}
 
 // المحتوى المنشور للجميع (ملف content.js المرفوع مع الموقع)
 function getPublishedContent() {
@@ -1339,7 +1387,7 @@ function syncPartYouTubeAcrossUI(partId, newUrl) {
     }
     const modalWrap = document.getElementById('part-yt-player-wrap');
     if (modalWrap && modalWrap.innerHTML) {
-      modalWrap.innerHTML = `<iframe src="${embedUrl}" title="YouTube Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      modalWrap.innerHTML = `${buildYouTubeIframeHtml(embedUrl)}`;
     }
   }
 
@@ -1351,7 +1399,7 @@ function syncPartYouTubeAcrossUI(partId, newUrl) {
     }
     const activePlayer = document.getElementById('active-part-yt-player');
     if (activePlayer && activePlayer.style.display !== 'none') {
-      activePlayer.innerHTML = `<iframe src="${embedUrl}" title="YouTube Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      activePlayer.innerHTML = `${buildYouTubeIframeHtml(embedUrl)}`;
     }
   }
 
@@ -1362,7 +1410,7 @@ function syncPartYouTubeAcrossUI(partId, newUrl) {
   }
   const toastPlayer = document.getElementById('v-func-yt-player-box');
   if (toastPlayer && toastPlayer.style.display !== 'none') {
-    toastPlayer.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    toastPlayer.innerHTML = `${buildYouTubeIframeHtml(embedUrl)}`;
   }
 }
 
@@ -1729,7 +1777,7 @@ window.selectPart = function(organKey, partId, openModal = false) {
       toggleYtBtn.onclick = () => {
         if (ytPlayer.style.display === 'none') {
           const embedUrl = formatYouTubeEmbedUrl(getPartYouTubeUrl(organKey, partId));
-          ytPlayer.innerHTML = `<iframe src="${embedUrl}" title="${part.name}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+          ytPlayer.innerHTML = `${buildYouTubeIframeHtml(embedUrl)}`;
           ytPlayer.style.display = 'block';
           toggleYtBtn.textContent = '⏹️ إخفاء الفيديو';
         } else {
@@ -1748,7 +1796,7 @@ window.selectPart = function(organKey, partId, openModal = false) {
           sounds.playCorrect();
           if (ytPlayer && ytPlayer.style.display !== 'none') {
             const embedUrl = formatYouTubeEmbedUrl(getPartYouTubeUrl(organKey, partId));
-            ytPlayer.innerHTML = `<iframe src="${embedUrl}" title="${part.name}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            ytPlayer.innerHTML = `${buildYouTubeIframeHtml(embedUrl)}`;
           }
           alert(`✅ تم حفظ وتحديث رابط فيديو يوتيوب لـ (${part.name}) بنجاح!`);
         }
@@ -1849,7 +1897,7 @@ window.toggleViewerPartVideo = function(organKey, partId) {
   if (playerBox.style.display === 'none') {
     const rawUrl = getPartYouTubeUrl(organKey, partId);
     const embedUrl = formatYouTubeEmbedUrl(rawUrl);
-    playerBox.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    playerBox.innerHTML = `${buildYouTubeIframeHtml(embedUrl)}`;
     playerBox.style.display = 'block';
     if (btn) btn.textContent = '⏹️ إخفاء الفيديو';
   } else {
@@ -1868,7 +1916,7 @@ window.saveViewerPartVideo = function(partId, partName) {
   const playerBox = document.getElementById('v-func-yt-player-box');
   if (playerBox && playerBox.style.display !== 'none') {
     const embedUrl = formatYouTubeEmbedUrl(getPartYouTubeUrl(partId));
-    playerBox.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    playerBox.innerHTML = `${buildYouTubeIframeHtml(embedUrl)}`;
   }
   alert(`✅ تم حفظ وتحديث رابط فيديو يوتيوب لـ (${partName}) بنجاح!`);
 };
@@ -2263,7 +2311,7 @@ function setupPartDetailModal() {
       const playerWrap = document.getElementById('part-yt-player-wrap');
       const embedUrl = formatYouTubeEmbedUrl(getPartYouTubeUrl(state.activePartModal.organKey, state.activePartModal.partId));
       if (playerWrap) {
-        playerWrap.innerHTML = `<iframe src="${embedUrl}" title="YouTube Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        playerWrap.innerHTML = `${buildYouTubeIframeHtml(embedUrl)}`;
       }
       alert('✅ تم حفظ رابط الفيديو وتحديثه بنجاح!');
     });
@@ -2280,7 +2328,7 @@ function setupPartDetailModal() {
       const playerWrap = document.getElementById('part-yt-player-wrap');
       const embedUrl = formatYouTubeEmbedUrl(defaultUrl);
       if (playerWrap) {
-        playerWrap.innerHTML = `<iframe src="${embedUrl}" title="YouTube Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        playerWrap.innerHTML = `${buildYouTubeIframeHtml(embedUrl)}`;
       }
       alert('تمت استعادة رابط فيديو يوتيوب الافتراضي لهذا الجزء بنجاح!');
     });
@@ -2320,14 +2368,7 @@ window.openPartModal = function(organKey, partId) {
 
   const embedUrl = formatYouTubeEmbedUrl(currentYtUrl);
   if (playerWrap) {
-    playerWrap.innerHTML = `
-      <iframe 
-        src="${embedUrl}" 
-        title="${part.name}" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-      </iframe>
-    `;
+    playerWrap.innerHTML = buildYouTubeIframeHtml(embedUrl, part.name);
   }
 
   if (modal) {
