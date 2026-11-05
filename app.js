@@ -1239,15 +1239,29 @@ function extractYouTubeVideoId(url) {
 }
 
 function buildYouTubeIframeHtml(embedUrl, title = 'فيديو تعليمي') {
-  return `<iframe 
-    src="${embedUrl}" 
-    title="${title}" 
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-    referrerpolicy="strict-origin-when-cross-origin" 
-    loading="lazy"
-    allowfullscreen>
-  </iframe>`;
+  const isFileProto = (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:');
+  const fileWarning = isFileProto ? `
+    <div style="background:#fffbeb;border:1.5px solid #f59e0b;color:#92400e;padding:10px 14px;border-radius:10px;font-size:0.85rem;margin-top:10px;line-height:1.6;display:flex;align-items:flex-start;gap:10px;">
+      <span style="font-size:1.3rem;line-height:1;">💡</span>
+      <div style="flex:1;">
+        <strong style="display:block;margin-bottom:2px;">لتشغيل الفيديو داخل الموقع دون مغادرته:</strong>
+        أنتِ تفتحين الموقع كملف محلي (file://). لتشغيل الفيديوهات داخل الصفحة بدون أي أخطاء من يوتيوب، يُرجى تشغيل الموقع عبر النقر المزدوج على ملف <strong>«تشغيل_الموقع.bat»</strong> المرفق مع المشروع!
+      </div>
+    </div>
+  ` : '';
+
+  return `<div class="video-responsive-wrap" style="position:relative;">
+    <iframe 
+      src="${embedUrl}" 
+      title="${title}" 
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+      referrerpolicy="strict-origin-when-cross-origin" 
+      loading="lazy"
+      allowfullscreen>
+    </iframe>
+    ${fileWarning}
+  </div>`;
 }
 
 function formatYouTubeEmbedUrl(url) {
@@ -1261,39 +1275,52 @@ function formatYouTubeEmbedUrl(url) {
   return String(url).trim();
 }
 
-// تنظيف الروابط القديمة التالفة تلقائياً من ذاكرة المتصفح
-function cleanupStaleYouTubeLinks() {
-  const staleIds = [
-    'k_9Y_tN8V9c', '7v2mE9570w8', 'tg_iZk_OQd4', 'fn6v3Z82U_I', '9UukcdU2584',
-    'qGiP48fLQGo', 'mD0kZ_2BknQ', 'DF04q9xwn48', 'b20VRR9C37Q', 'ruM4Xuhx3yA',
-    '7B3z_Gq8s7Q', 'UlsCYFqL86g', 'BEWjOCVEN7E', 'EazbXp3g7E0', 'yIoTRGfcRqM',
-    'zRv5tNCMWQE', 'cFVbLN4cWWA', '7XnE8N9j16Y', 'oHMmtqKgs50', '1F_sN0zQZ5c',
-    'tI8eXjS_o2w', '0k5aJd01p74', 'GMBSU_6x0W8', '5rT8s8jMupI', 'syaQgmKw53w'
-  ];
+// ==========================================
+// 🛡️ نظام الحفظ الدائم التلقائي على القرص الصلب (Auto-Sync To Disk)
+// ==========================================
+async function autoSaveToDisk() {
+  const customYt = getCustomYouTubeLinks();
+  const customQ = (typeof getCustomQuestions === 'function') ? getCustomQuestions() : [];
+  const deletedQ = (typeof getDeletedQuestionIds === 'function') ? getDeletedQuestionIds() : [];
+
+  const payload = {
+    version: Date.now(),
+    customYoutube: customYt,
+    customQuestions: customQ,
+    deletedQuestionIds: deletedQ
+  };
+
   try {
-    const saved = localStorage.getItem('custom_organ_youtube_links');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      let changed = false;
-      for (const [k, v] of Object.entries(parsed)) {
-        for (const bId of staleIds) {
-          if (v && v.includes(bId)) {
-            delete parsed[k];
-            changed = true;
-            break;
-          }
-        }
-      }
-      if (changed) {
-        localStorage.setItem('custom_organ_youtube_links', JSON.stringify(parsed));
-        if (typeof idbSave === 'function') idbSave('custom_organ_youtube_links', parsed);
-      }
+    const res = await fetch('/api/save_content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      console.log('✅ تم حفظ وتثبيت التعديلات نهائياً على القرص في ملف content.js');
+      showPermanentSaveToast();
     }
   } catch (e) {
-    console.error(e);
+    // يعمل دون سيرفر كملف محلي، تم الحفظ مسبقاً في IndexedDB و localStorage
   }
 }
-try { cleanupStaleYouTubeLinks(); } catch (e) {}
+
+function showPermanentSaveToast() {
+  let toast = document.getElementById('permanent-save-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'permanent-save-toast';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:24px;background:#065f46;color:#ffffff;padding:12px 20px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.25);z-index:999999;font-weight:800;font-size:0.95rem;display:flex;align-items:center;gap:10px;border:1.5px solid #34d399;transition:all 0.3s;';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = '<span>💾</span> <span>تم تثبيت وحفظ التعديلات نهائياً في ملف content.js على القرص!</span>';
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateY(0)';
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(20px)';
+  }, 4000);
+}
 
 // المحتوى المنشور للجميع (ملف content.js المرفوع مع الموقع)
 function getPublishedContent() {
@@ -1424,6 +1451,7 @@ function setPartYouTubeUrl(partId, url) {
   try {
     localStorage.setItem('custom_organ_youtube_links', JSON.stringify(custom));
     if (typeof idbSave === 'function') idbSave('custom_organ_youtube_links', custom);
+    if (typeof autoSaveToDisk === 'function') autoSaveToDisk();
   } catch (e) {
     console.error(e);
   }
@@ -1440,6 +1468,7 @@ function resetPartYouTubeUrl(partId) {
   try {
     localStorage.setItem('custom_organ_youtube_links', JSON.stringify(custom));
     if (typeof idbSave === 'function') idbSave('custom_organ_youtube_links', custom);
+    if (typeof autoSaveToDisk === 'function') autoSaveToDisk();
   } catch (e) {
     console.error(e);
   }
@@ -1516,6 +1545,7 @@ function saveCustomQuestionToStorage(qData) {
   try {
     localStorage.setItem('custom_organ_questions', JSON.stringify(questions));
     if (typeof idbSave === 'function') idbSave('custom_organ_questions', questions);
+    if (typeof autoSaveToDisk === 'function') autoSaveToDisk();
   } catch (e) {
     console.error(e);
   }
@@ -1527,6 +1557,7 @@ function deleteCustomQuestionFromStorage(qId) {
   try {
     localStorage.setItem('custom_organ_questions', JSON.stringify(questions));
     if (typeof idbSave === 'function') idbSave('custom_organ_questions', questions);
+    if (typeof autoSaveToDisk === 'function') autoSaveToDisk();
   } catch (e) {
     console.error(e);
   }
@@ -1569,6 +1600,7 @@ function resetOrganCustomQuestionsInStorage(organKey) {
   try {
     localStorage.setItem('custom_organ_questions', JSON.stringify(questions));
     if (typeof idbSave === 'function') idbSave('custom_organ_questions', questions);
+    if (typeof autoSaveToDisk === 'function') autoSaveToDisk();
   } catch (e) {
     console.error(e);
   }
