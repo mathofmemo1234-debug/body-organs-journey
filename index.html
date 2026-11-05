@@ -17,7 +17,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <link rel="stylesheet" href="style.css?v=20261106_v17">
+  <link rel="stylesheet" href="style.css?v=20261106_v18">
 </head>
 <body dir="rtl">
 
@@ -506,11 +506,14 @@
         <!-- Quiz View Mode Toggle & Add Question -->
         <div class="quiz-top-action-bar">
           <div class="quiz-view-mode-bar">
-            <button id="quiz-mode-single-btn" class="btn-toggle-quiz active" onclick="setQuizDisplayMode('single')">
-              🎯 عرض سؤال بسؤال (تفاعلي)
+            <button id="quiz-mode-levels-btn" class="btn-toggle-quiz active" onclick="setQuizDisplayMode('levels')">
+              🏆 تحدي المستويات (4 مستويات - 40 سؤالاً متدرجاً)
+            </button>
+            <button id="quiz-mode-single-btn" class="btn-toggle-quiz" onclick="setQuizDisplayMode('single')">
+              🎯 عرض سؤال بسؤال
             </button>
             <button id="quiz-mode-all-btn" class="btn-toggle-quiz" onclick="setQuizDisplayMode('all')">
-              📋 عرض جميع الأسئلة (12 سؤالاً معاً)
+              📋 بنك الأسئلة الشامل
             </button>
           </div>
           <button class="btn-primary" onclick="openAddQuestionModal()" style="padding:7px 16px;font-size:0.85rem;background:linear-gradient(135deg, #0284c7, #2563eb);">
@@ -518,13 +521,71 @@
           </button>
         </div>
 
-        <!-- 12-Question Jump Navigation Bar -->
-        <div class="quiz-question-pills-bar" id="quiz-question-pills-bar">
+        <!-- Mode 0: Levels Mode (4 Progressive Levels - 40 Questions) -->
+        <div id="quiz-levels-view">
+          <!-- A. Levels Map / Dashboard -->
+          <div id="levels-map-section">
+            <div class="levels-map-intro">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+                <span class="levels-intro-badge">🎓 مسار الإتقان والترقي العلمي المتدرج</span>
+                <span class="levels-count-badge">40 سؤالاً متدرجاً • 4 مستويات</span>
+              </div>
+              <h3 style="font-size:1.6rem;font-weight:900;color:#0f172a;margin:0 0 10px 0;">🏆 رحلة المستويات الأربعة: من المستكشف الصغير إلى العبقري الطبي</h3>
+              <p style="font-size:1.05rem;color:#334155;line-height:1.7;margin:0;">
+                خوضي غمار التحدي العلمي التدرجي! يتكون كل مستوى من <strong>10 أسئلة علمية متدرجة</strong>. اجتازي <strong>80% على الأقل (8 من 10)</strong> لفتح المستوى التالي وتتويج إنجازكِ بـ <strong>شهادة إتقان وتميّز معتمدة</strong> بنسبتكِ ووسام التعزيز المناسب! 🌟
+              </p>
+            </div>
+
+            <!-- 4 Level Cards Grid -->
+            <div class="levels-grid" id="levels-cards-grid">
+              <!-- Rendered dynamically via renderLevelsGrid() -->
+            </div>
+          </div>
+
+          <!-- B. Active Level Quiz Section -->
+          <div id="level-active-quiz-section" style="display:none;">
+            <div class="level-quiz-header-bar">
+              <button class="btn-secondary" onclick="backToLevelsMap()" style="padding:8px 18px;font-size:0.95rem;font-weight:800;display:inline-flex;align-items:center;gap:6px;">
+                <span>← العودة لخريطة المستويات</span>
+              </button>
+              <div class="level-header-info">
+                <span class="level-active-title-badge" id="level-active-title-badge">المستوى 1: المستكشف الصغير</span>
+                <span class="level-pass-condition-badge">شرط الصعود: 80% (8/10 إجابات صحيحة)</span>
+              </div>
+              <div class="level-score-display" id="level-score-display">الدرجة الحالية: 0 / 10</div>
+            </div>
+
+            <!-- 10 Questions Jump Navigation Bar -->
+            <div class="quiz-question-pills-bar" id="level-q-pills-bar">
+              <!-- 10 pills rendered dynamically -->
+            </div>
+
+            <!-- Active Question Card -->
+            <div style="margin-bottom:26px;">
+              <div class="question-text" id="level-question-title">
+                <!-- Rendered dynamically -->
+              </div>
+              <div class="options-grid" id="level-options-container">
+                <!-- Options rendered dynamically -->
+              </div>
+            </div>
+
+            <div class="quiz-feedback-box" id="level-quiz-feedback"></div>
+
+            <div class="quiz-nav-actions">
+              <button id="level-prev-btn" class="btn-secondary" onclick="levelQuizPrev()">→ السؤال السابق</button>
+              <button id="level-next-btn" class="btn-primary" onclick="levelQuizNext()">السؤال التالي ←</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12-Question Jump Navigation Bar (For Mode 1: Single Question) -->
+        <div class="quiz-question-pills-bar" id="quiz-question-pills-bar" style="display:none;">
           <!-- Rendered dynamically: 12 clickable interactive bubbles -->
         </div>
 
         <!-- Mode 1: Active Single Question View -->
-        <div id="quiz-active-view">
+        <div id="quiz-active-view" style="display:none;">
           <div class="quiz-header-bar">
             <div style="display:flex;gap:18px;align-items:center;">
               <span class="quiz-badge" id="quiz-q-num">سؤال 1 من 12</span>
@@ -1257,6 +1318,92 @@
     </div>
   </div>
 
+  
+  <!-- LEVEL CERTIFICATE MODAL (Strict RTL & Printable) -->
+  <div class="level-cert-modal-overlay" id="level-cert-modal" dir="rtl">
+    <div class="level-cert-container">
+      
+      <!-- Top Action Bar (hidden on print) -->
+      <div class="level-cert-actions-bar">
+        <button class="btn-primary" onclick="window.print()" style="padding:10px 22px;font-size:1rem;font-weight:800;box-shadow:0 4px 14px rgba(2, 132, 199, 0.35);">
+          <span>🖨️ طباعة أو حفظ الشهادة كـ PDF</span>
+        </button>
+        <button class="btn-secondary" onclick="closeLevelCertModal()" style="padding:10px 18px;font-size:0.95rem;font-weight:800;">
+          <span>إغلاق ✕</span>
+        </button>
+      </div>
+
+      <!-- Luxury Certificate Sheet -->
+      <div class="level-cert-sheet" id="level-cert-sheet">
+        <!-- Corner Ornaments -->
+        <div class="cert-corner tl"></div>
+        <div class="cert-corner tr"></div>
+        <div class="cert-corner bl"></div>
+        <div class="cert-corner br"></div>
+
+        <div class="cert-header-area">
+          <div class="cert-kashida">المملكة العربية السعودية • وزارة التعليم • رحلة داخل أعضاء جسم الإنسان</div>
+          <div class="cert-crest">🌟 🧬 🫀 🩺 🌟</div>
+          <h1 class="cert-main-heading">شـــهـــادة إتــقــان وتـفـوّق عـلـمـي</h1>
+          <p class="cert-sub-heading" id="cert-level-name-display">المستوى الأول: المستكشف الصغير</p>
+        </div>
+
+        <div class="cert-body-area">
+          <p class="cert-intro-text">تَشْهَدُ منصة رحلة داخل أعضاء جسم الإنسان التعليمية بأن الطالبة المتميزة:</p>
+          
+          <div class="cert-name-input-wrapper">
+            <input type="text" id="cert-student-input-name" class="cert-name-input" value="الطالبة المتميزة" placeholder="اكتبي اسمكِ الكريم هنا..." title="انقري لتعديل الاسم مباشرة على الشهادة" oninput="saveCertStudentName(this.value)">
+            <span class="cert-name-edit-hint">✏️ (انقري على الاسم لتغييره مباشرة قبل الطباعة أو الحفظ)</span>
+          </div>
+
+          <p class="cert-congrats-text">
+            قد اجتازت بنجاح وتفوق اختبار التحدي التدرجي لمستوى:
+            <strong id="cert-level-strong-title">المستكشف الصغير في وظائف الأعضاء</strong>
+          </p>
+
+          <!-- Score & Percentage Ribbon -->
+          <div class="cert-score-ribbon" id="cert-score-ribbon">
+            <div class="cert-score-val" id="cert-percent-val">100%</div>
+            <div class="cert-score-label" id="cert-score-detail">10 من 10 إجابات صحيحة</div>
+          </div>
+
+          <!-- Reinforcement Box -->
+          <div class="cert-reinforcement-box" id="cert-reinforcement-box">
+            <div class="cert-badge-tag" id="cert-reinforcement-badge">👑 وسام العبقرية المطلقة والتميز الخارق</div>
+            <p class="cert-praise-text" id="cert-reinforcement-text">
+              ما شاء الله تبارك الله! أداء استثنائي مبهر وإتقان كامل بنسبة 100%!
+            </p>
+          </div>
+        </div>
+
+        <div class="cert-footer-area">
+          <div class="cert-date-col">
+            <span class="cert-lbl">تاريخ الإنجاز:</span>
+            <strong id="cert-issue-date">2026/11/06</strong>
+          </div>
+
+          <div class="cert-seal-col">
+            <div class="cert-gold-seal">
+              <span class="seal-icon">🏅</span>
+              <span class="seal-txt">معتمد وموثق</span>
+            </div>
+          </div>
+
+          <div class="cert-sign-col">
+            <span class="cert-lbl">الجهة المانحة:</span>
+            <strong>فريق العمل والإشراف التعليمي</strong>
+          </div>
+        </div>
+
+        <!-- Bottom Action buttons inside modal -->
+        <div class="cert-bottom-actions" id="cert-bottom-actions">
+          <!-- Dynamically populated: Next Level button if >= 80%, or Retry Level button -->
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <!-- Mobile Bottom App Bar (Optimized for Mobile/Touch) -->
   <nav class="mobile-bottom-nav" id="mobile-bottom-nav" dir="rtl">
     <button class="m-nav-item active" data-tab="home">
@@ -1284,8 +1431,9 @@
   <!-- Three.js 3D Engine & Orbit Controls -->
   <script src="assets/three.min.js"></script>
   <script src="assets/OrbitControls.js"></script>
-  <script src="body3d.js?v=20261106_v17"></script>
-  <script src="content.js?v=20261106_v17"></script>
-  <script src="app.js?v=20261106_v17"></script>
+  <script src="body3d.js?v=20261106_v18"></script>
+  <script src="content.js?v=20261106_v18"></script>
+  <script src="levels_quiz_data.js?v=20261106_v18"></script>
+  <script src="app.js?v=20261106_v18"></script>
 </body>
 </html>

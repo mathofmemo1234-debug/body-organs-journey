@@ -1979,6 +1979,11 @@ function setupNavigation() {
       if (tab) switchTab(tab);
     });
   });
+
+  const hash = window.location.hash.replace('#', '').replace('tab-', '');
+  if (hash && document.getElementById('tab-' + hash)) {
+    switchTab(hash);
+  }
 }
 
 function triggerHaptic(pattern) {
@@ -2426,6 +2431,7 @@ function renderOrganQuestions() {
 
   questionsContainer.innerHTML = '';
   let correctCount = 0;
+  const optionLetters = ['أ', 'ب', 'ج', 'د'];
 
   questions.forEach((qData, qIdx) => {
     const card = document.createElement('div');
@@ -2436,45 +2442,52 @@ function renderOrganQuestions() {
     const isCorrect = chosenAnswer === qData.correct;
     if (hasAnswered && isCorrect) correctCount++;
 
-    let optionsHtml = '';
-    qData.options.forEach(opt => {
-      let btnClass = 'organ-opt-btn';
-      let icon = '';
+    const optGrid = document.createElement('div');
+    optGrid.className = 'options-grid';
+    optGrid.style.gap = '12px';
+
+    qData.options.forEach((opt, optIndex) => {
+      const btn = document.createElement('button');
+      btn.className = `organ-opt-btn opt-theme-${optIndex % 4}`;
+      const letter = optionLetters[optIndex] || (optIndex + 1);
+      let statusIcon = '';
       if (hasAnswered) {
+        btn.disabled = true;
         if (opt === qData.correct) {
-          btnClass += ' correct';
-          icon = '✓';
+          btn.classList.add('correct');
+          statusIcon = '<span class="opt-status-icon">✓</span>';
         } else if (opt === chosenAnswer) {
-          btnClass += ' wrong';
-          icon = '✗';
+          btn.classList.add('wrong');
+          statusIcon = '<span class="opt-status-icon">✗</span>';
         }
       }
-      optionsHtml += `
-        <button class="${btnClass}" ${hasAnswered ? 'disabled' : ''} onclick="answerOrganQuestion('${qData.id}', '${opt}')">
-          <span>${opt}</span>
-          <span style="font-weight:900;">${icon}</span>
-        </button>
+      btn.innerHTML = `
+        <span class="opt-badge-pill">${letter}</span>
+        <span class="opt-text">${opt}</span>
+        ${statusIcon}
       `;
+      btn.addEventListener('click', () => answerOrganQuestion(qData.id, opt));
+      optGrid.appendChild(btn);
     });
 
     let feedbackHtml = '';
     if (hasAnswered) {
       if (isCorrect) {
         feedbackHtml = `
-          <div style="margin-top:14px;padding:12px 16px;border-radius:10px;background:#ecfdf5;border:1.5px solid #10b981;color:#065f46;">
-            <div style="font-size:0.95rem;font-weight:900;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+          <div class="quiz-feedback-box correct" style="display:block;margin-top:16px;">
+            <div class="quiz-feedback-header">
               <span>🎉</span> <span>${qData.motivationSuccess || 'إجابة عبقرية ورائعة! أحسنتِ الفهم!'}</span>
             </div>
-            <div style="font-size:0.88rem;line-height:1.6;color:#047857;">${qData.explain}</div>
+            <div class="quiz-feedback-explain">${qData.explain}</div>
           </div>
         `;
       } else {
         feedbackHtml = `
-          <div style="margin-top:14px;padding:12px 16px;border-radius:10px;background:#fff1f2;border:1.5px solid #f43f5e;color:#9f1239;">
-            <div style="font-size:0.95rem;font-weight:900;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
+          <div class="quiz-feedback-box wrong" style="display:block;margin-top:16px;">
+            <div class="quiz-feedback-header">
               <span>💡</span> <span>${qData.motivationRetry || 'محاولة جيدة! فكري في وظيفة الجزء بدقة.'}</span>
             </div>
-            <div style="font-size:0.88rem;line-height:1.6;color:#be123c;">${qData.explain}</div>
+            <div class="quiz-feedback-explain">${qData.explain}</div>
           </div>
         `;
       }
@@ -2489,12 +2502,14 @@ function renderOrganQuestions() {
 
     card.innerHTML = `
       ${customBadge}
-      <div class="organ-q-title">س ${qIdx + 1}: ${qData.q}</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        ${optionsHtml}
-      </div>
-      ${feedbackHtml}
+      <div class="organ-q-title"><span class="organ-q-num-badge">سؤال ${qIdx + 1}</span> <span>${qData.q}</span></div>
     `;
+    card.appendChild(optGrid);
+    if (feedbackHtml) {
+      const fbDiv = document.createElement('div');
+      fbDiv.innerHTML = feedbackHtml;
+      card.appendChild(fbDiv.firstElementChild);
+    }
 
     questionsContainer.appendChild(card);
   });
@@ -2799,26 +2814,547 @@ window.resetAllYoutubeLinksToDefault = function() {
 // ==========================================
 let quizDisplayMode = 'single'; // 'single' or 'all'
 
+
+// =========================================================================
+// 🏆 LEVELS PROGRESSIVE CHALLENGE SYSTEM (4 LEVELS, 40 PROGRESSIVE QUESTIONS)
+// =========================================================================
+
+const DEFAULT_LEVEL_QUIZ_STATE = {
+  unlockedLevel: 1, // 1 to 4
+  activeLevel: 1,
+  currentQuestionIndex: 0,
+  answers: {}, // { [qId]: selectedOption }
+  levelScores: {}, // { [levelId]: { score, total, percent, passed, date } }
+  studentName: 'الطالبة المتميزة'
+};
+
+let levelQuizState = (function loadLevelQuizState() {
+  try {
+    const raw = localStorage.getItem('human_body_levels_quiz_v1');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return {
+        unlockedLevel: parsed.unlockedLevel || 1,
+        activeLevel: parsed.activeLevel || 1,
+        currentQuestionIndex: parsed.currentQuestionIndex || 0,
+        answers: parsed.answers || {},
+        levelScores: parsed.levelScores || {},
+        studentName: parsed.studentName || 'الطالبة المتميزة'
+      };
+    }
+  } catch (e) {
+    console.error('Failed to parse levels quiz state:', e);
+  }
+  return { ...DEFAULT_LEVEL_QUIZ_STATE };
+})();
+
+function saveLevelQuizState() {
+  try {
+    localStorage.setItem('human_body_levels_quiz_v1', JSON.stringify(levelQuizState));
+  } catch (e) {
+    console.error('Failed to save levels quiz state:', e);
+  }
+}
+
+function getLevelReinforcement(percent) {
+  if (percent === 100) {
+    return {
+      badge: '👑 وسام العبقرية المطلقة والتميز الخارق (100%)',
+      text: 'ما شاء الله تبارك الله! لقد حققتِ العلامة الكاملة بنسبة 100% بإتقان مطلق وإجابات نموذجية في كافة أسئلة المستوى! هذا أداء عبقري واستثنائي ينمّ عن شغف علمي مبهر وعقلية طبية واعدة. نفخر بكِ وبإنجازكِ العلمي المشرف! 🌟🎖️',
+      gradeText: 'ممتاز مرتفع مع مرتبة الشرف الأولى'
+    };
+  } else if (percent >= 90) {
+    return {
+      badge: '🏅 وسام الامتياز والإتقان العالي (' + percent + '%)',
+      text: 'إنجاز رائع ومتميز جداً! أظهرتِ فهماً علمياً عميقاً ودقة فائقة في تحليل واستيعاب وظائف وتشريح الأعضاء بنسبة تفوق 90%. واصلي هذا التألق والإبداع نحو القمة! 🎯✨',
+      gradeText: 'ممتاز بتفوق باهر'
+    };
+  } else if (percent >= 80) {
+    return {
+      badge: '🎯 وسام الجدارة والاجتياز المتألق (' + percent + '%)',
+      text: 'مبارك الاجتياز بنجاح واقتدار! لقد حققتِ نسبة ' + percent + '% وتجاوزتِ شرط الصعود للمستوى التالي (80%) بجدارة واستحقاق. أنتِ الآن مؤهلة تماماً لخوض تحدي المستوى التالي بكل ثقة! 🚀👏',
+      gradeText: 'مؤهلة للمستوى التالي بجدارة'
+    };
+  } else {
+    return {
+      badge: '💡 شهادة تشجيع ومثابرة واعدة (' + percent + '%)',
+      text: 'محاولة طيبة وجهد تشكرين عليه! حصلتِ على نسبة ' + percent + '%. شرط فتح المستوى التالي هو اجتياز 80% (8 أسئلة صحيحة من 10). أنتِ قريبة جداً من تحقيق الهدف، راجعي الإجابات وأعيدي المحاولة وسوف تتألقين بكل تأكيد! 💪🌱',
+      gradeText: 'محاولة واعدة - يلزم 80% لفتح المستوى التالي'
+    };
+  }
+}
+
+function renderLevelsGrid() {
+  const container = document.getElementById('levels-cards-grid');
+  if (!container || !window.LEVELS_QUIZ_DATA) return;
+
+  const levels = window.LEVELS_QUIZ_DATA.levels;
+  container.innerHTML = '';
+
+  levels.forEach(lvl => {
+    const isUnlocked = lvl.id <= levelQuizState.unlockedLevel;
+    const scoreData = levelQuizState.levelScores[lvl.id];
+    const isPassed = scoreData && scoreData.passed;
+
+    const card = document.createElement('div');
+    card.className = `level-card ${isPassed ? 'passed' : (isUnlocked ? 'unlocked' : 'locked')}`;
+
+    let statusPillHtml = '';
+    if (isPassed) {
+      statusPillHtml = `<span class="level-status-pill passed">🏆 مجتاز بنجاح (${scoreData.percent}%)</span>`;
+    } else if (isUnlocked) {
+      statusPillHtml = `<span class="level-status-pill unlocked">🔓 متاح للتحدي</span>`;
+    } else {
+      statusPillHtml = `<span class="level-status-pill locked">🔒 مغلق (يلزم 80% بالمستوى ${lvl.id - 1})</span>`;
+    }
+
+    let scoreBoxHtml = '';
+    if (scoreData) {
+      scoreBoxHtml = `
+        <div class="level-card-score-box">
+          <span style="font-size:0.9rem;color:#475569;font-weight:700;">أعلى نتيجة:</span>
+          <span style="font-size:1.15rem;font-weight:900;color:${scoreData.passed ? '#059669' : '#d97706'};">
+            ${scoreData.score} / ${scoreData.total} (${scoreData.percent}%)
+          </span>
+        </div>
+      `;
+    } else {
+      scoreBoxHtml = `
+        <div class="level-card-score-box">
+          <span style="font-size:0.88rem;color:#64748b;">الشرط المطلوب:</span>
+          <span style="font-size:0.92rem;font-weight:800;color:#0284c7;">8 من 10 (80%)</span>
+        </div>
+      `;
+    }
+
+    let actionBtnsHtml = '';
+    if (isUnlocked) {
+      actionBtnsHtml = `
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="startLevelQuiz(${lvl.id})" style="flex:1;padding:10px 16px;font-size:0.95rem;justify-content:center;">
+            <span>${scoreData ? '🔄 إعادة المحاولة' : '🚀 بدء التحدي'}</span>
+          </button>
+          ${scoreData ? `
+            <button class="btn-secondary" onclick="showLevelCertificate(${lvl.id})" style="padding:10px 14px;font-size:0.92rem;" title="عرض شهادة المستوى">
+              <span>📜 الشهادة</span>
+            </button>
+          ` : ''}
+        </div>
+      `;
+    } else {
+      actionBtnsHtml = `
+        <button class="btn-secondary" onclick="alertLockedLevel(${lvl.id})" style="width:100%;padding:10px 16px;font-size:0.92rem;opacity:0.75;cursor:not-allowed;justify-content:center;">
+          <span>🔒 مقفل (أنهي المستوى ${lvl.id - 1} بنسبة 80%)</span>
+        </button>
+      `;
+    }
+
+    card.innerHTML = `
+      <div>
+        <div class="level-card-top">
+          <span class="level-icon-large">${lvl.icon}</span>
+          ${statusPillHtml}
+        </div>
+        <h4 class="level-card-title">${lvl.shortTitle}</h4>
+        <p class="level-card-desc">${lvl.desc}</p>
+        ${scoreBoxHtml}
+      </div>
+      <div>
+        ${actionBtnsHtml}
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function alertLockedLevel(lvlId) {
+  sounds.playWrong();
+  triggerHaptic([50, 50]);
+  const prevLvl = lvlId - 1;
+  const currentScore = levelQuizState.levelScores[prevLvl] ? levelQuizState.levelScores[prevLvl].percent + '%' : 'لم يُكتمل بعد';
+  alert(`🔒 المستوى رقم (${lvlId}) مغلق حالياً!\n\nنظام الصعود الأكاديمي يتطلب اجتياز المستوى السابق (${prevLvl}) بنسبة 80% على الأقل (8 أسئلة من 10).\nنتيجتك الحالية في المستوى (${prevLvl}): ${currentScore}\n\nانقري على المستوى (${prevLvl}) وأعيدي المحاولة لتحقيق 80% وفتح هذا التحدي الرائع! 💪🌟`);
+}
+
+function startLevelQuiz(levelId) {
+  if (levelId > levelQuizState.unlockedLevel) {
+    alertLockedLevel(levelId);
+    return;
+  }
+
+  levelQuizState.activeLevel = levelId;
+  levelQuizState.currentQuestionIndex = 0;
+  saveLevelQuizState();
+
+  const mapSec = document.getElementById('levels-map-section');
+  const quizSec = document.getElementById('level-active-quiz-section');
+  if (mapSec) mapSec.style.display = 'none';
+  if (quizSec) quizSec.style.display = 'block';
+
+  renderLevelQuestion();
+}
+
+function backToLevelsMap() {
+  const mapSec = document.getElementById('levels-map-section');
+  const quizSec = document.getElementById('level-active-quiz-section');
+  if (mapSec) mapSec.style.display = 'block';
+  if (quizSec) quizSec.style.display = 'none';
+  renderLevelsGrid();
+}
+
+function calcLevelScore(levelId) {
+  const lvl = window.LEVELS_QUIZ_DATA.levels.find(l => l.id === levelId);
+  if (!lvl) return 0;
+  let score = 0;
+  lvl.questions.forEach(q => {
+    if (levelQuizState.answers[q.id] === q.correct) score++;
+  });
+  return score;
+}
+
+function renderLevelQuestion() {
+  if (!window.LEVELS_QUIZ_DATA) return;
+  const lvl = window.LEVELS_QUIZ_DATA.levels.find(l => l.id === levelQuizState.activeLevel);
+  if (!lvl) return;
+
+  const totalQuestions = lvl.questions.length;
+  if (levelQuizState.currentQuestionIndex >= totalQuestions) {
+    levelQuizState.currentQuestionIndex = totalQuestions - 1;
+  }
+
+  const q = lvl.questions[levelQuizState.currentQuestionIndex];
+  const qIdx = levelQuizState.currentQuestionIndex;
+
+  // Header badges
+  const titleBadge = document.getElementById('level-active-title-badge');
+  const scoreDisplay = document.getElementById('level-score-display');
+  if (titleBadge) titleBadge.textContent = `${lvl.shortTitle} (سؤال ${qIdx + 1} من ${totalQuestions})`;
+  if (scoreDisplay) {
+    const currentScore = calcLevelScore(lvl.id);
+    scoreDisplay.textContent = `الدرجة الحالية: ${currentScore} / ${totalQuestions}`;
+  }
+
+  // 10 Question Navigation Pills
+  const pillsBar = document.getElementById('level-q-pills-bar');
+  if (pillsBar) {
+    pillsBar.innerHTML = '';
+    const organIcons = {
+      heart: '🫀', lungs: '🫁', brain: '🧠', stomach: '🥗', esophagus: '🥢', eye: '👁️'
+    };
+    lvl.questions.forEach((qItem, idx) => {
+      const pBtn = document.createElement('button');
+      pBtn.className = `quiz-pill-btn ${idx === qIdx ? 'active' : ''}`;
+      const hasAnswered = levelQuizState.answers[qItem.id] !== undefined;
+      const isCorrect = hasAnswered && levelQuizState.answers[qItem.id] === qItem.correct;
+      const isWrong = hasAnswered && !isCorrect;
+
+      if (isCorrect) pBtn.classList.add('correct');
+      if (isWrong) pBtn.classList.add('wrong');
+
+      const mark = hasAnswered ? (isCorrect ? '✓' : '✗') : '';
+      pBtn.innerHTML = `<span>${organIcons[qItem.organKey] || '❓'}</span> <span>س${idx + 1}</span> <span style="font-size:0.8rem;">${mark}</span>`;
+      pBtn.title = `${qItem.organName}: سؤال ${idx + 1}`;
+      pBtn.onclick = () => {
+        levelQuizState.currentQuestionIndex = idx;
+        renderLevelQuestion();
+      };
+      pillsBar.appendChild(pBtn);
+    });
+  }
+
+  // Question Title
+  const titleElem = document.getElementById('level-question-title');
+  if (titleElem) {
+    const organIcons = {
+      heart: '🫀', lungs: '🫁', brain: '🧠', stomach: '🥗', esophagus: '🥢', eye: '👁️'
+    };
+    titleElem.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+        <span class="quiz-organ-tag">${organIcons[q.organKey] || '🫀'} ${q.organName}</span>
+        <span class="quiz-qnum-tag">${lvl.shortTitle} • سؤال ${qIdx + 1} من ${totalQuestions}</span>
+      </div>
+      <div class="quiz-question-sentence">${q.q}</div>
+    `;
+  }
+
+  // Options Grid
+  const optionsContainer = document.getElementById('level-options-container');
+  if (optionsContainer) {
+    optionsContainer.innerHTML = '';
+    const hasAnswered = levelQuizState.answers[q.id] !== undefined;
+    const chosenAnswer = levelQuizState.answers[q.id];
+    const optionLetters = ['أ', 'ب', 'ج', 'د'];
+
+    q.options.forEach((opt, optIndex) => {
+      const btn = document.createElement('button');
+      btn.className = `quiz-option-btn opt-theme-${optIndex % 4}`;
+      const letter = optionLetters[optIndex] || (optIndex + 1);
+      let statusIcon = '';
+      if (hasAnswered) {
+        btn.disabled = true;
+        if (opt === q.correct) {
+          btn.classList.add('correct');
+          statusIcon = '<span class="opt-status-icon">✓</span>';
+        } else if (opt === chosenAnswer) {
+          btn.classList.add('wrong');
+          statusIcon = '<span class="opt-status-icon">✗</span>';
+        }
+      }
+      btn.innerHTML = `
+        <span class="opt-badge-pill">${letter}</span>
+        <span class="opt-text">${opt}</span>
+        ${statusIcon}
+      `;
+      btn.addEventListener('click', () => selectLevelOption(q.id, opt));
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  // Feedback Box
+  const feedbackBox = document.getElementById('level-quiz-feedback');
+  if (feedbackBox) {
+    const hasAnswered = levelQuizState.answers[q.id] !== undefined;
+    if (hasAnswered) {
+      const isCorrect = levelQuizState.answers[q.id] === q.correct;
+      feedbackBox.className = `quiz-feedback-box ${isCorrect ? 'correct' : 'wrong'}`;
+      feedbackBox.innerHTML = `
+        <div class="quiz-feedback-header">
+          <span>${isCorrect ? '🎉 ' + (q.motivationSuccess || 'إجابة صحيحة ومتميزة! أحسنتِ الفهم والإتقان!') : '💡 ' + (q.motivationRetry || 'محاولة جيدة! فكري في الوظيفة الدقيقة للعضو.')}</span>
+        </div>
+        <div class="quiz-feedback-explain">${q.explain}</div>
+      `;
+      feedbackBox.style.display = 'block';
+    } else {
+      feedbackBox.style.display = 'none';
+    }
+  }
+
+  // Navigation Buttons
+  const prevBtn = document.getElementById('level-prev-btn');
+  const nextBtn = document.getElementById('level-next-btn');
+  if (prevBtn) {
+    prevBtn.disabled = qIdx === 0;
+    prevBtn.style.opacity = qIdx === 0 ? '0.5' : '1';
+  }
+  if (nextBtn) {
+    if (qIdx === totalQuestions - 1) {
+      nextBtn.innerHTML = '<span>إنهاء المستوى واستلام الشهادة 📜</span>';
+      nextBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+    } else {
+      nextBtn.innerHTML = '<span>السؤال التالي ←</span>';
+      nextBtn.style.background = '';
+    }
+  }
+}
+
+function selectLevelOption(qId, selectedOption) {
+  const lvl = window.LEVELS_QUIZ_DATA.levels.find(l => l.id === levelQuizState.activeLevel);
+  if (!lvl) return;
+  const q = lvl.questions.find(item => item.id === qId);
+  if (!q) return;
+
+  levelQuizState.answers[qId] = selectedOption;
+  saveLevelQuizState();
+
+  const isCorrect = selectedOption === q.correct;
+  if (isCorrect) {
+    sounds.playCorrect();
+    triggerHaptic(40);
+  } else {
+    sounds.playWrong();
+    triggerHaptic([50, 40, 50]);
+  }
+
+  renderLevelQuestion();
+}
+
+function levelQuizNext() {
+  const lvl = window.LEVELS_QUIZ_DATA.levels.find(l => l.id === levelQuizState.activeLevel);
+  if (!lvl) return;
+
+  if (levelQuizState.currentQuestionIndex < lvl.questions.length - 1) {
+    levelQuizState.currentQuestionIndex++;
+    renderLevelQuestion();
+  } else {
+    finishLevelQuiz();
+  }
+}
+
+function levelQuizPrev() {
+  if (levelQuizState.currentQuestionIndex > 0) {
+    levelQuizState.currentQuestionIndex--;
+    renderLevelQuestion();
+  }
+}
+
+function finishLevelQuiz() {
+  const lvl = window.LEVELS_QUIZ_DATA.levels.find(l => l.id === levelQuizState.activeLevel);
+  if (!lvl) return;
+
+  const score = calcLevelScore(lvl.id);
+  const total = lvl.questions.length;
+  const percent = Math.round((score / total) * 100);
+  const passed = percent >= 80;
+
+  levelQuizState.levelScores[lvl.id] = {
+    score: score,
+    total: total,
+    percent: percent,
+    passed: passed,
+    date: new Date().toLocaleDateString('ar-SA')
+  };
+
+  if (passed && lvl.id < 4) {
+    levelQuizState.unlockedLevel = Math.max(levelQuizState.unlockedLevel, lvl.id + 1);
+  }
+  saveLevelQuizState();
+
+  if (passed) {
+    sounds.playCorrect();
+    triggerHaptic([50, 40, 60]);
+  } else {
+    sounds.playWrong();
+  }
+
+  showLevelCertificate(lvl.id);
+}
+
+function showLevelCertificate(levelId) {
+  const lvl = window.LEVELS_QUIZ_DATA.levels.find(l => l.id === levelId);
+  if (!lvl) return;
+
+  const scoreData = levelQuizState.levelScores[levelId];
+  const score = scoreData ? scoreData.score : calcLevelScore(levelId);
+  const total = lvl.questions.length;
+  const percent = scoreData ? scoreData.percent : Math.round((score / total) * 100);
+  const passed = percent >= 80;
+
+  const reinforce = getLevelReinforcement(percent);
+  const modal = document.getElementById('level-cert-modal');
+  if (!modal) return;
+
+  // Populate certificate elements
+  const levelNameElem = document.getElementById('cert-level-name-display');
+  const strongTitle = document.getElementById('cert-level-strong-title');
+  const studentInput = document.getElementById('cert-student-input-name');
+  const percentElem = document.getElementById('cert-percent-val');
+  const detailElem = document.getElementById('cert-score-detail');
+  const badgeElem = document.getElementById('cert-reinforcement-badge');
+  const textElem = document.getElementById('cert-reinforcement-text');
+  const dateElem = document.getElementById('cert-issue-date');
+  const actionsContainer = document.getElementById('cert-bottom-actions');
+
+  if (levelNameElem) levelNameElem.textContent = lvl.title;
+  if (strongTitle) strongTitle.textContent = lvl.shortTitle;
+  if (studentInput) studentInput.value = levelQuizState.studentName || 'الطالبة المتميزة';
+  if (percentElem) percentElem.textContent = `${percent}%`;
+  if (detailElem) detailElem.textContent = `${score} من ${total} إجابات صحيحة • ${reinforce.gradeText}`;
+  if (badgeElem) badgeElem.textContent = reinforce.badge;
+  if (textElem) textElem.textContent = reinforce.text;
+  if (dateElem) dateElem.textContent = scoreData ? scoreData.date : new Date().toLocaleDateString('ar-SA');
+
+  if (actionsContainer) {
+    let nextBtnHtml = '';
+    if (passed && levelId < 4) {
+      nextBtnHtml = `
+        <button class="btn-primary" onclick="proceedToNextLevel(${levelId + 1})" style="padding:12px 24px;font-size:1.05rem;font-weight:900;background:linear-gradient(135deg, #10b981, #059669);box-shadow:0 6px 18px rgba(16, 185, 129, 0.4);">
+          <span>الصعود للمستوى التالي (المستوى ${levelId + 1}) 🚀</span>
+        </button>
+      `;
+    }
+    actionsContainer.innerHTML = `
+      ${nextBtnHtml}
+      <button class="btn-secondary" onclick="retryLevel(${levelId})" style="padding:12px 20px;font-size:0.98rem;font-weight:800;">
+        <span>🔄 إعادة محاولة المستوى لتحقيق 100%</span>
+      </button>
+      <button class="btn-subtle-pill" onclick="closeLevelCertModal()" style="padding:12px 18px;font-size:0.95rem;">
+        <span>العودة لخريطة المستويات 🗺️</span>
+      </button>
+    `;
+  }
+
+  modal.classList.add('show');
+}
+
+function proceedToNextLevel(nextLvlId) {
+  closeLevelCertModal();
+  startLevelQuiz(nextLvlId);
+}
+
+function retryLevel(lvlId) {
+  const lvl = window.LEVELS_QUIZ_DATA.levels.find(l => l.id === lvlId);
+  if (lvl) {
+    lvl.questions.forEach(q => {
+      delete levelQuizState.answers[q.id];
+    });
+    saveLevelQuizState();
+  }
+  closeLevelCertModal();
+  startLevelQuiz(lvlId);
+}
+
+function closeLevelCertModal() {
+  const modal = document.getElementById('level-cert-modal');
+  if (modal) modal.classList.remove('show');
+  backToLevelsMap();
+}
+
+function saveCertStudentName(name) {
+  levelQuizState.studentName = name || 'الطالبة المتميزة';
+  saveLevelQuizState();
+  const certDisplay = document.getElementById('cert-student-display');
+  if (certDisplay) certDisplay.textContent = levelQuizState.studentName;
+}
+
+// Make functions globally accessible
 window.setQuizDisplayMode = function(mode) {
   quizDisplayMode = mode;
+  const levelsBtn = document.getElementById('quiz-mode-levels-btn');
   const singleBtn = document.getElementById('quiz-mode-single-btn');
   const allBtn = document.getElementById('quiz-mode-all-btn');
+
+  const levelsView = document.getElementById('quiz-levels-view');
   const singleView = document.getElementById('quiz-active-view');
   const allView = document.getElementById('quiz-all-questions-view');
+  const pillsBar = document.getElementById('quiz-question-pills-bar');
 
+  if (levelsBtn) levelsBtn.classList.toggle('active', mode === 'levels');
   if (singleBtn) singleBtn.classList.toggle('active', mode === 'single');
   if (allBtn) allBtn.classList.toggle('active', mode === 'all');
 
-  if (mode === 'single') {
+  if (mode === 'levels') {
+    if (levelsView) levelsView.style.display = 'block';
+    if (singleView) singleView.style.display = 'none';
+    if (allView) allView.style.display = 'none';
+    if (pillsBar) pillsBar.style.display = 'none';
+    backToLevelsMap();
+  } else if (mode === 'single') {
+    if (levelsView) levelsView.style.display = 'none';
     if (singleView) singleView.style.display = 'block';
     if (allView) allView.style.display = 'none';
+    if (pillsBar) pillsBar.style.display = 'flex';
     renderQuizQuestion();
-  } else {
+  } else if (mode === 'all') {
+    if (levelsView) levelsView.style.display = 'none';
     if (singleView) singleView.style.display = 'none';
     if (allView) allView.style.display = 'block';
+    if (pillsBar) pillsBar.style.display = 'none';
     renderAllQuizQuestions();
   }
 };
+
+window.startLevelQuiz = startLevelQuiz;
+window.backToLevelsMap = backToLevelsMap;
+window.levelQuizNext = levelQuizNext;
+window.levelQuizPrev = levelQuizPrev;
+window.selectLevelOption = selectLevelOption;
+window.showLevelCertificate = showLevelCertificate;
+window.proceedToNextLevel = proceedToNextLevel;
+window.retryLevel = retryLevel;
+window.closeLevelCertModal = closeLevelCertModal;
+window.saveCertStudentName = saveCertStudentName;
+window.alertLockedLevel = alertLockedLevel;
+
 
 window.jumpToQuizQuestion = function(idx) {
   const allQ = getAllQuestions();
@@ -2849,7 +3385,8 @@ window.quizPrevQuestion = function() {
 };
 
 function setupQuiz() {
-  state.quizCurrentIndex = 0;
+
+  setQuizDisplayMode('levels');  state.quizCurrentIndex = 0;
   state.quizScore = 0;
   state.quizAnswers = {};
   renderQuizQuestion();
@@ -2926,12 +3463,19 @@ function renderQuizQuestion() {
   const feedbackBox = document.getElementById('quiz-feedback');
   const nextBtn = document.getElementById('quiz-next-btn');
 
+  const organIcons = {
+    heart: '🫀', lungs: '🫁', brain: '🧠', stomach: '🥗', esophagus: '🥢', eye: '👁️'
+  };
+
   if (qNumElem) qNumElem.textContent = `سؤال ${state.quizCurrentIndex + 1} من ${allQ.length}`;
   if (scoreElem) scoreElem.textContent = `${state.quizScore} / ${allQ.length}`;
   if (titleElem) {
     titleElem.innerHTML = `
-      <span style="display:inline-block;background:#e0f2fe;color:#0369a1;font-size:0.85rem;padding:3px 12px;border-radius:20px;margin-bottom:8px;font-weight:800;">${q.organName}</span>
-      <div>${q.q}</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+        <span class="quiz-organ-tag">${organIcons[q.organKey] || '🫀'} ${q.organName}</span>
+        <span class="quiz-qnum-tag">سؤال ${state.quizCurrentIndex + 1} من ${allQ.length}</span>
+      </div>
+      <div class="quiz-question-sentence">${q.q}</div>
     `;
   }
 
@@ -2939,19 +3483,28 @@ function renderQuizQuestion() {
     optionsContainer.innerHTML = '';
     const hasAnswered = state.quizAnswers[q.id] !== undefined;
     const chosenAnswer = state.quizAnswers[q.id];
+    const optionLetters = ['أ', 'ب', 'ج', 'د'];
 
-    q.options.forEach(opt => {
+    q.options.forEach((opt, optIndex) => {
       const btn = document.createElement('button');
-      btn.className = 'quiz-option-btn';
+      btn.className = `quiz-option-btn opt-theme-${optIndex % 4}`;
+      const letter = optionLetters[optIndex] || (optIndex + 1);
+      let statusIcon = '';
       if (hasAnswered) {
         btn.disabled = true;
         if (opt === q.correct) {
           btn.classList.add('correct');
+          statusIcon = '<span class="opt-status-icon">✓</span>';
         } else if (opt === chosenAnswer) {
           btn.classList.add('wrong');
+          statusIcon = '<span class="opt-status-icon">✗</span>';
         }
       }
-      btn.innerHTML = `<span>${opt}</span>`;
+      btn.innerHTML = `
+        <span class="opt-badge-pill">${letter}</span>
+        <span class="opt-text">${opt}</span>
+        ${statusIcon}
+      `;
       btn.addEventListener('click', () => selectQuizOption(q.id, opt));
       optionsContainer.appendChild(btn);
     });
@@ -2963,8 +3516,10 @@ function renderQuizQuestion() {
       const isCorrect = state.quizAnswers[q.id] === q.correct;
       feedbackBox.className = `quiz-feedback-box ${isCorrect ? 'correct' : 'wrong'}`;
       feedbackBox.innerHTML = `
-        <div style="font-weight:900;margin-bottom:4px;font-size:1.02rem;">${isCorrect ? '✓ ' + (q.motivationSuccess || 'إجابة صحيحة ومتميزة!') : '✗ ' + (q.motivationRetry || 'إجابة غير دقيقة!')}</div>
-        <div style="font-size:0.95rem;line-height:1.65;">${q.explain}</div>
+        <div class="quiz-feedback-header">
+          <span>${isCorrect ? '🎉 ' + (q.motivationSuccess || 'إجابة صحيحة ومتميزة! أحسنتِ الفهم والإتقان!') : '💡 ' + (q.motivationRetry || 'محاولة جيدة! فكري في الوظيفة الدقيقة للعضو.')}</span>
+        </div>
+        <div class="quiz-feedback-explain">${q.explain}</div>
       `;
       feedbackBox.style.display = 'block';
     } else {
@@ -2986,6 +3541,7 @@ function renderAllQuizQuestions() {
   const organIcons = {
     heart: '🫀', lungs: '🫁', brain: '🧠', stomach: '🥗', esophagus: '🥢', eye: '👁️'
   };
+  const optionLetters = ['أ', 'ب', 'ج', 'د'];
 
   allQ.forEach((q, idx) => {
     const card = document.createElement('div');
@@ -2995,39 +3551,56 @@ function renderAllQuizQuestions() {
     const chosenAnswer = state.quizAnswers[q.id];
     const isCorrect = chosenAnswer === q.correct;
 
-    let optionsHtml = '';
-    q.options.forEach(opt => {
-      let optClass = 'quiz-option-btn';
+    const optGrid = document.createElement('div');
+    optGrid.className = 'options-grid';
+
+    q.options.forEach((opt, optIndex) => {
+      const btn = document.createElement('button');
+      btn.className = `quiz-option-btn opt-theme-${optIndex % 4}`;
+      const letter = optionLetters[optIndex] || (optIndex + 1);
+      let statusIcon = '';
       if (hasAnswered) {
-        if (opt === q.correct) optClass += ' correct';
-        else if (opt === chosenAnswer) optClass += ' wrong';
+        btn.disabled = true;
+        if (opt === q.correct) {
+          btn.classList.add('correct');
+          statusIcon = '<span class="opt-status-icon">✓</span>';
+        } else if (opt === chosenAnswer) {
+          btn.classList.add('wrong');
+          statusIcon = '<span class="opt-status-icon">✗</span>';
+        }
       }
-      optionsHtml += `
-        <button class="${optClass}" ${hasAnswered ? 'disabled' : ''} onclick="selectQuizOption('${q.id}', '${opt.replace(/'/g, "'")}')">
-          <span>${opt}</span>
-        </button>
+      btn.innerHTML = `
+        <span class="opt-badge-pill">${letter}</span>
+        <span class="opt-text">${opt}</span>
+        ${statusIcon}
       `;
+      btn.addEventListener('click', () => selectQuizOption(q.id, opt));
+      optGrid.appendChild(btn);
     });
 
     let feedbackHtml = '';
     if (hasAnswered) {
       feedbackHtml = `
-        <div class="quiz-feedback-box ${isCorrect ? 'correct' : 'wrong'}" style="display:block;margin-top:12px;">
-          <div style="font-weight:900;margin-bottom:4px;">${isCorrect ? '✓ ' + (q.motivationSuccess || 'ممتازة!') : '✗ ' + (q.motivationRetry || 'حاولي ثانية!')}</div>
-          <div style="font-size:0.92rem;line-height:1.6;">${q.explain}</div>
+        <div class="quiz-feedback-box ${isCorrect ? 'correct' : 'wrong'}" style="display:block;margin-top:16px;">
+          <div class="quiz-feedback-header">${isCorrect ? '🎉 ' + (q.motivationSuccess || 'ممتازة ورائعة!') : '💡 ' + (q.motivationRetry || 'حاولي ثانية!')}</div>
+          <div class="quiz-feedback-explain">${q.explain}</div>
         </div>
       `;
     }
 
     card.innerHTML = `
       <div class="all-q-card-header">
-        <span class="all-q-badge">${organIcons[q.organKey] || ''} ${q.organName} (سؤال ${idx + 1} من ${allQ.length})</span>
+        <span class="all-q-badge">${organIcons[q.organKey] || '🏷️'} ${q.organName} (سؤال ${idx + 1} من ${allQ.length})</span>
         <button class="btn-subtle-pill" onclick="jumpToQuizQuestion(${idx})">🎯 الانتقال لهذا السؤال</button>
       </div>
       <h4 class="all-q-text">${q.q}</h4>
-      <div class="options-grid">${optionsHtml}</div>
-      ${feedbackHtml}
     `;
+    card.appendChild(optGrid);
+    if (feedbackHtml) {
+      const fbDiv = document.createElement('div');
+      fbDiv.innerHTML = feedbackHtml;
+      card.appendChild(fbDiv.firstElementChild);
+    }
     container.appendChild(card);
   });
 }
