@@ -8,6 +8,11 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="أعضاء الجسم 3D">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+
   <meta name="description" content="أعضاء الجسم - منصة تعليمية تفاعلية مبهجة للجوال والكمبيوتر">
   <title>أعضاء الجسم | منصة تعليمية تفاعلية</title>
   <!-- Google Fonts: Tajawal & Cairo -->
@@ -17,7 +22,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <link rel="stylesheet" href="style.css?v=20261106_v19">
+  <link rel="stylesheet" href="style.css?v=20261106_v20">
 </head>
 <body dir="rtl">
 
@@ -47,6 +52,10 @@
       </nav>
 
       <div class="header-controls">
+        <button id="qr-modal-btn" class="nav-btn qr-nav-btn" onclick="openQrModal()" title="باركود الموقع وتثبيت الجوال">
+          <span>📱 باركود وتثبيت</span>
+        </button>
+
         <!-- 🌟 Flashy Participants Dropdown Menu (قائمة المشاركات) -->
         <div class="participants-dropdown-wrap" id="participants-dropdown-wrap">
           <button class="participants-trigger-btn" type="button" aria-haspopup="true" aria-expanded="false" title="فريق العمل">
@@ -1404,6 +1413,156 @@
     </div>
   </div>
 
+  
+  <!-- 📱 Smart Mobile App Install Banner (رسالة تثبيت التطبيق للجوالات) -->
+  <div id="mobile-install-banner" class="mobile-install-banner" style="display:none;" dir="rtl">
+    <div class="m-banner-content">
+      <div class="m-banner-icon-wrap">
+        <img src="assets/icon-192.png" alt="أيقونة المنصة" class="m-banner-app-icon">
+      </div>
+      <div class="m-banner-text">
+        <div class="m-banner-title">
+          <span class="m-badge-pulse">✨ تثبيت فوري</span>
+          <strong>تثبيت منصة أعضاء الجسم 3D</strong>
+        </div>
+        <p class="m-banner-desc" id="m-banner-desc-text">
+          ثبّتي المنصة كتطبيق على جوالك للوصول السريع وتجربة ملء الشاشة بدون متصفح!
+        </p>
+      </div>
+    </div>
+    <div class="m-banner-actions">
+      <button id="m-banner-install-btn" class="btn-m-install" onclick="handleMobileInstallClick()">
+        <span id="m-banner-install-txt">📲 تثبيت التطبيق الآن</span>
+      </button>
+      <button class="btn-m-later" onclick="dismissMobileBanner(true)">
+        <span>لاحقاً</span>
+      </button>
+      <button class="btn-m-close" onclick="dismissMobileBanner(true)" aria-label="إغلاق">✕</button>
+    </div>
+  </div>
+
+  <!-- 📱 QR Code & Mobile App Installation Modal -->
+  <div id="qr-install-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this) closeQrModal();">
+    <div class="modal-card qr-modal-card" dir="rtl">
+      <div class="modal-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:1.6rem;">📱</span>
+          <div>
+            <h3 style="margin:0;font-size:1.25rem;font-weight:900;color:#0f172a;">باركود المنصة وتثبيت التطبيق على الجوال</h3>
+            <span style="font-size:0.82rem;color:#64748b;">امسحي الباركود أو ثبّتي المنصة كتطبيق مباشر (PWA)</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeQrModal()">✕</button>
+      </div>
+
+      <!-- Modal Tab Navigation -->
+      <div class="qr-modal-tabs">
+        <button class="qr-tab-btn active" id="qr-tab-btn-qr" onclick="switchQrModalTab('qr')">
+          <span>📷 باركود الموقع</span>
+        </button>
+        <button class="qr-tab-btn" id="qr-tab-btn-ios" onclick="switchQrModalTab('ios')">
+          <span>🍏 خطوات الآيفون (iOS)</span>
+        </button>
+        <button class="qr-tab-btn" id="qr-tab-btn-android" onclick="switchQrModalTab('android')">
+          <span>🤖 خطوات الأندرويد (Android)</span>
+        </button>
+      </div>
+
+      <!-- Tab 1: QR Code -->
+      <div id="qr-tab-pane-qr" class="qr-tab-pane active">
+        <div class="qr-display-wrap">
+          <div class="qr-img-frame">
+            <img src="assets/website_qr.png" alt="باركود منصة أعضاء الجسم 3D" class="qr-img" id="modal-qr-img">
+          </div>
+          <p class="qr-scan-hint">
+            📷 وجّهي كاميرا الجوال نحو الباركود لفتح المنصة مباشرة وتجربتها!
+          </p>
+          <div class="qr-url-box">
+            <input type="text" readonly value="https://mathofmemo1234-debug.github.io/body-organs-journey/" id="qr-url-input" class="qr-url-input">
+            <button class="btn-copy-url" onclick="copyQrSiteUrl()">
+              <span id="qr-copy-btn-txt">📋 نسخ الرابط</span>
+            </button>
+          </div>
+          <div class="qr-download-actions">
+            <a href="assets/website_qr.png" download="باركود_منصة_أعضاء_الجسم_3D.png" class="btn-qr-action btn-qr-download">
+              <span>📥 تحميل الباركود (PNG)</span>
+            </a>
+            <a href="assets/website_qr_card.png" download="بطاقة_باركود_أعضاء_الجسم_للطباعة.png" class="btn-qr-action btn-qr-card">
+              <span>🖨️ تحميل بطاقة الطباعة (A4)</span>
+            </a>
+            <a href="guide.html" class="btn-qr-action btn-qr-guide">
+              <span>📖 دليل الاستخدام والمصفوفة</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: iOS Instructions -->
+      <div id="qr-tab-pane-ios" class="qr-tab-pane">
+        <div class="pwa-steps-list">
+          <div class="pwa-step-item">
+            <div class="pwa-step-badge">1</div>
+            <div class="pwa-step-info">
+              <strong>افتحي الرابط في متصفح Safari</strong>
+              <p>تأكدي من فتح الموقع عبر متصفح Safari الرسمي على جهاز الآيفون أو الآيباد.</p>
+            </div>
+          </div>
+          <div class="pwa-step-item">
+            <div class="pwa-step-badge">2</div>
+            <div class="pwa-step-info">
+              <strong>اضغطي على زر المشاركة (Share)</strong>
+              <p>في أسفل الشاشة، انقري على أيقونة المربع بسهم للأعلى <span style="font-size:1.05rem;background:#e2e8f0;padding:2px 8px;border-radius:6px;color:#1e293b;font-weight:bold;">⎋</span>.</p>
+            </div>
+          </div>
+          <div class="pwa-step-item">
+            <div class="pwa-step-badge">3</div>
+            <div class="pwa-step-info">
+              <strong>اختاري «إضافة إلى الشاشة الرئيسية»</strong>
+              <p>مرري للأسفل واختاري <span style="color:#0284c7;font-weight:700;">«إضافة إلى الشاشة الرئيسية» (Add to Home Screen ➕)</span> ثم اضغطي «إضافة» (Add).</p>
+            </div>
+          </div>
+        </div>
+        <div class="pwa-success-tip">
+          🎉 <strong>مبروك!</strong> ستظهر أيقونة المنصة الآن على شاشة هاتفك مثل أي تطبيق مثبت، وتعمل بملء الشاشة فوراً دون شريط متصفح!
+        </div>
+      </div>
+
+      <!-- Tab 3: Android Instructions -->
+      <div id="qr-tab-pane-android" class="qr-tab-pane">
+        <div style="text-align:center;margin-bottom:16px;" id="android-native-install-wrap">
+          <button id="android-direct-install-btn" class="btn-primary" style="padding:12px 28px;font-size:1.02rem;font-weight:800;border-radius:30px;background:linear-gradient(135deg, #10b981, #059669);border-color:#059669;box-shadow:0 4px 14px rgba(16, 185, 129, 0.35);" onclick="triggerNativeInstallPrompt()">
+            <span>📲 اضغطي هنا لتثبيت التطبيق الآن بنقرة واحدة</span>
+          </button>
+          <p style="font-size:0.85rem;color:#64748b;margin-top:8px;">(متوافق مع Google Chrome و Samsung Internet و Edge)</p>
+        </div>
+        <div class="pwa-steps-list">
+          <div class="pwa-step-item">
+            <div class="pwa-step-badge">1</div>
+            <div class="pwa-step-info">
+              <strong>انقري على قائمة المتصفح (⋮)</strong>
+              <p>اضغطي على النقاط الثلاث في أعلى يسار متصفح Chrome أو أسفل متصفح سامسونج.</p>
+            </div>
+          </div>
+          <div class="pwa-step-item">
+            <div class="pwa-step-badge">2</div>
+            <div class="pwa-step-info">
+              <strong>اختاري «تثبيت التطبيق» أو «الإضافة للشاشة الرئيسية»</strong>
+              <p>انقري على <span style="color:#10b981;font-weight:700;">«تثبيت التطبيق» (Install app)</span> أو «Add to Home screen».</p>
+            </div>
+          </div>
+          <div class="pwa-step-item">
+            <div class="pwa-step-badge">3</div>
+            <div class="pwa-step-info">
+              <strong>تأكيد التثبيت</strong>
+              <p>اضغطي «تثبيت»، وسيتم تنزيل أيقونة المنصة فوراً على شاشة هاتفك الرئيسية كأي تطبيق رسمي.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Mobile Bottom App Bar (Optimized for Mobile/Touch) -->
   <nav class="mobile-bottom-nav" id="mobile-bottom-nav" dir="rtl">
     <button class="m-nav-item active" data-tab="home">
@@ -1431,9 +1590,9 @@
   <!-- Three.js 3D Engine & Orbit Controls -->
   <script src="assets/three.min.js"></script>
   <script src="assets/OrbitControls.js"></script>
-  <script src="body3d.js?v=20261106_v19"></script>
-  <script src="content.js?v=20261106_v19"></script>
-  <script src="levels_quiz_data.js?v=20261106_v19"></script>
-  <script src="app.js?v=20261106_v19"></script>
+  <script src="body3d.js?v=20261106_v20"></script>
+  <script src="content.js?v=20261106_v20"></script>
+  <script src="levels_quiz_data.js?v=20261106_v20"></script>
+  <script src="app.js?v=20261106_v20"></script>
 </body>
 </html>

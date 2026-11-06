@@ -4,7 +4,9 @@
 *.pyc
 __pycache__/
 *.json
+!manifest.json
 raw_site.html
 assets/audio/*_raw.*
 scratch/
 *.png
+!assets/*.png

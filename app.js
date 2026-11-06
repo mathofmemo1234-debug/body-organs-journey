@@ -4755,3 +4755,215 @@ if (document.readyState === 'loading') {
 } else {
   setupParticipantsDropdown();
 }
+
+
+// ========================================================
+// 📱 QR CODE & PWA MOBILE INSTALLATION SYSTEM
+// ========================================================
+let deferredInstallPrompt = null;
+
+// Service worker registration
+if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch((err) => {
+      console.log('SW registration note:', err);
+    });
+  });
+}
+
+// Capture beforeinstallprompt on Android/Chrome
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  
+  // Show install button inside android tab
+  const directBtn = document.getElementById('android-direct-install-btn');
+  if (directBtn) {
+    directBtn.style.display = 'inline-flex';
+  }
+  
+  // Evaluate showing banner
+  checkAndShowMobileInstallBanner();
+});
+
+// App installed event
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  dismissMobileBanner(false);
+  console.log('🎉 PWA successfully installed!');
+});
+
+function isAppStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches || 
+         window.navigator.standalone === true ||
+         document.referrer.includes('android-app://');
+}
+
+function isIosDevice() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function isMobileDevice() {
+  return window.innerWidth <= 820 || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+function checkAndShowMobileInstallBanner() {
+  // If already installed in standalone mode, do not show banner
+  if (isAppStandalone()) return;
+  
+  // Check if dismissed recently (within 5 days)
+  const dismissedTime = localStorage.getItem('body_organs_pwa_banner_dismissed');
+  if (dismissedTime) {
+    const elapsed = Date.now() - parseInt(dismissedTime, 10);
+    if (elapsed < 5 * 24 * 60 * 60 * 1000) {
+      return; // Do not disturb user
+    }
+  }
+
+  // Only show automatically on mobile / tablet screens
+  if (!isMobileDevice()) return;
+
+  const banner = document.getElementById('mobile-install-banner');
+  if (!banner) return;
+
+  const descText = document.getElementById('m-banner-desc-text');
+  const installTxt = document.getElementById('m-banner-install-txt');
+
+  if (isIosDevice()) {
+    if (descText) {
+      descText.innerHTML = 'ثبّتي المنصة على الآيفون: اضغطي <strong>مشاركة ⎋</strong> ثم <strong>«إضافة للشاشة الرئيسية» ➕</strong>';
+    }
+    if (installTxt) {
+      installTxt.textContent = '📖 عرض خطوات التثبيت';
+    }
+  } else {
+    if (descText) {
+      descText.textContent = 'ثبّتي المنصة كتطبيق على جوالك للوصول السريع وتجربة ملء الشاشة بدون متصفح!';
+    }
+    if (installTxt) {
+      installTxt.textContent = '📲 تثبيت التطبيق الآن';
+    }
+  }
+
+  // Show banner with a smooth gentle delay
+  setTimeout(() => {
+    banner.style.display = 'flex';
+  }, 1800);
+}
+
+function dismissMobileBanner(permanent = true) {
+  const banner = document.getElementById('mobile-install-banner');
+  if (!banner) return;
+  
+  banner.style.transition = 'all 0.3s ease';
+  banner.style.opacity = '0';
+  banner.style.transform = 'translateY(30px)';
+  
+  setTimeout(() => {
+    banner.style.display = 'none';
+    banner.style.opacity = '';
+    banner.style.transform = '';
+  }, 320);
+
+  if (permanent) {
+    localStorage.setItem('body_organs_pwa_banner_dismissed', Date.now().toString());
+  }
+}
+
+function handleMobileInstallClick() {
+  if (deferredInstallPrompt) {
+    triggerNativeInstallPrompt();
+  } else {
+    openQrModal();
+    if (isIosDevice()) {
+      switchQrModalTab('ios');
+    } else {
+      switchQrModalTab('android');
+    }
+  }
+}
+
+function triggerNativeInstallPrompt() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        dismissMobileBanner(false);
+        closeQrModal();
+      }
+      deferredInstallPrompt = null;
+    });
+  } else {
+    // If native prompt unavailable, guide user to manual installation
+    switchQrModalTab('android');
+  }
+}
+
+// Modal open/close
+function openQrModal() {
+  const modal = document.getElementById('qr-install-modal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  modal.classList.add('show');
+  
+  // Set default tab based on device
+  if (isIosDevice()) {
+    switchQrModalTab('ios');
+  } else if (isMobileDevice() && deferredInstallPrompt) {
+    switchQrModalTab('android');
+  } else {
+    switchQrModalTab('qr');
+  }
+}
+
+function closeQrModal() {
+  const modal = document.getElementById('qr-install-modal');
+  if (!modal) return;
+  modal.classList.remove('show');
+  modal.style.display = 'none';
+}
+
+function switchQrModalTab(tabId) {
+  // Tabs buttons
+  document.querySelectorAll('.qr-tab-btn').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.getElementById('qr-tab-btn-' + tabId);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Panes
+  document.querySelectorAll('.qr-tab-pane').forEach(pane => pane.classList.remove('active'));
+  const activePane = document.getElementById('qr-tab-pane-' + tabId);
+  if (activePane) activePane.classList.add('active');
+}
+
+function copyQrSiteUrl() {
+  const urlInput = document.getElementById('qr-url-input');
+  const url = urlInput ? urlInput.value : 'https://mathofmemo1234-debug.github.io/body-organs-journey/';
+  
+  navigator.clipboard.writeText(url).then(() => {
+    const btnTxt = document.getElementById('qr-copy-btn-txt');
+    if (btnTxt) {
+      const orig = btnTxt.textContent;
+      btnTxt.textContent = '✅ تم نسخ الرابط بنجاح!';
+      setTimeout(() => {
+        btnTxt.textContent = orig;
+      }, 2500);
+    }
+  }).catch(() => {
+    if (urlInput) {
+      urlInput.select();
+      document.execCommand('copy');
+      alert('تم نسخ الرابط: ' + url);
+    }
+  });
+}
+
+// Run check on startup
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(checkAndShowMobileInstallBanner, 1500);
+    });
+  } else {
+    setTimeout(checkAndShowMobileInstallBanner, 1500);
+  }
+}

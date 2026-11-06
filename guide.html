@@ -838,6 +838,195 @@
   white-space: nowrap;
 }
 
+  
+    /* QR Showcase Section Styles */
+    .qr-showcase-section {
+      margin-bottom: 35px;
+    }
+
+    .qr-showcase-card {
+      background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 60%, #1e293b 100%);
+      border: 2px solid rgba(79, 70, 229, 0.4);
+      border-radius: var(--radius-lg);
+      padding: 35px;
+      color: #ffffff;
+      box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.35), 0 0 30px rgba(79, 70, 229, 0.2);
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 30px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .qr-showcase-card::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      left: -120px;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.25) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .qr-showcase-card::after {
+      content: '';
+      position: absolute;
+      bottom: -120px;
+      right: -120px;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .qr-badge-exclusive {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1.5px solid rgba(16, 185, 129, 0.5);
+      color: #34d399;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .qr-showcase-title {
+      font-size: 1.85rem;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 12px;
+      background: linear-gradient(to left, #ffffff, #a5b4fc, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .qr-showcase-desc {
+      font-size: 1.02rem;
+      color: #cbd5e1;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+
+    .qr-url-display-box {
+      display: flex;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      align-items: center;
+      margin-bottom: 22px;
+      max-width: 580px;
+    }
+
+    .qr-url-text {
+      flex: 1;
+      font-size: 0.88rem;
+      color: #e2e8f0;
+      direction: ltr;
+      text-align: left;
+      font-family: monospace;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 6px 8px;
+    }
+
+    .btn-copy-qr-guide {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .btn-copy-qr-guide:hover {
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .qr-showcase-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .qr-image-display-col {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .qr-image-box {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 24px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 25px rgba(56, 189, 248, 0.25);
+      border: 4px solid rgba(255, 255, 255, 0.8);
+      margin-bottom: 14px;
+      transition: transform 0.3s ease;
+    }
+
+    .qr-image-box:hover {
+      transform: scale(1.03);
+    }
+
+    .qr-image-box img {
+      width: 220px;
+      height: 220px;
+      display: block;
+      border-radius: 10px;
+    }
+
+    .qr-tags-list {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .qr-tag-pill {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .qr-showcase-card {
+        grid-template-columns: 1fr;
+        padding: 25px;
+        text-align: center;
+      }
+      .qr-showcase-actions {
+        justify-content: center;
+      }
+      .qr-url-display-box {
+        margin: 0 auto 20px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -874,6 +1063,9 @@
         </div>
       </div>
 
+            <a href="#qr-section" class="btn btn-outline" style="border-color:#38bdf8;color:#38bdf8;">
+        <span>📱 باركود المنصة</span>
+      </a>
       <button class="btn btn-outline btn-print" onclick="window.print()">
         <span>🖨️ طباعة الدليل / PDF</span>
       </button>
@@ -902,19 +1094,19 @@
       <div class="hero-stats-row">
         <div class="hero-stat-card">
           <span class="stat-number">6</span>
-          <span class="stat-label">أعضاء تشريحية تفاعلية مدعومة بالكامل</span>
+          <span class="stat-label">أعضاء تشريحية تفاعلية واقعية</span>
         </div>
         <div class="hero-stat-card">
-          <span class="stat-number">360°</span>
-          <span class="stat-label">مجسم تشريحي ثلاثي الأبعاد بالدورة الدموية والهيكل</span>
+          <span class="stat-number">34</span>
+          <span class="stat-label">جزءاً تشريحياً معززاً بفيديوهات يوتيوب موثقة</span>
         </div>
         <div class="hero-stat-card">
-          <span class="stat-number">12</span>
-          <span class="stat-label">سؤالاً تقييمياً ذكياً معززاً بالتحفيز الفوري</span>
+          <span class="stat-number">40 + 12</span>
+          <span class="stat-label">سؤالاً بنظام المستويات الـ 4 والبنك الشامل</span>
         </div>
         <div class="hero-stat-card">
-          <span class="stat-number">100%</span>
-          <span class="stat-label">استقلالية تقنية وتشغيل محلي بدون طرف ثالث</span>
+          <span class="stat-number">PWA</span>
+          <span class="stat-label">باركود ذكي وتثبيت كتطبيق مستقل للجوالات</span>
         </div>
       </div>
     </div>
@@ -922,6 +1114,58 @@
 
   <!-- Main Tabs Content -->
   <main class="container">
+
+    <!-- ========================================== -->
+    <!-- 📱 QR CODE & MOBILE PWA SHOWCASE CARD      -->
+    <!-- ========================================== -->
+    <section class="qr-showcase-section" id="qr-section">
+      <div class="qr-showcase-card">
+        <div>
+          <div class="qr-badge-exclusive">
+            <span>✨ ميزة حصرية ومعتمدة</span>
+            <span>•</span>
+            <span>وصول فوري بكاميرا الجوال</span>
+          </div>
+          <h2 class="qr-showcase-title">باركود المنصة الرسمي وتثبيت التطبيق على الجوال (PWA)</h2>
+          <p class="qr-showcase-desc">
+            امسحي الباركود بكاميرا هاتفكِ الذكي أو جهاز الآيباد للدخول المباشر للمنصة وخوض التجربة التفاعلية، مع إمكانية تثبيت المنصة كتطبيق كامل على الشاشة الرئيسية (ملء الشاشة بدون شريط المتصفح) بضغطة زر واحدة.
+          </p>
+
+          <div class="qr-url-display-box">
+            <span style="font-size:1.1rem;">🔗</span>
+            <span class="qr-url-text" id="guide-site-url">https://mathofmemo1234-debug.github.io/body-organs-journey/</span>
+            <button class="btn-copy-qr-guide" onclick="copyGuideSiteUrl()">
+              <span id="guide-copy-btn-txt">📋 نسخ الرابط</span>
+            </button>
+          </div>
+
+          <div class="qr-showcase-actions">
+            <a href="assets/website_qr.png" download="باركود_منصة_أعضاء_الجسم_3D.png" class="btn btn-primary" style="box-shadow:0 6px 18px rgba(79, 70, 229, 0.35);">
+              <span>📥 تحميل الباركود (PNG عالي الدقة)</span>
+            </a>
+            <a href="assets/website_qr_card.png" download="بطاقة_باركود_أعضاء_الجسم_للطباعة.png" class="btn btn-accent" style="box-shadow:0 6px 18px rgba(16, 185, 129, 0.35);">
+              <span>🖨️ تحميل بطاقة الطباعة الرسمية (A4)</span>
+            </a>
+            <button class="btn btn-outline" style="border-color:#38bdf8;color:#38bdf8;" onclick="switchGuideTab('student'); document.getElementById('step-mobile-install').scrollIntoView({behavior:'smooth'});">
+              <span>📲 خطوات التثبيت على الآيفون والأندرويد</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="qr-image-display-col">
+          <div class="qr-image-box">
+            <img src="assets/website_qr.png" alt="باركود منصة أعضاء الجسم 3D">
+          </div>
+          <span style="font-size:0.92rem;font-weight:700;color:#f8fafc;">📷 وجّهي كاميرا هاتفكِ نحو الباركود للمسح الفوري</span>
+          <div class="qr-tags-list">
+            <span class="qr-tag-pill">🍏 يدعم iPhone و iPad</span>
+            <span class="qr-tag-pill">🤖 يدعم أندرويد وسامسونج</span>
+            <span class="qr-tag-pill">🏫 معتمد للعرض في الفصول</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <nav class="tab-navigation">
       <button class="tab-btn active" onclick="switchGuideTab('student')">
         <span class="tab-btn-icon">👩‍🎓</span>
@@ -951,23 +1195,42 @@
             <div class="section-icon-badge badge-primary">👩‍🎓</div>
             <div>
               <h2 class="section-title">رحلة الطالبة: كيف تخوضين تجربة تعليمية ممتعة ومبهرة؟</h2>
-              <p class="section-desc">خطوات مبسطة توضح للطالبة كيفية التفاعل مع الأعضاء، تشغيل الأصوات الحقيقية، واستكشاف المجسم واجتياز الاختبار بنجاح.</p>
+              <p class="section-desc">خطوات متكاملة توضح للطالبة كيفية تثبيت المنصة على جوالها، استكشاف الأعضاء الـ 34، اجتياز المستويات الأربعة، ونيل شهادات التميز.</p>
             </div>
           </div>
           <span class="score-pill score-excellent">✨ موجه للمرحلة المتوسطة والثانوية</span>
         </div>
 
         <div class="steps-grid">
-          <!-- Step 1 -->
-          <div class="step-card">
-            <div class="step-card-num">1</div>
-            <h3 class="step-card-title"><span>🫀</span> استكشاف الأعضاء والنقاط التشريحية</h3>
+          <!-- Step 1: Mobile App & QR -->
+          <div class="step-card" id="step-mobile-install" style="border: 2px solid #818cf8; background: linear-gradient(to bottom, #ffffff, #f5f3ff);">
+            <div class="step-card-num" style="background:linear-gradient(135deg, #4f46e5, #0ea5e9);">1</div>
+            <h3 class="step-card-title"><span>📱</span> مسح الباركود وتثبيت المنصة كتطبيق على الجوال (PWA)</h3>
             <div class="step-card-body">
-              انتقلي إلى تبويب <strong>«مستكشف ومحاكي الأعضاء»</strong>. ستجدين الأعضاء الستة الحيوية (القلب، الرئتان، الدماغ، المعدة، المريء، العين).
+              يمكنكِ تشغيل المنصة كتطبيق مستقل وسريع على جوالكِ دون الحاجة لمتجر تطبيقات:
               <ul class="step-features-list">
-                <li>المخطط عالي الدقة يوضح كافة الأجزاء ببيانات عربية دقيقة.</li>
-                <li>انقري على أي جزء لعرض بطاقة الشرح الفوري (Live Toast) التي تشرح وظيفته الحيوية مباشرة.</li>
-                <li>مشاهدة فيديو يوتيوب تعليمي مخصص لكل جزء بنقرة واحدة داخل المنصة.</li>
+                <li><strong>مسح الباركود:</strong> افتحي كاميرا الجوال ووجّهيها نحو الباركود في الأعلى للفتح المباشر.</li>
+                <li><strong>على الآيفون والآيباد (iOS Safari):</strong> اضغطي على زر المشاركة <code>⎋</code> أسفل المتصفح، ثم مرري واختاري <strong>«إضافة إلى الشاشة الرئيسية» (Add to Home Screen ➕)</strong>، ثم «إضافة».</li>
+                <li><strong>على أجهزة الأندرويد (Google Chrome):</strong> ستظهر رسالة ذكية أسفل الشاشة، اضغطي على <strong>«📲 تثبيت التطبيق الآن»</strong>، أو اضغطي على النقاط الثلاث <code>⋮</code> ثم «تثبيت التطبيق».</li>
+                <li><strong>ميزة التجربة:</strong> يفتح التطبيق بملء الشاشة، بسرعة خارقة واستجابة لمسية ناعمة.</li>
+              </ul>
+            </div>
+            <div class="tip-box">
+              <span>🌟</span>
+              <span><strong>سرعة مذهلة:</strong> بمجرد تثبيته، ستجدين أيقونة المنصة على شاشة هاتفكِ مثل تطبيقات أبل وجوجل الرسمية!</span>
+            </div>
+          </div>
+
+          <!-- Step 2: Organs & 34 Parts -->
+          <div class="step-card">
+            <div class="step-card-num">2</div>
+            <h3 class="step-card-title"><span>🫀</span> استكشاف الأعضاء والنقاط التشريحية (34 جزءاً)</h3>
+            <div class="step-card-body">
+              انتقلي إلى تبويب <strong>«مستكشف ومحاكي الأعضاء»</strong>. ستجدين الأعضاء الستة الحيوية (القلب، الرئتان، الدماغ، المعدة، المريء، العين):
+              <ul class="step-features-list">
+                <li><strong>34 جزءاً تشريحياً تفاعلياً:</strong> يغطي كافة تفاصيل الأعضاء بمسميات علمية دقيقة.</li>
+                <li><strong>بطاقات الشرح الفوري (Live Toast):</strong> انقري على أي جزء لتتعرفي فوراً على وظيفته الحيوية في الجسم.</li>
+                <li><strong>فيديوهات يوتيوب تعليمية موثقة:</strong> مخصصة لكل جزء مع تشغيل داخلي سلس وخالٍ من الأخطاء.</li>
               </ul>
             </div>
             <div class="tip-box">
@@ -976,9 +1239,9 @@
             </div>
           </div>
 
-          <!-- Step 2 -->
+          <!-- Step 3: Realistic Audio -->
           <div class="step-card">
-            <div class="step-card-num">2</div>
+            <div class="step-card-num">3</div>
             <h3 class="step-card-title"><span>🔊</span> الاستماع للأصوات الحيوية الواقعية</h3>
             <div class="step-card-body">
               تجربة فريدة تدمج حاسة السمع في التعليم الطبي من خلال أصوات حقيقية مسجلة:
@@ -994,9 +1257,9 @@
             </div>
           </div>
 
-          <!-- Step 3 -->
+          <!-- Step 4: 3D Body -->
           <div class="step-card">
-            <div class="step-card-num">3</div>
+            <div class="step-card-num">4</div>
             <h3 class="step-card-title"><span>🔬</span> الإبحار في المجسم ثلاثي الأبعاد 360°</h3>
             <div class="step-card-body">
               في الصفحة الرئيسية، يتيح لكِ محرك Three.js فحص جسم الإنسان بواقعية متناهية:
@@ -1004,29 +1267,38 @@
                 <li><strong>الدوران والتكبير:</strong> استخدمي الفأرة أو اللمس لتدوير الجسم 360 درجة وتقريب الأعضاء.</li>
                 <li><strong>فحص الهيكل العظمي:</strong> رؤية القفص الصدري، الجمجمة، والعمود الفقري لحماية الأعضاء.</li>
                 <li><strong>شبكة الدورة الدموية:</strong> تتبع الشرايين الحمراء والأوردة الزرقاء المتصلة بالقلب.</li>
-                <li><strong>النبض الحيوي:</strong> مراقبة نبض الأعضاء الطبيعي وأثرها على الجسم.</li>
+                <li><strong>النبض الحيوي والتحكم:</strong> إمكانية إيقاف النبض فورياً لتفحص الأعضاء بثبات وسكون.</li>
               </ul>
             </div>
           </div>
 
-          <!-- Step 4 -->
-          <div class="step-card">
-            <div class="step-card-num">4</div>
-            <h3 class="step-card-title"><span>📝</span> خوض بنك الأسئلة الذكي والحصول على الأوسمة</h3>
+          <!-- Step 5: 4 Levels Progressive Quiz & 12 Bank -->
+          <div class="step-card" style="border: 2px solid #10b981; background: linear-gradient(to bottom, #ffffff, #f0fdf4);">
+            <div class="step-card-num" style="background:linear-gradient(135deg, #10b981, #059669);">5</div>
+            <h3 class="step-card-title"><span>🏆</span> نظام المستويات الأربعة (40 سؤالاً) وبنك الأسئلة الشامل</h3>
             <div class="step-card-body">
-              اختبري معلوماتك عبر بنك الأسئلة المتطور (12 سؤالاً - سؤالان لكل عضو):
+              تحدّي ذكي متدرج يرفع حصيلتك المعرفية عبر مسارين متميزين:
               <ul class="step-features-list">
-                <li><strong>شريط التنقل السريع:</strong> تنقلي بين الأسئلة من 1 إلى 12 بسهولة، أو اعرضيها جميعاً معاً.</li>
-                <li><strong>التصحيح الذكي الفوري:</strong> عند اختيار الإجابة، ستظهر لكِ النتيجة فوراً بالأخضر أو الأحمر.</li>
-                <li><strong>التفسير العلمي:</strong> قراءة السبب العلمي وراء كل إجابة لترسيخ الفهم لا الحفظ.</li>
-                <li><strong>رسائل التحفيز والأوسمة:</strong> كسب وسام "طبيبة المستقبل" ونقاط التميز الإيجابية.</li>
+                <li><strong>نظام المستويات المتدرجة (4 مستويات - 40 سؤالاً نوعياً):</strong>
+                  <br>• <strong>المستوى 1:</strong> أساسيات ووظائف الأعضاء (10 أسئلة).
+                  <br>• <strong>المستوى 2:</strong> تراكيب تشريحية وفسيولوجيا (10 أسئلة).
+                  <br>• <strong>المستوى 3:</strong> وظائف حيوية وتشخيص (10 أسئلة).
+                  <br>• <strong>المستوى 4:</strong> المستوى المتقدم والتطبيقات الإكلينيكية (10 أسئلة).
+                </li>
+                <li><strong>شرط الانتقال الصارم (80%):</strong> يجب الإجابة بشكل صحيح على 8 من 10 أسئلة لفتح المستوى التالي تلقائياً!</li>
+                <li><strong>شهادات إتمام المستويات الموثقة:</strong> فور اجتياز أي مستوى تظهر شهادة تميز ذهبية باسم الطالبة وتاريخ اليوم وزر الانتقال للمستوى التالي، مع إمكانية الطباعة والحفظ.</li>
+                <li><strong>بنك الأسئلة الشامل (12 سؤالاً):</strong> وضع الفحص السريع للأعضاء الستة مع تعزيز إيجابي وتفسير علمي فوري.</li>
               </ul>
+            </div>
+            <div class="tip-box">
+              <span>🏅</span>
+              <span><strong>شهادة لكل مستوى:</strong> بإمكانكِ تعديل اسمكِ وطباعة شهادة كل مستوى على حدة للتفاخر بإنجازك في الفصل!</span>
             </div>
           </div>
 
-          <!-- Step 5 -->
+          <!-- Step 6: Student Portfolio -->
           <div class="step-card">
-            <div class="step-card-num">5</div>
+            <div class="step-card-num">6</div>
             <h3 class="step-card-title"><span>🎓</span> تصفح ملف إنجاز الطالبة</h3>
             <div class="step-card-body">
               الاطلاع على نموذج الإنجاز الطلابي المشرف:
@@ -1038,20 +1310,22 @@
             </div>
           </div>
 
-          <!-- Step 6 -->
+          <!-- Step 7: Survey -->
           <div class="step-card">
-            <div class="step-card-num">6</div>
+            <div class="step-card-num">7</div>
             <h3 class="step-card-title"><span>📊</span> تقييم الأثر والاستبيان الختامي</h3>
             <div class="step-card-body">
               شاركي في قياس أثر التعلم وتطوير المهارات:
               <ul class="step-features-list">
                 <li>الانتقال لتبويب <strong>«الاستبيان»</strong> للإدلاء برأيك حول سهولة المنصة ومدى الاستفادة.</li>
-                <li>تقييم جاذبية المجسم ثلاثي الأبعاد والأصوات الواقعية.</li>
+                <li>تقييم جاذبية المجسم ثلاثي الأبعاد والباركود والأصوات الواقعية.</li>
                 <li>تصدير ملخص تقييمك لمشاركته مع معلمتك في الفصل.</li>
               </ul>
             </div>
           </div>
         </div>
+      </div>
+    </div>
       </div>
     </div>
 
@@ -1084,6 +1358,25 @@
         </div>
 
         <div class="steps-grid">
+                    <!-- Admin Step 0: Barcode Deployment -->
+          <div class="step-card" style="border: 2px solid #38bdf8; background: #f0f9ff;">
+            <div class="step-card-num" style="background:linear-gradient(135deg, #0284c7, #0ea5e9);">1</div>
+            <h3 class="step-card-title"><span>📱</span> تفعيل وعرض باركود المنصة في الحصص والمعامل</h3>
+            <div class="step-card-body">
+              خطوات سهلة لتشغيل جماعي فوري لجميع طالبات الفصل:
+              <ul class="step-features-list">
+                <li><strong>عرض الباركود على السبورة الذكية:</strong> افتحي دليل الاستخدام أو اضغطي زر «📱 باركود وتثبيت» في الموقع واعرضيه على شاشة العرض (Projector / Smartboard).</li>
+                <li><strong>مسح جماعي خلال 5 ثوانٍ:</strong> توجيه الطالبات لفتح كاميرات هواتفهن لمسح الباركود والدخول مباشرة.</li>
+                <li><strong>طباعة بطاقة A4 الرسمية:</strong> اضغطي على زر «🖨️ تحميل بطاقة الطباعة الرسمية» في الأعلى، وقومي بطباعتها وتعليقها على باب معمل العلوم أو لوحة الإعلانات.</li>
+                <li><strong>تثبيت التطبيق على أجهزة المدرسة:</strong> توجيه الطالبات للضغط على «إضافة إلى الشاشة الرئيسية» ليبقى الموقع متاحاً كتطبيق دائم بدون كتابة روابط.</li>
+              </ul>
+            </div>
+            <div class="tip-box">
+              <span>🏫</span>
+              <span><strong>توفير الوقت:</strong> لا حاجة لإرسال روابط عبر الواتساب أو المنصات، مسح الباركود يضمن دخول 100% من الطالبات خلال ثوانٍ معدودة.</span>
+            </div>
+          </div>
+
           <!-- Admin Step 1 -->
           <div class="step-card">
             <div class="step-card-num">1</div>
@@ -1258,6 +1551,18 @@
                 <td>إبراز وربط رسمي لملف إنجاز الطالبة المتميز في الواجهة الرئيسية.</td>
                 <td><span class="score-pill score-excellent">🏆 فخر واعتزاز بالمخرجات الطلابية</span></td>
               </tr>
+                          <tr>
+                <td><strong>9. سهولة الوصول والتثبيت الجوال (PWA & QR Code)</strong></td>
+                <td>روابط طويلة يصعب كتابتها على جوالات الطالبات وتشتت انتباههن داخل شريط المتصفح.</td>
+                <td>باركود QR فائق الدقة يفتح المنصة بكاميرا الجوال + دعم التثبيت كتطبيق PWA متكامل على شاشة الجوال (آيفون وأندرويد) بملء الشاشة دون متجر تطبيقات.</td>
+                <td><span class="score-pill score-excellent">📱 وصول فوري 100% بدون تعقيد</span></td>
+              </tr>
+              <tr>
+                <td><strong>10. شمولية الأجزاء التشريحية والمحتوى المرئي</strong></td>
+                <td>أجزاء محدودة وفيديوهات يوتيوب غير مستقرة أو معرضة للحجب (Error 153).</td>
+                <td>34 جزءاً تشريحياً تفاعلياً مدعوماً بفيديوهات تعليمية باللغة العربية موثقة ومجربة وتعمل بسلاسة داخل المنصة.</td>
+                <td><span class="score-pill score-excellent">🎥 مرجعية علمية بصرية متكاملة</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1281,6 +1586,60 @@
         </div>
 
         <div class="faq-container">
+                    <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>كيف أفتح الموقع بسرعة على جوالي باستخدام الباركود؟</span>
+              <span class="faq-arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              افتحي تطبيق الكاميرا الرسمي في جهاز الآيفون أو الأندرويد، ووجّهي الكاميرا نحو باركود المنصة (الموجود في أعلى الدليل أو على البطاقة المطبوعة). سيظهر إشعار فوري في أعلى الشاشة يطلب منكِ فتح الرابط، انقري عليه لتفتح المنصة فوراً دون الحاجة لكتابة أي حرف.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>كيف أثبت الموقع كتطبيق رسمي على جهاز الآيفون (iPhone / iPad)؟</span>
+              <span class="faq-arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              1. افتحي رابط المنصة في متصفح Safari.<br>
+              2. اضغطي على زر المشاركة (Share) الموجود في أسفل الشاشة (أيقونة المربع الذي يخرج منه سهم للأعلى <code>⎋</code>).<br>
+              3. مرري القائمة لأسفل واختاري <strong>«إضافة إلى الشاشة الرئيسية» (Add to Home Screen ➕)</strong>.<br>
+              4. اضغطي على «إضافة» (Add) في الزاوية العلوية.<br>
+              ستظهر الآن أيقونة المنصة على شاشة جهازك مثل أي تطبيق رسمي وتعمل بملء الشاشة بدون شريط المتصفح!
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>كيف أثبت الموقع على هواتف الأندرويد (Samsung, Huawei, Xiaomi, etc.)؟</span>
+              <span class="faq-arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              عند فتح المنصة في متصفح Chrome أو سامسونج، ستظهر رسالة ذكية بالأسفل «📲 تثبيت التطبيق الآن»، اضغطي عليها وسيقوم النظام بتثبيت التطبيق فوراً. وفي حال لم تظهر الرسالة، اضغطي على زر القائمة (النقاط الثلاث <code>⋮</code>) أعلى المتصفح، ثم اختاري «تثبيت التطبيق» (Install app) أو «إضافة إلى الشاشة الرئيسية».
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>كيف يعمل نظام المستويات الأربعة وما هو شرط الانتقال للمستوى التالي؟</span>
+              <span class="faq-arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              يحتوي نظام المستويات على 40 سؤالاً نوعياً مقسمة بالتساوي على 4 مستويات متدرجة في الصعوبة. شرط الانتقال لفتح المستوى التالي هو الحصول على نسبة إتقان <strong>80% على الأقل</strong> (الإجابة الصحيحة على 8 من أصل 10 أسئلة في المستوى). وفور تحقيق النسبة تظهر شهادة التميز الذهبية موثقة باسم الطالبة ودرجتها ويُفتح المستوى التالي تلقائياً.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>كيف يمكن للمعلمة طباعة بطاقة الباركود لعرضها في معمل العلوم أو الفصل؟</span>
+              <span class="faq-arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              في أعلى صفحة دليل الاستخدام، يوجد زر <strong>«🖨️ تحميل بطاقة الطباعة الرسمية (A4)»</strong>، انقري عليه ليتم تنزيل بطاقة مصممة بدقة عالية تحتوي على اسم المنصة والباركود والتعليمات. يمكنكِ طباعتها مباشرة على ورق A4 وتغليفها حرارياً وتعليقها في المعمل أو على السبورة.
+            </div>
+          </div>
+
           <div class="faq-item active">
             <div class="faq-question" onclick="toggleFaq(this)">
               <span>كيف أفتح الموقع وأتأكد من تشغيله بأفضل كفاءة؟</span>
